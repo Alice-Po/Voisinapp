@@ -1,6 +1,6 @@
 Feature: Custom Tags Management
   As a user
-  I want to organize my messages with tags
+  I want to struture my notes with tag
   In order to facilitate their search
 
   Scenario: Creating tag
@@ -9,6 +9,6 @@ Feature: Custom Tags Management
     Then the tag is created and available
 
   Scenario: Associating tag
-    Given I create a message
+    Given I create a note
     When I associate a tag
-    Then the message is indexed with this tag
+    Then the note is indexed with this tag

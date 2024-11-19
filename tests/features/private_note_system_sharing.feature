@@ -13,6 +13,7 @@ Feature: Private Note Sharing System
     When I select a circle
     Then all circle members can see the note
 
+# Maybe it's already don by own data management
   Scenario: Modifying visibility
     Given I have a private note
     When I modify its visibility

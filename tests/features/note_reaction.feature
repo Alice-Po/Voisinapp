@@ -1,10 +1,10 @@
-Feature: Announcement Reactions
+Feature: Note Reactions
   As a user
-  I want to react to messages
+  I want to react to note
   In order to express my interest
 
   Scenario: Managing reactions
-    Given I view a message
+    Given I view a note
     When I click on a reaction
     Then the reaction is added or removed
     And I see the total number of reactions

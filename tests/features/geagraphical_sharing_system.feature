@@ -14,6 +14,7 @@ Feature: Geographic Sharing System
     Then I can choose the reference address
     And I can define the geographic scope
 
+# Maybe it's already done in own data management festure
   Scenario: Geographic modification
     Given I have published a note
     When I modify its parameters

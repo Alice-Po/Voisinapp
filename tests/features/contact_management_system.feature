@@ -11,7 +11,7 @@ Feature: Contact Management System
 
   Scenario: Adding a contact
     Given I am on a user's profile
-    When I click on "Add Contact"
+    When I click on "Send a contact request"
     Then a contact request is sent
 
   Scenario: Creating a circle
