@@ -1,5 +1,12 @@
 {
+  "scripts": {
+    "test": "cucumber-js tests --require 'tests/step_definitions/**/*.ts'",
+    "test:watch": "cucumber-js tests --require 'tests/step_definitions/**/*.ts' --watch"
+  },
   "dependencies": {
     "@cucumber/gherkin": "^30.0.4"
+  },
+  "devDependencies": {
+    "typescript": "^5.6.3"
   }
 }
