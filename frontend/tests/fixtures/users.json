@@ -1,0 +1,18 @@
+{
+    "registredUser": {
+      "username": "alice",
+      "email": "alice@alice.alice", 
+      "password": "alicealicealice",
+      "vcard:given-name": "alice",
+      "vcard:note": "I'm a doctor",
+      "vcard:photo": "photo.jpg"
+    },
+    "newUser": {
+      "username": "Bob",
+      "email": "Bob@Bob.Bob", 
+      "password": "BobBobBob",
+      "vcard:given-name": "Bob",
+      "vcard:note": "I'm a doctor",
+      "vcard:photo": "photo.jpg"
+    }
+  }
