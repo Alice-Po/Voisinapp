@@ -16,60 +16,6 @@ setDefaultTimeout(30000); // Augmente le timeout global à 30 secondes
 
 let browser, page;
 
-Given('I am on the homepage', async function() {
-  await this.page.goto('http://localhost:4004'); // Page d'accueil de Mastopod
-});
-
-When('I click on the button "Connexion"', async function() {
-  const connexionButton = await this.page.waitForSelector('a[href="/login"]'); // Bouton "Connexion"
-  await connexionButton.click();
-});
-
-When('I select "localhost:3000"', async function() {
-  // Attends que l'élément "localhost:3000" soit rendu dans le DOM
-  await this.page.waitForSelector('.MuiListItemText-root'); // Classe parent de l'élément
-
-  // Recherche et clic sur l'élément avec le texte "localhost:3000"
-  const success = await this.page.evaluate(() => {
-    const items = document.querySelectorAll('.MuiListItemText-root');
-    for (const item of items) {
-      if (item.textContent.includes('localhost:3000')) {
-        item.parentElement.click(); // Clic sur l'élément parent qui est le bouton
-        return true;
-      }
-    }
-    return false; // Aucun élément trouvé
-  });
-
-  if (!success) {
-    throw new Error('Impossible de trouver et de sélectionner "localhost:3000"');
-  }
-});
-
-When('I enter my username and password', async function() {
-  await this.page.waitForSelector('#username'); // Champ utilisateur
-  await this.page.type('#username', registredUser.username);
-
-  await this.page.waitForSelector('#password'); // Champ mot de passe
-  await this.page.type('#password', registredUser.password);
-});
-
-When('I click on the button "Se connecter"', async function() {
-  // Clique sur le bouton "Se connecter"
-  const loginButton = await this.page.waitForSelector('button[type="submit"]');
-
-  // Attente de la redirection vers l'URL finale après l'authentification
-  await Promise.all([
-    this.page.waitForNavigation({ waitUntil: 'networkidle0' }), // Attente que la navigation soit terminée
-    loginButton.click() // Clic sur le bouton de connexion
-  ]);
-
-  // Vérifie que l'utilisateur est bien redirigé vers "/inbox"
-  if (!this.page.url().includes('/inbox')) {
-    throw new Error(`Redirection échouée. URL actuelle : ${this.page.url()}`);
-  }
-});
-
 When('je poste un message avec le texte {string} et une image {string}', async function(message, imageName) {
   // Remplit le champ texte
   await this.page.waitForSelector('textarea[name="content"]');

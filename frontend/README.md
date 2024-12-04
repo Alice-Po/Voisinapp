@@ -1,5 +1,7 @@
 # Memo for test issue
 
+## problème between puppeteer ans Gnome
+
  Error: Failed to launch the browser process!
        
        (chrome:105289): GLib-GIO-ERROR **: 13:37:21.976: Settings schema 'org.gnome.settings-daemon.plugins.xsettings' does not contain a key named 'antialiasing'
@@ -29,3 +31,4 @@
     ],
   });
 
+## Do not use arrow function using hook
