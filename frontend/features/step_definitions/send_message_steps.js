@@ -108,7 +108,7 @@ Then('le message {string} avec une image doit apparaître dans mon fil d\'actual
 
   // Vérifie que le message texte est présent
   const messageExists = await page.evaluate((message) => {
-    const elements = document.querySelectorAll('p.MuiTypography-root');
+    const elements = document.querySelectorAll('[data-testid="noteContent"]');
     return Array.from(elements).some(el => el.textContent.trim() === message);
   }, message);
 

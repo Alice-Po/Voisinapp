@@ -97,7 +97,7 @@ const Note = ({ object, activity, clickOnContent }) => {
         )}
         {clickOnContent ? (
           <Link to={`/activity/${encodeURIComponent(activity?.id || object.id)}`} onClick={onContentClick}>
-            <Typography sx={{ color: 'black' }} dangerouslySetInnerHTML={{ __html: content }} />
+            <Typography data-testid="noteContent" sx={{ color: 'black' }} dangerouslySetInnerHTML={{ __html: content }} />
           </Link>
         ) : (
           <Typography sx={{ color: 'black' }} dangerouslySetInnerHTML={{ __html: content }} />
