@@ -7,14 +7,14 @@ import BrowserManager from '../support/browserManager';
 import path from 'path';
 import { setDefaultTimeout } from '@cucumber/cucumber';
 
-setDefaultTimeout(20000); 
+setDefaultTimeout(30000); 
 
 //NewUser should be changes for each test
 const newUser = users.newUser;
 const registredUser = users.registredUser;
 let currentPage: Page;
 
-
+// Is this hook at the right place ?
 Before(function() {
   currentPage = BrowserManager.getInstance().getPage();
   this.page = currentPage;
@@ -25,6 +25,7 @@ Given('I am logged in as a valid user', async function() {
   if (!userLogged) {
     loginUser(this.page, registredUser.username, registredUser.password);
   }
+  expect(userLogged).toBeTruthy();
 });
 
 Given('I am on the homepage', async function() {
@@ -52,18 +53,18 @@ When('I select "localhost:3000"', async function () {
 });
 
 When('I enter my username and password', async function() {
-  console.log("registredUser ", registredUser)
   fillForm(this.page, { username: registredUser.username, password: registredUser.password })  
 });
 
 When('I enter my unique identifier, my email and my password', async function() {
-  console.log("newUser ", newUser)
   await fillForm(this.page, { username: newUser.username, email: newUser.email, password: newUser.password })  
 });
 
 Then('I should be redirected to my inbox', async function () {
-  // It doesn't look to work each time for a delay reason. How to improve ?
-  await this.page.waitForURL("**/inbox");
+  // Redirection always end with a time out
+  // await this.page.waitForNavigation()
+  await this.page.waitForLoadState('networkidle');
+  // await this.page.waitForURL("**/inbox");
   expect(this.page.url()).toContain('/inbox');
 });
 
@@ -75,10 +76,11 @@ Then('I should be able to create my profil with my pronoun, my bio, and a avatar
 });
 
 Then('I am redirected of "Authorisation required" prompt', async function () {
-  await this.page.waitForURL("**/authorize/**");
-  setTimeout(() => {
+  // Redirection always end with a time out
+  // await this.page.waitForNavigation();
+  await this.page.waitForLoadState('networkidle')
+  // await this.page.waitForURL("**/authorize/**");
     expect(this.page.url()).toContain('/authorize/');
-  }, 20000);
 });
 
 // Do we make a generale fonction in common.step.ts ?

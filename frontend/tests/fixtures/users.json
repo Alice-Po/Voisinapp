@@ -1,17 +1,17 @@
 {
     "registredUser": {
-      "username": "alice",
-      "email": "alice@alice.alice", 
-      "password": "alicealicealice",
-      "vcard:given-name": "alice",
+      "username": "test",
+      "email": "test@test.test", 
+      "password": "testtesttest",
+      "vcard:given-name": "test",
       "vcard:note": "I'm a doctor",
       "vcard:photo": "photo.jpg"
     },
     "newUser": {
-      "username": "Bob",
-      "email": "Bob@Bob.Bob", 
-      "password": "BobBobBob",
-      "vcard:given-name": "Bob",
+      "username": "tttttttazeredgazezadtastzdtttttqstttttt",
+      "email": "tttttttttregzaeadzezadtsasttQSazdtt@jjjj.jjjj", 
+      "password": "tttttttergazzaedezadtttQSttttttzadttttttttttttttttttttttttttttttt",
+      "vcard:given-name": "jjjaazeQzadSazdsj",
       "vcard:note": "I'm a doctor",
       "vcard:photo": "photo.jpg"
     }

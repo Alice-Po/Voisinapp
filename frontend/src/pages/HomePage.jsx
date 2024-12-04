@@ -87,13 +87,13 @@ const HomePage = () => {
         )}
         <Box display="flex" pt={3} pb={3} alignItems="center">
           <Link to="/login?signup">
-            <Button variant="contained" color="secondary" className={classes.button}>
+            <Button variant="contained" color="secondary" className={classes.button} data-testid="signup">
               {translate('auth.action.signup')}
             </Button>
           </Link>
           &nbsp;&nbsp;
           <Link to="/login">
-            <Button variant="contained" color="secondary" className={classes.button}>
+            <Button variant="contained" color="secondary" className={classes.button} data-testid="signin">
               {translate('ra.auth.sign_in')}
             </Button>
           </Link>

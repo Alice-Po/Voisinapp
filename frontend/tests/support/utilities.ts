@@ -48,6 +48,7 @@ async function loginUser(page: Page, username: string, password: string){
       }
   }
 
+  //Maybe useless
   async function clickOnButton(page: Page, textButton: string) {
     await page.getByRole('link', { name: textButton }).click();
   }

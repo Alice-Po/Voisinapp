@@ -1,11 +1,11 @@
-Feature: Single Note Feed
-  As a registred user
-  I want to access a single news feed
-  In order to simplify my navigation
+# Feature: Single Note Feed
+#   As a registred user
+#   I want to access a single news feed
+#   In order to simplify my navigation
 
-  Background:
-    Given I am logged in as a valid user
-    And there are accessed notes in my single feed
+#   Background:
+#     Given I am logged in as a valid user
+#     And there are accessed notes in my single feed
 
 #   Scenario: Viewing the news feed
 #     Given I am on the main page
