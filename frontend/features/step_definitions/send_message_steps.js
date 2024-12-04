@@ -13,7 +13,16 @@ setDefaultTimeout(30000); // Augmente le timeout global à 30 secondes
 let browser, page;
 
 Given('je suis sur la page d\'accueil', async function() {
-  browser = await puppeteer.launch({ headless: false });
+  browser = await puppeteer.launch({
+    headless: false,
+    args: [
+      '--no-sandbox',
+      '--disable-setuid-sandbox',
+      '--disable-dev-shm-usage',
+      '--disable-gpu',
+      '--disable-software-rasterizer',
+    ],
+  });
   page = await browser.newPage();
   await page.goto('http://localhost:4004'); // Page d'accueil de Mastopod
 });
