@@ -7,5 +7,5 @@ Feature: Login with registred user
     When I click on the button "Connexion"
     And I select "localhost:3000"
     And I enter my username and password
-    And I click on the button "Se connecter"
+    And I submit the form
     Then I should be redirected to my inbox
