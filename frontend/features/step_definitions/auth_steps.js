@@ -51,13 +51,8 @@ When('I enter my username and password', async function() {
 });
 
 When('I click on the button "Se connecter"', async function() {
-  // Clique sur le bouton "Se connecter"
   const loginButton = await this.page.waitForSelector('button[type="submit"]');
-
-  // Attente de la redirection vers l'URL finale après l'authentification
-  await Promise.all([
-    this.page.waitForNavigation({ waitUntil: 'networkidle0' }), // Attente que la navigation soit terminée
-    loginButton.click() // Clic sur le bouton de connexion
-  ]);
+  await loginButton.click()
+  await this.page.waitForNavigation({ waitUntil: 'networkidle0' }) // Attente que la navigation soit terminée
 });
 
