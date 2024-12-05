@@ -10,4 +10,5 @@ Feature: Poster un message avec une photo
     And I enter my username and password
     And I click on the button "Se connecter"
     And je poste un message avec le texte "Bonjour tout le monde ! Et Joyeux Noël !" et une image "photo.jpg"
+    # Add emoji 
     Then le message "Bonjour tout le monde ! Et Joyeux Noël !" avec une image doit apparaître dans mon fil d'actualité
