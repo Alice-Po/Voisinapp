@@ -2,6 +2,7 @@ import { useRef, useEffect, useState } from 'react';
 import {
   Form,
   TextInput,
+  DateTimeInput,
   useNotify,
   useTranslate,
   useGetIdentity,
@@ -9,7 +10,7 @@ import {
   useDataProvider
 } from "react-admin";
 import { useLocation } from "react-router-dom";
-import { Card, Box, Button, IconButton, CircularProgress, Backdrop } from "@mui/material";
+import { Card, Box, Button, IconButton, CircularProgress, Backdrop, Typography } from "@mui/material";
 import SendIcon from "@mui/icons-material/Send";
 import InsertPhotoIcon from "@mui/icons-material/InsertPhoto";
 import DeleteIcon from "@mui/icons-material/Delete";
@@ -31,6 +32,19 @@ const PostBlock = ({ inReplyTo, mention }) => {
   const { data: identity } = useGetIdentity();
   const [imageFiles, setImageFiles] = useState([]);
   const [isSubmitting, setIsSubmitting] = useState(false);
+
+   // Validation pour la date d'expiration
+   const validateExpirationDate = (value) => {
+    if (value) {
+      const expirationDate = new Date(value);
+      const today = new Date();
+      
+      if (expirationDate <= today) {
+        return 'Expiration date must be in the future';
+      }
+    }
+    return undefined;
+  };
 
   // Doesn't work
   useEffect(() => {
@@ -82,6 +96,7 @@ const PostBlock = ({ inReplyTo, mention }) => {
           to: mention
             ? [PUBLIC_URI, identity?.webIdData?.followers, mention.uri]
             : [PUBLIC_URI, identity?.webIdData?.followers],
+            ...(values.endTime && { endTime: values.endTime }),
         };
 
         let attachments = await handleAttachments();
@@ -245,6 +260,15 @@ const PostBlock = ({ inReplyTo, mention }) => {
               />
               <InsertPhotoIcon />
             </Button>
+            <Typography variant="subtitle1" gutterBottom>
+        {/* Conseils optionnels sur l'expiration */}
+        </Typography>
+        <DateTimeInput 
+          source="endTime" 
+          label="Expiration Date" 
+          validate={validateExpirationDate}
+          helperText="Optional: Your note will be automatically hidden after this date"
+        />
             <Button
               type="submit"
               variant="contained"

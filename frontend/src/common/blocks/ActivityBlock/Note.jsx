@@ -59,6 +59,11 @@ const Note = ({ object, activity, clickOnContent }) => {
     }
   };
 
+   // Check if the note is expired
+   const isExpired = object.endTime 
+   ? new Date(object.endTime) < new Date() 
+   : false;
+
   return (
     <>
       <Box pl={8} sx={{ position: 'relative' }}>
@@ -95,6 +100,21 @@ const Note = ({ object, activity, clickOnContent }) => {
             <RelativeDate date={object?.published} sx={{ fontSize: 13, color: 'grey' }} />
           </Box>
         )}
+
+         {/* Add expiration date display */}
+         {object.endTime && (
+          <Box sx={{ position: 'absolute', top: 20, right: 0 }}>
+            <Typography 
+              sx={{ 
+                fontSize: 13, 
+                color: isExpired ? 'red' : 'grey' 
+              }}
+            >
+              {isExpired ? 'Expired' : `Expires: ${new Date(object.endTime).toLocaleDateString()}`}
+            </Typography>
+          </Box>
+        )}
+
         {clickOnContent ? (
           <Link to={`/activity/${encodeURIComponent(activity?.id || object.id)}`} onClick={onContentClick}>
             <Typography data-testid="noteContent" sx={{ color: 'black' }} dangerouslySetInnerHTML={{ __html: content }} />

@@ -30,7 +30,7 @@ export interface Note {
     attachedFiles: string[];
     createdAt: Date;
     modifiedAt?: Date;
-    expiresAt?: Date;
+    endTime?: Date;
     geoScope?: GeoScope;
     public?: boolean;
 }
