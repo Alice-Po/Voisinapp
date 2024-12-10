@@ -101,9 +101,23 @@ const Note = ({ object, activity, clickOnContent }) => {
           </Box>
         )}
 
+         {/* Add the created date display */}
+         {object["dc:created"] && (
+          <Box sx={{ position: 'absolute', top: 10, right: 0 }}>
+            <Typography 
+              sx={{ 
+                fontSize: 13, 
+                color: isExpired ? 'red' : 'grey' 
+              }}
+            >
+              {`Created: ${new Date(object["dc:created"]).toLocaleDateString("fr-FR", { year: "numeric", month: "long", day: "numeric", hour: "2-digit", minute: "2-digit" })}`}
+            </Typography>
+          </Box>
+        )}
+
          {/* Add expiration date display */}
          {object.endTime && (
-          <Box sx={{ position: 'absolute', top: 20, right: 0 }}>
+          <Box sx={{ position: 'absolute', top: 25, right: 0 }}>
             <Typography 
               sx={{ 
                 fontSize: 13, 
