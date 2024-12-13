@@ -25,7 +25,6 @@ When('I submit the form', async function() {
 
 
 Then('I should be redirected to my inbox', async function() {
- // Vérifie que l'utilisateur est bien redirigé vers "/inbox"
  if (!this.page.url().includes('/inbox')) {
     throw new Error(`Redirection échouée. URL actuelle : ${this.page.url()}`);
   }

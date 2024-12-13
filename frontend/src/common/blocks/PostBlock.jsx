@@ -20,6 +20,8 @@ import {
   PUBLIC_URI,
 } from "@semapps/activitypub-components";
 import { useCallback } from "react";
+import TagsListEdit from '../../common/tags/TagsListEdit';
+
 
 const PostBlock = ({ inReplyTo, mention }) => {
   const dataProvider = useDataProvider();
@@ -152,6 +154,7 @@ const PostBlock = ({ inReplyTo, mention }) => {
 
   return (
     <Card>
+      <p>{new Date(Date.now()).toISOString()}</p>
       <Box p={2} position="relative">
         <Backdrop
           sx={{
@@ -261,13 +264,18 @@ const PostBlock = ({ inReplyTo, mention }) => {
               <InsertPhotoIcon />
             </Button>
             <Typography variant="subtitle1" gutterBottom>
-        {/* Conseils optionnels sur l'expiration */}
         </Typography>
+        <TagsListEdit
+                source="id"
+                addLabel
+                label="Tag"
+                tagResource="Note"
+              />
         <DateTimeInput 
           source="endTime" 
           label="Expiration Date" 
           validate={validateExpirationDate}
-          helperText="Optional: Your note will be automatically hidden after this date"
+          helperText="Your note will be automatically hidden after this date"
         />
             <Button
               type="submit"
@@ -276,6 +284,7 @@ const PostBlock = ({ inReplyTo, mention }) => {
               size="medium"
               endIcon={<SendIcon />}
               disabled={isSubmitting}
+
             >
               {translate("app.action.send")}
             </Button>

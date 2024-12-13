@@ -5,13 +5,17 @@
       "password": "testtesttest",
       "vcard:given-name": "test",
       "vcard:note": "I'm a doctor",
-      "vcard:photo": "photo.jpg"
+      "vcard:photo": "photo.jpg",
+      "weeklyNote" : "Une  pile de gros vêtements fille 10 ans à donner le plus vite possible",
+      "yearlyNote" : "test",
+      "noLimitNote" : "test",
+      "favoriteTag" : "Don"
     },
     "newUser": {
-      "username": "tttaszzdsqzsezdtasttddtqstttttt",
-      "email": "ttttdssqqSzts@jjzaddszddjj.jjjj", 
-      "password": "tttttszqzdttsdsezsddrgasazdttttt",
-      "vcard:given-name": "jjssjazaqzzdzadadQsSazdsj",
+      "username": "tttaszzzedsqzsezdtscasttddtqstttttt",
+      "email": "ttttdsszeqqSzts@jjzadscdszddjj.jjjj", 
+      "password": "tttttszqzdtzesdsscezsddrgasazdttttt",
+      "vcard:given-name": "jjssjzeazaqsczzdzadadQsSazdsj",
       "vcard:note": "I'm a doctor",
       "vcard:photo": "photo.jpg"
     }

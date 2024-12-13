@@ -62,6 +62,7 @@ const HomePage = () => {
       <Box sx={{ position: 'absolute', top: 0, right: 0, p: 1, zIndex: 20 }}>
         <LocalesMenuButton />
       </Box>
+      <p>{new Date(Date.now()).toISOString()}</p>
       <Box className={classes.root}>
         <img src="/logo-transparent.png" style={{ width: 150 }} />
         <Typography variant="h4" className={classes.title}>

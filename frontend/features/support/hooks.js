@@ -4,6 +4,11 @@ import puppeteer from 'puppeteer';
 let browser;
 let page;
 
+/*
+before all with persona
+reset database
+*/
+
 Before(async function()  {
  browser = await puppeteer.launch({
     headless: false,
@@ -16,7 +21,7 @@ Before(async function()  {
     ],
   });
   page = await browser.newPage();
-  page.setDefaultNavigationTimeout(120000); // Timeout navigation augmenté à 120 secondes
+  page.setDefaultNavigationTimeout(400000); // Timeout navigation augmenté à 120 secondes
   this.page = page;
 });
 

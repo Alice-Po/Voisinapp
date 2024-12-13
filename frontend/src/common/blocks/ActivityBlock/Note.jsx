@@ -59,10 +59,12 @@ const Note = ({ object, activity, clickOnContent }) => {
     }
   };
 
-   // Check if the note is expired
+  // Check if the note is expired
    const isExpired = object.endTime 
    ? new Date(object.endTime) < new Date() 
    : false;
+
+  //  if (isExpired) return null;
 
   return (
     <>
@@ -95,6 +97,7 @@ const Note = ({ object, activity, clickOnContent }) => {
           </Typography>
         </Link>
 
+{/* why ? */}
         {object?.published && (
           <Box sx={{ position: 'absolute', top: 0, right: 0 }}>
             <RelativeDate date={object?.published} sx={{ fontSize: 13, color: 'grey' }} />
@@ -115,7 +118,15 @@ const Note = ({ object, activity, clickOnContent }) => {
           </Box>
         )}
 
-         {/* Add expiration date display */}
+         {/* Add tag display */}
+         {object.tag && (
+          <Typography component="span" sx={{ color: 'blue' }}>
+          <em>Tag {object.tag} </em>
+        </Typography>
+        )}
+         
+
+        {/* Add expiration date display */}
          {object.endTime && (
           <Box sx={{ position: 'absolute', top: 25, right: 0 }}>
             <Typography 
@@ -131,7 +142,7 @@ const Note = ({ object, activity, clickOnContent }) => {
 
         {clickOnContent ? (
           <Link to={`/activity/${encodeURIComponent(activity?.id || object.id)}`} onClick={onContentClick}>
-            <Typography data-testid="noteContent" sx={{ color: 'black' }} dangerouslySetInnerHTML={{ __html: content }} />
+            <Typography data-testid="noteContent" sx={{ color: 'black' , paddingTop: "15px" }} dangerouslySetInnerHTML={{ __html: content }} />
           </Link>
         ) : (
           <Typography sx={{ color: 'black' }} dangerouslySetInnerHTML={{ __html: content }} />
