@@ -6,6 +6,53 @@ A Mastodon-compatible app that saves all data on your Pod.
 
 Built on the [ActivityPods](https://activitypods.org) framework.
 
+## Getting Started
+
+### Prerequisites
+- Docker and Docker Compose
+- Node.js and Yarn
+- Make
+
+### Development Setup
+
+1. **Start the Core Services**
+   ```bash
+   make start
+   ```
+   This command starts the following services via Docker:
+   - Fuseki (Database)
+   - Redis (Cache)
+   - Mailcatcher (Email testing)
+   - Arena (Queue management)
+   - ActivityPods backend and frontend servers
+
+2. **Start the Development Servers**
+   
+   Open two terminal windows and run:
+
+   ```bash
+   # Terminal 1: Start the frontend development server
+   cd frontend
+   yarn run dev
+
+   # Terminal 2: Start the backend development server
+   cd backend
+   yarn run dev
+   ```
+
+   The application should now be accessible at:
+   - Frontend: http://localhost:3000
+   - Backend: http://localhost:3001
+   - Mailcatcher UI: http://localhost:1080
+   - Arena UI: http://localhost:4567
+
+### Stopping the Project
+
+To stop all services:
+```bash
+make stop
+```
+
 ## Commands
 
 ### For development
