@@ -1,34 +1,76 @@
-# Memo for test issue
+# Frontend
 
-## problème between puppeteer ans Gnome
+This is the frontend application for Mastopod, built with React and Vite.
 
- Error: Failed to launch the browser process!
-       
-       (chrome:105289): GLib-GIO-ERROR **: 13:37:21.976: Settings schema 'org.gnome.settings-daemon.plugins.xsettings' does not contain a key named 'antialiasing'
-       [1204/133722.021157:ERROR:process_memory_range.cc(75)] read out of range
-       [1204/133722.032362:ERROR:process_memory_range.cc(75)] read out of range
-       [1204/133722.032416:ERROR:process_memory_range.cc(75)] read out of range
-       
-       
-       TROUBLESHOOTING: https://pptr.dev/troubleshooting
-       
-           at ChildProcess.onClose (file:///home/alice/projets/AV/voisinapp/frontend/node_modules/@puppeteer/browsers/lib/esm/launch.js:303:24)
-           at ChildProcess.emit (node:events:531:35)
-           at ChildProcess._handle.onexit (node:internal/child_process:294:12)
-           at Process.callbackTrampoline (node:internal/async_hooks:130:17)
+## Development
 
-**solution** : 
-1. Bidouille sudo nano org.gnome.settings-daemon.plugins.xsettings.gschema.xml : Solution choisi. Fix trouvé ici : https://github.com/espanso/espanso/issues/1122
-2. Configurer Puppeteer pour désactiver les options GPU mais rend impossible l'execution en navigateur
-  const browser = await puppeteer.launch({
-    headless: true,
-    args: [
-      '--no-sandbox',
-      '--disable-setuid-sandbox',
-      '--disable-dev-shm-usage',
-      '--disable-gpu',
-      '--disable-software-rasterizer',
-    ],
-  });
+### Prerequisites
+- Node.js
+- Yarn
 
-## Do not use arrow function using hook
+### Getting Started
+
+1. Install dependencies:
+```bash
+yarn install
+```
+
+2. Start the development server:
+```bash
+yarn run dev
+```
+
+The application will be available at http://localhost:4004.
+
+## Testing
+
+### Running Tests
+
+The project uses Cucumber.js for end-to-end testing. Tests are located in the `features` directory.
+
+```bash
+# Run all tests
+yarn test-features
+
+# Run specific tests using tags
+yarn test-features --tags "@tag_name"
+```
+
+### Common Test Tags
+- `@post_note_with_photo`: Tests posting a note with a photo
+
+### Test Files Structure
+- `features/*.feature`: Feature files containing test scenarios
+- `features/step_definitions/*.js`: Step definitions implementing the test scenarios
+
+### Known Issues
+
+#### Puppeteer and GNOME Integration
+
+When running tests, you might encounter issues with Puppeteer on GNOME systems. There are two possible solutions:
+
+1. **Recommended**: Modify GNOME settings
+   ```bash
+   sudo nano org.gnome.settings-daemon.plugins.xsettings.gschema.xml
+   ```
+   This solution was found in [espanso/espanso#1122](https://github.com/espanso/espanso/issues/1122)
+
+2. **Alternative**: Configure Puppeteer to run without GPU
+   ```javascript
+   const browser = await puppeteer.launch({
+     headless: true,
+     args: [
+       '--no-sandbox',
+       '--disable-setuid-sandbox',
+       '--disable-dev-shm-usage',
+       '--disable-gpu',
+       '--disable-software-rasterizer',
+     ],
+   });
+   ```
+   Note: This solution disables browser GUI testing.
+
+## Development Guidelines
+
+- Avoid using arrow functions with React hooks
+- Follow the project's ESLint and Prettier configurations
