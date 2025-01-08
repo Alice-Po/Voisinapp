@@ -26,7 +26,10 @@ export default {
     block: {},
     input: {
       message: 'Votre message',
-      reply: 'Votre réponse'
+      reply: 'Votre réponse',
+      radius: 'Rayon de visibilité (km)',
+      radius_help: 'Distance maximale à laquelle votre message sera visible',
+      expiration_date: "Date d'expiration"
     },
     helper: {
       find_user: 'Pour trouver un acteur dans le fediverse, entrez son identifiant et tapez Enter.'
@@ -46,6 +49,8 @@ export default {
       actor_unfollowed: 'Vous ne suivez plus cet acteur',
       image_upload_error: 'Echec de l\'upload de l\'image',
     },
-    validation: {}
+    validation: {
+      radius_range: 'Le rayon doit être compris entre 0 et 50 kilomètres'
+    }
   }
 };

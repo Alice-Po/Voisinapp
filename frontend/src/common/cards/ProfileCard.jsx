@@ -1,10 +1,11 @@
 import { Box, Card, Typography, Avatar, Button, Skeleton } from "@mui/material";
 import makeStyles from "@mui/styles/makeStyles";
-import { useCreatePath, useGetIdentity, useTranslate } from "react-admin";
-import { Link } from "react-router-dom";
+import { useGetIdentity, useTranslate } from "react-admin";
 import useActorContext from "../../hooks/useActorContext";
 import FollowButton from "../buttons/FollowButton";
 import useOpenExternalApp from "../../hooks/useOpenExternalApp";
+import { useState, useEffect } from "react";
+import { reverseGeocode } from '../../utils/geocoding';
 
 const useStyles = makeStyles((theme) => ({
   title: {
@@ -47,6 +48,23 @@ const ProfileCard = () => {
   const actor = useActorContext();
   const translate = useTranslate();
   const openExternalApp = useOpenExternalApp();
+  const [location, setLocation] = useState(null);
+
+  useEffect(() => {
+    const fetchLocation = async () => {
+      if (actor?.profile?.['vcard:hasGeo']) {
+        const geo = actor.profile['vcard:hasGeo'];
+        const locationData = await reverseGeocode(
+          geo['vcard:latitude'],
+          geo['vcard:longitude']
+        );
+        setLocation(locationData);
+      }
+    };
+    fetchLocation();
+  }, [actor]);
+
+  const isLoading = actor.isLoading;
 
   return (
     <Card>
@@ -56,7 +74,7 @@ const ProfileCard = () => {
           justifyContent="center"
           className={classes.avatarWrapper}
         >
-          {actor.isLoading ? (
+          {isLoading ? (
             <Skeleton variant="circular" width={150} height={150} />
           ) : (
             <Avatar
@@ -68,7 +86,7 @@ const ProfileCard = () => {
         </Box>
       </Box>
       <Box className={classes.block}>
-        {actor.isLoading ? (
+        {isLoading ? (
           <Skeleton variant="text" />
         ) : (
           <Typography variant="h4" align="center">
@@ -87,6 +105,17 @@ const ProfileCard = () => {
         >
           {actor?.username}
         </Typography>
+
+        {location && (
+          <Typography
+            variant="body2"
+            color="text.secondary"
+            align="center"
+            sx={{ mt: 1 }}
+          >
+            {location.city} ({location.postcode})
+          </Typography>
+        )}
       </Box>
 
       <Box className={classes.button} pb={3} pr={3} pl={3}>

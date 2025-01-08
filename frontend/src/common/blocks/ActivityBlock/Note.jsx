@@ -1,4 +1,4 @@
-import { useMemo } from 'react';
+import { useMemo, useEffect, useState } from 'react';
 import isObject from 'isobject';
 import { Box, Avatar, Typography, MenuItem } from '@mui/material';
 import { Link, useTranslate } from 'react-admin';
@@ -17,6 +17,25 @@ const Note = ({ object, activity, clickOnContent }) => {
   const navigate = useNavigate();
   const translate = useTranslate();
   const actorUri = object?.attributedTo;
+  const [locationName, setLocationName] = useState(null);
+
+  // Récupérer le nom de la commune à partir des coordonnées
+  useEffect(() => {
+    const fetchLocationName = async () => {
+      if (object.geoScope) {
+        try {
+          const response = await fetch(
+            `https://nominatim.openstreetmap.org/reverse?format=json&lat=${object.geoScope.latitude}&lon=${object.geoScope.longitude}&zoom=10&addressdetails=1`
+          );
+          const data = await response.json();
+          setLocationName(data.address.city || data.address.town || data.address.village);
+        } catch (error) {
+          console.error('Error fetching location name:', error);
+        }
+      }
+    };
+    fetchLocationName();
+  }, [object.geoScope]);
 
   const actor = useActor(actorUri);
 
@@ -148,6 +167,19 @@ const Note = ({ object, activity, clickOnContent }) => {
           <Typography sx={{ color: 'black' }} dangerouslySetInnerHTML={{ __html: content }} />
         )}
         {images && images.map(image => <img data-testid="note-image" src={image?.url} style={{ width: "100%", marginTop: 10 }} />)}
+
+        {/* Display geographic scope */}
+        {object.geoScope && (
+          <Typography 
+            sx={{ 
+              fontSize: 13, 
+              color: 'grey',
+              mt: 1
+            }}
+          >
+            {`${object.geoScope.radius} km`}
+          </Typography>
+        )}
       </Box>
       <Box pl={8} pt={2} display="flex" justifyContent="space-between">
         <ReplyButton objectUri={object.id || activity.id} />

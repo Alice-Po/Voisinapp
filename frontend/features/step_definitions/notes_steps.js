@@ -303,4 +303,60 @@ Then('I should not see my note in the feed', async function() {
 
   // Reset MockDate
   MockDate.reset();
+});
+
+When('I set the visibility radius to {string} kilometers', async function(radius) {
+  // Attendre que le champ de rayon soit visible
+  await this.page.waitForSelector('#radius');
+  
+  // Remplir le champ de rayon
+  await this.page.evaluate((selector, value) => {
+    const input = document.querySelector(selector);
+    const nativeInputValueSetter = Object.getOwnPropertyDescriptor(window.HTMLInputElement.prototype, 'value').set;
+    nativeInputValueSetter.call(input, value);
+    input.dispatchEvent(new Event('input', { bubbles: true })); 
+    input.dispatchEvent(new Event('change', { bubbles: true }));
+  }, '#radius', radius);
+
+  // Vérifier que la valeur a bien été définie
+  const inputValue = await this.page.$eval('#radius', el => el.value);
+  if (!inputValue) {
+    throw new Error(`The radius field is empty`);
+  }
+});
+
+Then('my note should be visible to users within {int} kilometers', async function(radius) {
+  // Récupérer les logs du navigateur
+  const logs = await this.page.evaluate(() => {
+    return console.logs;
+  });
+  console.log('Browser logs:', logs);
+
+  // Cliquer sur l'onglet outbox
+  await this.page.evaluate(() => {
+    const tabs = Array.from(document.querySelectorAll('button[role="tab"]'));
+    const outboxTab = tabs.find(tab => tab.textContent.includes('Boîte d\'envoi'));
+    if (outboxTab) {
+      outboxTab.click();
+    } else {
+      throw new Error('Onglet Mes publications non trouvé');
+    }
+  });
+  
+  // Attendre que le feed soit visible
+  await this.page.waitForSelector('[data-testid="outbox-feed"]', { timeout: 30000 });
+  
+  // Vérifier que la note contient l'indicateur de rayon
+  const noteWithRadius = await this.page.evaluate((expectedRadius) => {
+    const feed = document.querySelector('[data-testid="outbox-feed"]');
+    const notes = feed.querySelectorAll('[data-testid="activity-block"]');
+    for (const note of notes) {
+
+      const radiusText = note.textContent.includes(`${expectedRadius} km`);
+      if (radiusText) return true;
+    }
+    return false;
+  }, radius);
+  
+  expect(noteWithRadius).to.be.true;
 }); 
