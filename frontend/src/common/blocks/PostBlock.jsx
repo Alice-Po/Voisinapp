@@ -190,6 +190,15 @@ const PostBlock = ({ inReplyTo, mention }) => {
             autoFocus={hash === "#reply"}
           />
 
+          <DateTimeInput
+            source="endTime"
+            label={translate("app.input.expiration_date")}
+            validate={validateExpirationDate}
+            margin="dense"
+            fullWidth
+            id="endTime"
+          />
+
           {/*Preview of selected pictures*/}
           {imageFiles.length > 0 && (
             <Box

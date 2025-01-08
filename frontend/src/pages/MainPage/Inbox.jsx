@@ -15,7 +15,7 @@ const Inbox = () => {
     isLoading
   } = useCollection('inbox', { liveUpdates: true, dereferenceItems: true });
   return (
-    <div data-testid="inbox-page">
+    <div data-testid="inbox-feed">
       <PostBlock />
       {activities?.map(activity => (
         <ActivityBlock activity={activity} key={activity.id} />

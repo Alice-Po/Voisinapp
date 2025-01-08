@@ -5,13 +5,13 @@ import Announce from './Announce';
 const ActivityBlock = ({ activity, showReplies, clickOnContent }) => {
   switch (activity.type) {
     case ACTIVITY_TYPES.ANNOUNCE:
-      return <Announce activity={activity} />;
+      return <div data-testid="activity-block"><Announce activity={activity} /></div>;
 
     case ACTIVITY_TYPES.CREATE:
-      return <Create activity={activity} showReplies={showReplies} clickOnContent={clickOnContent} />;
+      return <div data-testid="activity-block"><Create activity={activity} showReplies={showReplies} clickOnContent={clickOnContent} /></div>;
 
     case OBJECT_TYPES.NOTE:
-      return <Create activity={{ object: activity }} showReplies={showReplies} clickOnContent={clickOnContent} />;
+      return <div data-testid="activity-block"><Create activity={{ object: activity }} showReplies={showReplies} clickOnContent={clickOnContent} /></div>;
 
     default:
       // console.debug(
