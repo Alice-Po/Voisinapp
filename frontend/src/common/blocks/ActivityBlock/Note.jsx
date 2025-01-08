@@ -147,7 +147,7 @@ const Note = ({ object, activity, clickOnContent }) => {
         ) : (
           <Typography sx={{ color: 'black' }} dangerouslySetInnerHTML={{ __html: content }} />
         )}
-        {images && images.map(image => <img src={image?.url} style={{ width: "100%", marginTop: 10 }} />)}
+        {images && images.map(image => <img data-testid="note-image" src={image?.url} style={{ width: "100%", marginTop: 10 }} />)}
       </Box>
       <Box pl={8} pt={2} display="flex" justifyContent="space-between">
         <ReplyButton objectUri={object.id || activity.id} />

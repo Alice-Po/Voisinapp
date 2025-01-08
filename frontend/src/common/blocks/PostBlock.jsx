@@ -20,7 +20,7 @@ import {
   PUBLIC_URI,
 } from "@semapps/activitypub-components";
 import { useCallback } from "react";
-import TagsListEdit from '../../common/tags/TagsListEdit';
+// import TagsListEdit from '../../common/tags/TagsListEdit';
 
 
 const PostBlock = ({ inReplyTo, mention }) => {
@@ -153,7 +153,7 @@ const PostBlock = ({ inReplyTo, mention }) => {
   }, []);
 
   return (
-    <Card>
+    <Card data-testid="post-block">
       <p>{new Date(Date.now()).toISOString()}</p>
       <Box p={2} position="relative">
         <Backdrop
@@ -265,12 +265,12 @@ const PostBlock = ({ inReplyTo, mention }) => {
             </Button>
             <Typography variant="subtitle1" gutterBottom>
         </Typography>
-        <TagsListEdit
+        {/* <TagsListEdit
                 source="id"
                 addLabel
                 label="Tag"
                 tagResource="Note"
-              />
+              /> */}
         <DateTimeInput 
           source="endTime" 
           label="Expiration Date" 

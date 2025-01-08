@@ -15,7 +15,7 @@ const Inbox = () => {
     isLoading
   } = useCollection('inbox', { liveUpdates: true, dereferenceItems: true });
   return (
-    <>
+    <div data-testid="inbox-page">
       <PostBlock />
       {activities?.map(activity => (
         <ActivityBlock activity={activity} key={activity.id} />
@@ -26,7 +26,7 @@ const Inbox = () => {
         </Box>
       )}
       {hasNextPage && <LoadMore fetchNextPage={fetchNextPage} isLoading={isFetchingNextPage || isLoading} />}
-    </>
+    </div>
   );
 };
 

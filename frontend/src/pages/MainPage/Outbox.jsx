@@ -13,13 +13,13 @@ const Outbox = () => {
     isLoading
   } = useCollection('outbox', { liveUpdates: true, dereferenceItems: true });
   return (
-    <>
+    <div data-testid="outbox-feed">
       <PostBlock />
       {activities?.map(activity => (
         <ActivityBlock activity={activity} key={activity.id} showReplies />
       ))}
       <LoadMore fetchNextPage={fetchNextPage} isLoading={isFetchingNextPage || isLoading} />
-    </>
+    </div>
   );
 };
 

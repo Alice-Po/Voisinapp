@@ -1,22 +1,16 @@
 {
-    "registredUser": {
-      "username": "test",
-      "email": "test@test.test", 
-      "password": "testtesttest",
-      "vcard:given-name": "test",
-      "vcard:note": "I'm a doctor",
-      "vcard:photo": "photo.jpg",
-      "weeklyNote" : "Une  pile de gros vêtements fille 10 ans à donner le plus vite possible",
-      "yearlyNote" : "test",
-      "noLimitNote" : "test",
-      "favoriteTag" : "Don"
-    },
-    "newUser": {
-      "username": "tttaszzzedsqzsezdtscasttddtqstttttt",
-      "email": "ttttdsszeqqSzts@jjzadscdszddjj.jjjj", 
-      "password": "tttttszqzdtzesdsscezsddrgasazdttttt",
-      "vcard:given-name": "jjssjzeazaqsczzdzadadQsSazdsj",
-      "vcard:note": "I'm a doctor",
-      "vcard:photo": "photo.jpg"
-    }
+  "newUser": {
+    "username": "newuser",
+    "email": "newuser@test.com",
+    "password": "testpassword123",
+    "vcard:given-name": "New User",
+    "vcard:note": "I am a new user testing the application",
+    "vcard:photo": "avatar.jpg"
+  },
+  "registredUser": {
+    "username": "test",
+    "password": "testtesttest",
+    "weeklyNote": "This is a test weekly note",
+    "favoriteTag": "TestTag"
   }
+} 
