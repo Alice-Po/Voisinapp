@@ -15,7 +15,11 @@ const Outbox = () => {
   return (
     <div data-testid="outbox-feed">
       <PostBlock />
-      {activities?.map(activity => (
+      {activities?.sort((activite1, activite2) => {
+        const dateActivite1 = new Date(activite1.object.published);
+        const dateActivite2 = new Date(activite2.object.published);
+        return dateActivite2 - dateActivite1;
+      }).map(activity => (
         <ActivityBlock activity={activity} key={activity.id} showReplies />
       ))}
       <LoadMore fetchNextPage={fetchNextPage} isLoading={isFetchingNextPage || isLoading} />
