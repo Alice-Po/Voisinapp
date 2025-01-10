@@ -48,7 +48,8 @@ const ProfileCard = () => {
   const actor = useActorContext();
   const translate = useTranslate();
   const openExternalApp = useOpenExternalApp();
-  const [location, setLocation] = useState(null);
+  const [reverseGeocodeLocation, setReverseGeocodeLocationLocation] = useState(null);
+  const [favoriteAddressFromPods, setFavoriteAddressFromPods] = useState(null);
 
   useEffect(() => {
     const fetchLocation = async () => {
@@ -58,10 +59,11 @@ const ProfileCard = () => {
           geo['vcard:latitude'],
           geo['vcard:longitude']
         );
-        setLocation(locationData);
+        setReverseGeocodeLocationLocation(locationData);
       }
     };
     fetchLocation();
+    console.log('actor', actor?.profile);
   }, [actor]);
 
   const isLoading = actor.isLoading;
@@ -105,7 +107,6 @@ const ProfileCard = () => {
         >
           {actor?.username}
         </Typography>
-
         {location && (
           <Typography
             variant="body2"
@@ -113,7 +114,17 @@ const ProfileCard = () => {
             align="center"
             sx={{ mt: 1 }}
           >
-            {location.city} ({location.postcode})
+            Favorite address from the pods : {favoriteAddressFromPods?.city} ({favoriteAddressFromPods?.postcode})
+          </Typography>
+        )}
+        {reverseGeocodeLocation && (
+          <Typography
+            variant="body2"
+            color="text.secondary"
+            align="center"
+            sx={{ mt: 1 }}
+          >
+            With reverseGeocode : {reverseGeocodeLocation.city} ({reverseGeocodeLocation.postcode})
           </Typography>
         )}
       </Box>
