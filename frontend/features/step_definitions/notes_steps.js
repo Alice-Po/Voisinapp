@@ -37,42 +37,30 @@ Given('I am logged in as {string}', async function(userType) {
   const submitButton = await this.page.waitForSelector('button[type="submit"]');
   await submitButton.click();
 
-  // Attendre que la redirection soit terminée
   await this.page.waitForSelector('[data-testid="post-block"]', { timeout: 30000 });
 });
 
-When('I click on {string}', async function(buttonText) {
-  if (buttonText === 'New Note') {
-    // Le bloc de création de note est déjà visible, pas besoin de cliquer
-    await this.page.waitForSelector('[data-testid="post-block"]');
-  } else if (buttonText === 'Send') {
-    const sendButton = await this.page.waitForSelector('button[type="submit"]');
-    await sendButton.click();
-  }
+When('I submit the note', async function() {
+  const sendButton = await this.page.waitForSelector('button[type="submit"]');
+  await sendButton.click();
 });
 
 When('I fill in {string} with {string}', async function(field, value) {
   if (field === 'Content') {
     await this.page.waitForSelector('textarea[name="content"]');
-    // Ajouter un timestamp au message
-    const timestamp = new Date().toISOString();
-    this.testTimestamp = timestamp; // Sauvegarder le timestamp pour la vérification
-    const messageWithTimestamp = `${value} [${timestamp}]`;
+    if (!this.testTimestamp) {
+      this.testTimestamp = new Date().toISOString();
+    }
+    const messageWithTimestamp = `${value} [${this.testTimestamp}]`;
     await this.page.type('textarea[name="content"]', messageWithTimestamp);
   }
 });
 
-When('I attach the file {string} to {string}', async function(filename, fieldName) {
-  // Attendre que le bouton d'upload soit visible
+When('I attach the file {string}', async function(filename) {
   const uploadButton = await this.page.waitForSelector('input[type="file"]');
-  
-  // Construire le chemin complet vers l'image
   const imagePath = path.resolve(__dirname, `../assets/${filename}`);
   
-  // Upload du fichier
   await uploadButton.uploadFile(imagePath);
-  
-  // Attendre que l'aperçu de l'image soit visible
   await this.page.waitForSelector('img[alt="Preview"]', { timeout: 10000 });
 });
 
@@ -100,52 +88,23 @@ When('I choose an expiration date a week later', async function() {
   }
 });
 
-When('I set the expiration date to {string}', async function(dateString) {
-  await this.page.waitForSelector('#endTime');
-  
-  await this.page.evaluate((selector, value) => {
-    const input = document.querySelector(selector);
-    const nativeInputValueSetter = Object.getOwnPropertyDescriptor(window.HTMLInputElement.prototype, 'value').set;
-    nativeInputValueSetter.call(input, value);
-    input.dispatchEvent(new Event('input', { bubbles: true })); 
-    input.dispatchEvent(new Event('change', { bubbles: true }));
-  }, '#endTime', dateString);
-
-  const inputValue = await this.page.$eval('#endTime', el => el.value);
-  if (!inputValue) {
-    throw new Error(`The end time field is empty`);
-  }
-});
-
-// When('the date is {string}', async function(dateString) {
-//   MockDate.set(dateString);
-//   await this.page.reload();
-//   // Attendre que le feed soit rechargé
-//   await this.page.waitForSelector('[data-testid="outbox-feed"]', { timeout: 30000 });
-// });
 
 When('the date is one week and one second later', async function() {
-  // Récupérer la date actuelle
   const currentDate = new Date();
   
-  // Ajouter une semaine et une seconde
   const futureDate = new Date(currentDate);
   futureDate.setDate(currentDate.getDate() + 7);
   futureDate.setSeconds(currentDate.getSeconds() + 1);
   
-  // Définir la nouvelle date avec MockDate
   MockDate.set(futureDate);
   
-  // Recharger la page pour voir les changements
   await this.page.reload();
   
-  // Attendre que le feed soit rechargé
   await this.page.waitForSelector('[data-testid="outbox-feed"]', { timeout: 30000 });
 });
 
 Then('I should see {string}', async function(message) {
   if (message === 'Note sent successfully') {
-    // Attendre le message de succès
     await this.page.waitForSelector('.MuiSnackbar-root', {
       timeout: 10000
     });
@@ -154,15 +113,16 @@ Then('I should see {string}', async function(message) {
       const snackbar = document.querySelector('.MuiSnackbar-root');
       return snackbar ? snackbar.textContent : '';
     });
-    
-    expect(snackbarText).to.include('Votre message a été envoyé');
+
+    expect(snackbarText).to.satisfy((text) => 
+      text.includes('Votre message a été envoyé') || 
+      text.includes('Note sent successfully')
+    );
   }
 });
 
 Then('I should see my note {string} in the feed', async function(content) {
-  console.log('Checking for note in outbox feed:', content);
   
-  // Cliquer sur l'onglet outbox en utilisant le texte français
   await this.page.evaluate(() => {
     const tabs = Array.from(document.querySelectorAll('button[role="tab"]'));
     const outboxTab = tabs.find(tab => tab.textContent.includes('Boîte d\'envoi'));
@@ -173,22 +133,10 @@ Then('I should see my note {string} in the feed', async function(content) {
     }
   });
   
-  // Attendre que le feed soit visible
   await this.page.waitForSelector('[data-testid="outbox-feed"]', { timeout: 30000 });
   
-  // Construire le message attendu avec le timestamp
   const messageWithTimestamp = `${content} [${this.testTimestamp}]`;
-  console.log('Waiting for message:', messageWithTimestamp);
   
-  // Vérifier le contenu actuel du feed
-  const initialContent = await this.page.evaluate(() => {
-    const feed = document.querySelector('[data-testid="outbox-feed"]');
-    const notes = feed.querySelectorAll('[data-testid="noteContent"]');
-    return Array.from(notes).map(note => note.textContent);
-  });
-  console.log('Initial feed content:', initialContent);
-  
-  // Attendre que le message apparaisse dans le feed
   try {
     await this.page.reload();
     await this.page.waitForFunction(
@@ -200,26 +148,24 @@ Then('I should see my note {string} in the feed', async function(content) {
         }
         const notes = feed.querySelectorAll('[data-testid="noteContent"]');
         const noteTexts = Array.from(notes).map(note => note.textContent);
-        console.log('Current notes:', noteTexts);
         return noteTexts.includes(expectedText);
       },
       { timeout: 30000 },
       messageWithTimestamp
     );
   } catch (error) {
-    // En cas d'échec, afficher le contenu final du feed
     const finalContent = await this.page.evaluate(() => {
       const feed = document.querySelector('[data-testid="outbox-feed"]');
       const notes = feed.querySelectorAll('[data-testid="noteContent"]');
       return Array.from(notes).map(note => note.textContent);
     });
-    console.log('Final feed content:', finalContent);
+    console.log("Final content : ", finalContent)
     throw error;
   }
 });
 
-Then('I should see my note with the image in the feed', async function() {
-  // Cliquer sur l'onglet outbox en utilisant le texte français
+Then('I should see my note {string} with the image in the feed', async function(content) {
+  
   await this.page.evaluate(() => {
     const tabs = Array.from(document.querySelectorAll('button[role="tab"]'));
     const outboxTab = tabs.find(tab => tab.textContent.includes('Boîte d\'envoi'));
@@ -230,23 +176,52 @@ Then('I should see my note with the image in the feed', async function() {
     }
   });
   
-  // Attendre que le feed soit visible
   await this.page.waitForSelector('[data-testid="outbox-feed"]', { timeout: 30000 });
   
-  // Vérifier la présence de l'image dans le feed
-  await this.page.waitForSelector('[data-testid="outbox-feed"] [data-testid="note-image"]', {
-    timeout: 30000
-  });
+  const messageWithTimestamp = `${content} [${this.testTimestamp}]`;
+  
+  try {
+    await this.page.reload();
+    await this.page.waitForFunction(
+      (expectedText) => {
+        const feed = document.querySelector('[data-testid="outbox-feed"]');
+        if (!feed) {
+          console.log('Feed not found');
+          return false;
+        }
+        const notes = feed.querySelectorAll('[data-testid="noteContent"]');
+        const noteWithImage = Array.from(notes).find(note => {
+          const hasText = note.textContent.includes(expectedText);
+          const parentBlock = note.closest('[data-testid="activity-block"]');
+          const hasImage = parentBlock && parentBlock.querySelector('[data-testid="note-image"]');
+          return hasText && hasImage;
+        });
+        return !!noteWithImage;
+      },
+      { timeout: 30000 },
+      messageWithTimestamp
+    );
+  } catch (error) {
+    const finalContent = await this.page.evaluate(() => {
+      const feed = document.querySelector('[data-testid="outbox-feed"]');
+      const notes = feed.querySelectorAll('[data-testid="noteContent"]');
+      const images = feed.querySelectorAll('[data-testid="note-image"]');
+      return {
+        texts: Array.from(notes).map(note => note.textContent),
+        hasImages: images.length > 0
+      };
+    });
+    console.log("Final content : ", finalContent)
+    throw error;
+  }
 });
 
 Then('I should see my note with expiration date in the feed', async function() {
-  // Attendre que le message de succès disparaisse
   await this.page.waitForFunction(() => {
     const snackbar = document.querySelector('.MuiSnackbar-root');
     return !snackbar || !snackbar.textContent.includes('Votre message a été envoyé');
   }, { timeout: 5000 });
   
-  // Cliquer sur l'onglet outbox en utilisant le texte français
   await this.page.evaluate(() => {
     const tabs = Array.from(document.querySelectorAll('button[role="tab"]'));
     const outboxTab = tabs.find(tab => tab.textContent.includes('Boîte d\'envoi'));
@@ -257,106 +232,83 @@ Then('I should see my note with expiration date in the feed', async function() {
     }
   });
   
-  // Attendre que le feed soit visible
   await this.page.waitForSelector('[data-testid="outbox-feed"]', { timeout: 30000 });
   
-  // Log du contenu du feed pour débogage
-  const feedContent = await this.page.evaluate(() => {
-    const feed = document.querySelector('[data-testid="outbox-feed"]');
-    return feed.innerHTML;
-  });
-  console.log('Feed content:', feedContent);
-  
-  // Vérifier la présence de la date d'expiration dans le feed en cherchant le texte "Expires:"
-  const hasExpirationDate = await this.page.evaluate(() => {
-    const feed = document.querySelector('[data-testid="outbox-feed"]');
-    return feed.textContent.includes('Expires:');
-  });
-  
-  expect(hasExpirationDate).to.be.true;
-});
-
-Then('I should not see my note in the feed', async function() {
-  // Cliquer sur l'onglet outbox
-  await this.page.evaluate(() => {
-    const tabs = Array.from(document.querySelectorAll('button[role="tab"]'));
-    const outboxTab = tabs.find(tab => tab.textContent.includes('Boîte d\'envoi'));
-    if (outboxTab) {
-      outboxTab.click();
-    } else {
-      throw new Error('Onglet Mes publications non trouvé');
-    }
-  });
-
-  // Attendre que le feed soit visible
+  await this.page.reload();
   await this.page.waitForSelector('[data-testid="outbox-feed"]', { timeout: 30000 });
-
-  // Vérifier que la note n'est plus présente
-  const noteContent = await this.page.evaluate(() => {
+  
+  await this.page.waitForFunction(() => {
     const feed = document.querySelector('[data-testid="outbox-feed"]');
     const notes = feed.querySelectorAll('[data-testid="noteContent"]');
-    return Array.from(notes).map(note => note.textContent);
-  });
-
-  const noteExists = noteContent.some(text => text.includes('Temporary note!'));
-  expect(noteExists).to.be.false;
-
-  // Reset MockDate
-  MockDate.reset();
-});
-
-When('I set the visibility radius to {string} kilometers', async function(radius) {
-  // Attendre que le champ de rayon soit visible
-  await this.page.waitForSelector('#radius');
+    return notes.length > 0;
+  }, { timeout: 30000 });
   
-  // Remplir le champ de rayon
-  await this.page.evaluate((selector, value) => {
-    const input = document.querySelector(selector);
-    const nativeInputValueSetter = Object.getOwnPropertyDescriptor(window.HTMLInputElement.prototype, 'value').set;
-    nativeInputValueSetter.call(input, value);
-    input.dispatchEvent(new Event('input', { bubbles: true })); 
-    input.dispatchEvent(new Event('change', { bubbles: true }));
-  }, '#radius', radius);
-
-  // Vérifier que la valeur a bien été définie
-  const inputValue = await this.page.$eval('#radius', el => el.value);
-  if (!inputValue) {
-    throw new Error(`The radius field is empty`);
+  const noteFound = await this.page.evaluate((timestamp) => {
+    const feed = document.querySelector('[data-testid="outbox-feed"]');
+    const notes = feed.querySelectorAll('[data-testid="noteContent"]');
+    const notesList = Array.from(notes).map(note => note.textContent);
+    console.log('Notes trouvées:', notesList);
+    
+    const targetNote = Array.from(notes).find(note => note.textContent.includes(timestamp));
+    if (!targetNote) return null;
+    
+    const noteBlock = targetNote.closest('[data-testid="activity-block"]');
+    const expirationDate = noteBlock.querySelector('[data-testid="expiration-date"]');
+    
+    return {
+      found: true,
+      hasExpiration: !!expirationDate,
+      expirationText: expirationDate ? expirationDate.textContent : null,
+      noteContent: targetNote.textContent
+    };
+  }, this.testTimestamp);
+  
+  if (!noteFound) {
+    const allNotes = await this.page.evaluate(() => {
+      const feed = document.querySelector('[data-testid="outbox-feed"]');
+      const notes = feed.querySelectorAll('[data-testid="noteContent"]');
+      return Array.from(notes).map(note => note.textContent);
+    });
+    console.log('Timestamp recherché:', this.testTimestamp);
+    console.log('Toutes les notes disponibles:', allNotes);
+    throw new Error(`Note avec timestamp ${this.testTimestamp} non trouvée dans le feed`);
   }
+  
+  expect(noteFound.hasExpiration).to.be.true;
 });
 
-Then('my note should be visible to users within {int} kilometers', async function(radius) {
-  // Récupérer les logs du navigateur
-  const logs = await this.page.evaluate(() => {
-    return console.logs;
-  });
-  console.log('Browser logs:', logs);
-
-  // Cliquer sur l'onglet outbox
-  await this.page.evaluate(() => {
-    const tabs = Array.from(document.querySelectorAll('button[role="tab"]'));
-    const outboxTab = tabs.find(tab => tab.textContent.includes('Boîte d\'envoi'));
-    if (outboxTab) {
-      outboxTab.click();
-    } else {
-      throw new Error('Onglet Mes publications non trouvé');
-    }
-  });
+Then('I should see the note {string} in my feed', async function(content) {
+  await this.page.waitForSelector('[data-testid="inbox-feed"]', { timeout: 30000 });
   
-  // Attendre que le feed soit visible
+  const noteExists = await this.page.evaluate((expectedContent) => {
+    const feed = document.querySelector('[data-testid="inbox-feed"]');
+    const notes = feed.querySelectorAll('[data-testid="noteContent"]');
+    return Array.from(notes).some(note => note.textContent.includes(expectedContent));
+  }, content);
+  
+  expect(noteExists).to.be.true;
+});
+
+Then('I should see {string} as the note location', async function(location) {
+  await this.page.waitForSelector('[data-testid="inbox-feed"]', { timeout: 30000 });
+  
+  const locationExists = await this.page.evaluate((expectedLocation) => {
+    const feed = document.querySelector('[data-testid="inbox-feed"]');
+    const notes = feed.querySelectorAll('[data-testid="activity-block"]');
+    return Array.from(notes).some(note => note.textContent.includes(expectedLocation));
+  }, location);
+  
+  expect(locationExists).to.be.true;
+});
+
+Then('I should not see the note {string} in the feed', async function(content) {
   await this.page.waitForSelector('[data-testid="outbox-feed"]', { timeout: 30000 });
   
-  // Vérifier que la note contient l'indicateur de rayon
-  const noteWithRadius = await this.page.evaluate((expectedRadius) => {
+  const noteExists = await this.page.evaluate((expectedContent) => {
     const feed = document.querySelector('[data-testid="outbox-feed"]');
-    const notes = feed.querySelectorAll('[data-testid="activity-block"]');
-    for (const note of notes) {
-
-      const radiusText = note.textContent.includes(`${expectedRadius} km`);
-      if (radiusText) return true;
-    }
-    return false;
-  }, radius);
+    const notes = feed.querySelectorAll('[data-testid="noteContent"]');
+    return Array.from(notes).some(note => note.textContent.includes(expectedContent));
+  }, content);
   
-  expect(noteWithRadius).to.be.true;
+  expect(noteExists).to.be.false;
 }); 

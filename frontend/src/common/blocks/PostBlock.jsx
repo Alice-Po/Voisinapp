@@ -3,13 +3,11 @@ import {
   Form,
   TextInput,
   DateTimeInput,
-  NumberInput,
   useNotify,
   useTranslate,
   useGetIdentity,
   useRedirect,
-  useDataProvider,
-  useGetOne
+  useDataProvider
 } from "react-admin";
 import { useLocation } from "react-router-dom";
 import { Card, Box, Button, IconButton, CircularProgress, Backdrop, Typography } from "@mui/material";
@@ -22,7 +20,14 @@ import {
   PUBLIC_URI,
 } from "@semapps/activitypub-components";
 import { useCallback } from "react";
-import { reverseGeocode } from '../../utils/geocoding';
+// import TagsListEdit from '../../common/tags/TagsListEdit';
+
+const validateExpirationDate = (value) => {
+  if (!value) return undefined;
+  const expirationDate = new Date(value);
+  const today = new Date();
+  return expirationDate <= today ? 'Expiration date must be in the future' : undefined;
+};
 
 const PostBlock = ({ inReplyTo, mention }) => {
   const dataProvider = useDataProvider();
@@ -32,53 +37,13 @@ const PostBlock = ({ inReplyTo, mention }) => {
   const outbox = useOutbox();
   const translate = useTranslate();
   const { hash } = useLocation();
-  const { data: identity, isLoading: isIdentityLoading } = useGetIdentity();
+  const { data: identity } = useGetIdentity();
   const [imageFiles, setImageFiles] = useState([]);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const { data: profile, isLoading: isProfileLoading } = useGetOne(
-    "Profile",
-    { id: identity?.profileData?.id },
-    { enabled: !!identity?.profileData?.id }
-  );
 
-  const [location, setLocation] = useState(null);
 
-  useEffect(() => {
-    const fetchLocation = async () => {
-      if (profile?.['vcard:hasGeo']) {
-        const geo = profile['vcard:hasGeo'];
-        const locationData = await reverseGeocode(
-          geo['vcard:latitude'],
-          geo['vcard:longitude']
-        );
-        setLocation(locationData);
-      }
-    };
-    fetchLocation();
-  }, [profile]);
-
-  const isLoading = isIdentityLoading || isProfileLoading;
-
-  const validateExpirationDate = (value) => {
-    if (value) {
-      const expirationDate = new Date(value);
-      const today = new Date();
-      
-      if (expirationDate <= today) {
-        return 'Expiration date must be in the future';
-      }
-    }
-    return undefined;
-  };
-
-  const validateRadius = (value) => {
-    if (value && (value < 0 || value > 50)) {
-      return translate('app.validation.radius_range');
-    }
-    return undefined;
-  };
-
+  // Doesn't work
   useEffect(() => {
     if (hash === "#reply" && inputRef.current) {
       inputRef.current.focus();
@@ -110,87 +75,50 @@ const PostBlock = ({ inReplyTo, mention }) => {
   }, [imageFiles, uploadImage]);
 
   const clearForm = useCallback(() =>  {
+    // still looking for a way to clear the actual form
+    // Clearing local URL for image preview (avoid memory leaks)
     imageFiles.forEach((image) => URL.revokeObjectURL(image.preview));
     setImageFiles([]);
   }, []);
 
-  const onSubmit = async (values) => {
-    setIsSubmitting(true);
-
-    try {
-      const activity = {
-        type: 'Create',
-        object: {
-          type: 'Note',
-          content: values.content
-        }
-      };
-
-      if (values.radius && profile?.['vcard:hasGeo']) {
-        const geoScope = {
-          latitude: profile['vcard:hasGeo']['vcard:latitude'],
-          longitude: profile['vcard:hasGeo']['vcard:longitude'],
-          radius: Number(values.radius),
-          location: location ? {
-            city: location.city,
-            postcode: location.postcode
-          } : undefined
+  const onSubmit = useCallback(
+    async (values, { reset }) => {
+      setIsSubmitting(true);
+      try {
+        const activity = {
+          type: OBJECT_TYPES.NOTE,
+          attributedTo: outbox.owner,
+          content: values.content,
+          inReplyTo,
+          to: mention
+            ? [PUBLIC_URI, identity?.webIdData?.followers, mention.uri]
+            : [PUBLIC_URI, identity?.webIdData?.followers],
+            ...(values.endTime && { endTime: values.endTime }),
         };
-        activity.object.geoScope = geoScope;
+
+        let attachments = await handleAttachments();
+        if (attachments.length > 0) {
+          activity.attachment = attachments;
+        }
+
+        const activityUri = await outbox.post(activity);
+        notify("app.notification.message_sent", { type: "success" });
+        clearForm();
+
+        if (inReplyTo) {
+          redirect(`/activity/${encodeURIComponent(activityUri)}`);
+        }
+      } catch (e) {
+        notify("app.notification.activity_send_error", {
+          type: "error",
+          messageArgs: { error: e.message },
+        });
+      } finally {
+        setIsSubmitting(false);
       }
-
-      if (values.endTime) {
-        activity.object.endTime = values.endTime;
-      }
-
-      if (imageFiles.length > 0) {
-        const uploadedFiles = await Promise.all(
-          imageFiles.map(file =>
-            dataProvider.create('File', {
-              data: {
-                file,
-                location: 'public'
-              }
-            })
-          )
-        );
-
-        activity.object.attachment = uploadedFiles.map(({ data: file }) => ({
-          type: 'Image',
-          url: file.id
-        }));
-      }
-
-      if (mention) {
-        activity.object.tag = [
-          {
-            type: 'Mention',
-            name: mention.name,
-            href: mention.id
-          }
-        ];
-      }
-
-      if (inReplyTo) {
-        activity.object.inReplyTo = inReplyTo;
-      }
-
-      await outbox.post(activity);
-
-      notify('app.notification.message_sent', { type: 'success' });
-
-      setImageFiles([]);
-      inputRef.current.value = '';
-
-      if (inReplyTo) {
-        redirect(`/r/${encodeURIComponent(inReplyTo)}`);
-      }
-    } catch (e) {
-      notify('app.notification.message_send_error', { type: 'error', messageArgs: { error: e.message } });
-    }
-
-    setIsSubmitting(false);
-  };
+    },
+    [outbox, identity, notify, mention, inReplyTo, redirect]
+  );
 
   const handleFileChange = useCallback((event) => {
     const files = Array.from(event.target.files);
@@ -205,24 +133,29 @@ const PostBlock = ({ inReplyTo, mention }) => {
     setImageFiles((prevFiles) => {
       const updatedFiles = [...prevFiles];
       const [removedFile] = updatedFiles.splice(index, 1);
+
       URL.revokeObjectURL(removedFile.preview);
+
       return updatedFiles;
     });
   }, []);
 
+  //revoke preview URL at unmount time to avoid further memory leaks cases
   useEffect(() => {
     return () => {
       imageFiles.forEach((image) => URL.revokeObjectURL(image.preview));
     };
   }, []);
 
+
+
   return (
-    <Card data-testid="post-block">
-      {isLoading ? (
-        <Box display="flex" justifyContent="center" p={2}>
-          <CircularProgress />
-        </Box>
-      ) : (
+    <Box>
+      <Typography data-testid="current-time">
+        Current time: {new Date().toISOString()}
+      </Typography>
+      <Card data-testid="post-block">
+        <p>{new Date(Date.now()).toISOString()}</p>
         <Box p={2} position="relative">
           <Backdrop
             sx={{
@@ -258,16 +191,6 @@ const PostBlock = ({ inReplyTo, mention }) => {
               autoFocus={hash === "#reply"}
             />
 
-            <NumberInput
-              source="radius"
-              label={translate("app.input.radius")}
-              validate={validateRadius}
-              margin="dense"
-              fullWidth
-              id="radius"
-              helperText={translate("app.input.radius_help")}
-            />
-
             <DateTimeInput
               source="endTime"
               label={translate("app.input.expiration_date")}
@@ -277,6 +200,7 @@ const PostBlock = ({ inReplyTo, mention }) => {
               id="endTime"
             />
 
+            {/*Preview of selected pictures*/}
             {imageFiles.length > 0 && (
               <Box
                 sx={{
@@ -358,14 +282,15 @@ const PostBlock = ({ inReplyTo, mention }) => {
                 size="medium"
                 endIcon={<SendIcon />}
                 disabled={isSubmitting}
+
               >
                 {translate("app.action.send")}
               </Button>
             </Box>
           </Form>
         </Box>
-      )}
-    </Card>
+      </Card>
+    </Box>
   );
 };
 

@@ -30,7 +30,7 @@ const Note = ({ object, activity, clickOnContent }) => {
           const data = await response.json();
           setLocationName(data.address.city || data.address.town || data.address.village);
         } catch (error) {
-          console.error('Error fetching location name:', error);
+          // Silently fail
         }
       }
     };
@@ -138,11 +138,11 @@ const Note = ({ object, activity, clickOnContent }) => {
         )}
 
          {/* Add tag display */}
-         {object.tag && (
-          <Typography component="span" sx={{ color: 'blue' }}>
-          <em>Tag {object.tag} </em>
-        </Typography>
-        )}
+         {object.tag && arrayOf(object.tag).map((tag, index) => (
+          <Typography key={index} component="span" sx={{ color: 'blue', marginRight: 1 }}>
+            <em>{tag.name || tag.type || JSON.stringify(tag)}</em>
+          </Typography>
+        ))}
          
 
         {/* Add expiration date display */}
@@ -153,6 +153,7 @@ const Note = ({ object, activity, clickOnContent }) => {
                 fontSize: 13, 
                 color: isExpired ? 'red' : 'grey' 
               }}
+              data-testid="expiration-date"
             >
               {isExpired ? 'Expired' : `Expires: ${new Date(object.endTime).toLocaleDateString()}`}
             </Typography>
@@ -186,7 +187,7 @@ const Note = ({ object, activity, clickOnContent }) => {
         <BoostButton activity={activity} object={object} />
         <LikeButton activity={activity} object={object} />
         <MoreButton>
-          <MenuItem onClick={event => console.log('event', event)}>{translate('app.action.unfollow')}</MenuItem>
+          <MenuItem onClick={() => {}}>{translate('app.action.unfollow')}</MenuItem>
         </MoreButton>
       </Box>
     </>
