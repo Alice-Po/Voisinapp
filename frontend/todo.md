@@ -75,9 +75,6 @@
 
 ## 5. Mise à jour des Tests
 - [ ] Adapter les tests existants
-- [ ] Créer de nouveaux tests pour le feed unifié
-- [ ] Vérifier les scénarios de test pour inbox/outbox
-- [ ] Mettre à jour les fixtures de test
 
 ## 6. Nettoyage
 - [ ] Déprécier les anciens composants Inbox/Outbox
@@ -94,7 +91,6 @@
 ## 8. Documentation
 - [ ] Mettre à jour la documentation technique
 - [ ] Documenter les nouveaux composants
-- [ ] Mettre à jour les guides d'utilisation
 - [ ] Documenter les changements de breaking changes
 
 ## 9. Déploiement

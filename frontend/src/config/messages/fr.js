@@ -23,6 +23,9 @@ export default {
     card: {
       find_user: 'Trouver un acteur'
     },
+    placeholder: {
+      message: 'Saisir un message'
+    },
     block: {},
     input: {
       message: 'Votre message',

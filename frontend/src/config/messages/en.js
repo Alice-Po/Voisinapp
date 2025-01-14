@@ -23,6 +23,9 @@ export default {
     card: {
       find_user: 'Find user'
     },
+    placeholder: {
+      message: 'Type a message'
+    },
     block: {},
     input: {
       message: 'Your message',

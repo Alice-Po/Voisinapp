@@ -246,6 +246,7 @@ const Note = ({ object, activity, clickOnContent }) => {
             >
               {object.endTime && (
                 <Typography 
+                  data-testid="expiration-date"
                   sx={{ 
                     fontSize: 12,
                     color: isOutgoing ? 'rgba(255,255,255,0.8)' : 'grey.600',

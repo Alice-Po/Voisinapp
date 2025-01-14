@@ -178,42 +178,21 @@ const PostBlock = ({ inReplyTo, mention }) => {
             <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1.5 }}>
               <Box sx={{ display: 'flex', alignItems: 'flex-end', gap: 1 }}>
                 <InputBase
-                  inputRef={inputRef}
-                  placeholder="Saisir un message"
+                  data-testid="message-input"
                   value={content}
                   onChange={(e) => setContent(e.target.value)}
-                  multiline
-                  minRows={1}
-                  maxRows={4}
-                  fullWidth
-                  sx={{ 
-                    m: 0,
+                  placeholder={translate('app.placeholder.message')}
+                  sx={{
                     flex: 1,
                     backgroundColor: '#f0f2f5',
                     borderRadius: '20px',
-                    pl: 2.5,
-                    pr: 2.5,
-                    py: 1.25,
+                    padding: '10px 16px',
                     fontSize: '0.9375rem',
                     color: '#050505',
-                    '&.MuiInputBase-root': {
-                      '&::placeholder': {
-                        color: '#65676b',
-                        opacity: 1,
-                        fontSize: '0.9375rem'
-                      }
-                    },
-                    '& textarea': {
-                      '&::placeholder': {
-                        color: '#65676b',
-                        opacity: 1,
-                        fontSize: '0.9375rem'
-                      }
-                    },
-                    '&:hover': {
-                      backgroundColor: '#e4e6eb'
-                    },
-                    transition: 'background-color 0.2s ease'
+                    '&::placeholder': {
+                      color: '#050505',
+                      opacity: 0.6
+                    }
                   }}
                 />
 
