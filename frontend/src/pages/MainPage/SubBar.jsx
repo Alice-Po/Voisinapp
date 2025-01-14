@@ -29,8 +29,7 @@ const SubBar = () => {
     >
       <Container maxWidth="md">
         <Tabs value={tab} onChange={onChange} indicatorColor="primary" textColor="primary">
-          <Tab label={translate('app.page.my_inbox')} value="/inbox" sx={{ fontWeight: 'normal' }} />
-          <Tab label={translate('app.page.my_outbox')} value="/outbox" sx={{ fontWeight: 'normal' }} />
+          <Tab label={translate('app.page.feed')} value="/home" sx={{ fontWeight: 'normal' }} />
           <Tab
             label={`${translate('app.page.followers')} ${numFollowers ? `(${numFollowers})` : ''}`}
             value="/followers"

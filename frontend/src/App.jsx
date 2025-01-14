@@ -15,6 +15,7 @@ import { default as ActorPostsAndReplies } from './pages/ActorPage/PostsAndRepli
 import { default as ActorFollowers } from './pages/ActorPage/Followers';
 import { default as ActorFollowing } from './pages/ActorPage/Following';
 import MainPage from './pages/MainPage/MainPage';
+import Home from './pages/MainPage/Home';
 import Inbox from './pages/MainPage/Inbox';
 import Outbox from './pages/MainPage/Outbox';
 import Followers from './pages/MainPage/Followers';
@@ -69,8 +70,7 @@ export const App = () => (
       </CustomRoutes>
       <CustomRoutes>
         <Route element={<MainPage />}>
-          <Route path="inbox" element={<Inbox />} />
-          <Route path="outbox" element={<Outbox />} />
+        <Route path="home" element={<Home />} />
           <Route path="followers" element={<Followers />} />
           <Route path="following" element={<Following />} />
         </Route>

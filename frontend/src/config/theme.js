@@ -14,6 +14,10 @@ const theme = createTheme({
     background: {
       default: "#DDDDDD",
     },
+    chat: {
+      outgoing: "#4C8BF5",
+      incoming: "#E9E9E9",
+    }
   },
   components: {
     RaImageField: {
@@ -41,7 +45,7 @@ const theme = createTheme({
       },
       styleOverrides: {
         root: {
-          marginBottom: 24,
+          marginBottom: 0,
         },
       },
     },

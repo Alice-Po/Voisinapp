@@ -27,15 +27,6 @@ const Inbox = () => {
     }
   });
 
-  useEffect(() => {
-    console.log('Inbox Debug:', {
-      activitiesCount: activities?.length,
-      hasNextPage,
-      isLoading,
-      error
-    });
-  }, [activities, hasNextPage, isLoading, error]);
-
   return (
     <div data-testid="inbox-feed">
       <PostBlock />

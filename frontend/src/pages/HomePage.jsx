@@ -51,7 +51,7 @@ const HomePage = () => {
 
   useEffect(() => {
     if (!isLoading && identity?.id) {
-      redirect('/inbox');
+      redirect('/home');
     }
   }, [identity, isLoading, redirect]);
 

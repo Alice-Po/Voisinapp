@@ -1,7 +1,7 @@
 import { useMemo, useEffect, useState } from 'react';
 import isObject from 'isobject';
-import { Box, Avatar, Typography, MenuItem } from '@mui/material';
-import { Link, useTranslate } from 'react-admin';
+import { Box, Avatar, Typography, MenuItem, useTheme } from '@mui/material';
+import { Link, useTranslate, useGetIdentity } from 'react-admin';
 import { useNavigate } from 'react-router-dom';
 import LikeButton from '../../buttons/LikeButton';
 import BoostButton from '../../buttons/BoostButton';
@@ -13,11 +13,47 @@ import MoreButton from '../../buttons/MoreButton';
 
 const mentionRegex = /\<a href="([^"]*)" class=\"[^"]*?mention[^"]*?\">@\<span>(.*?)\<\/span>\<\/a\>/gm;
 
+// Liste de couleurs vives pour les noms d'utilisateurs
+const userColors = [
+  '#FF1493', // Deep Pink
+  '#9400D3', // Dark Violet
+  '#4B0082', // Indigo
+  '#FF4500', // Orange Red
+  '#32CD32', // Lime Green
+  '#FF8C00', // Dark Orange
+  '#8A2BE2', // Blue Violet
+  '#DC143C', // Crimson
+  '#FF69B4', // Hot Pink
+  '#4169E1', // Royal Blue
+  '#008B8B', // Dark Cyan
+  '#9932CC', // Dark Orchid
+];
+
+// Fonction pour générer une couleur cohérente basée sur l'ID de l'utilisateur
+const getUserColor = (actorUri) => {
+  if (!actorUri) return userColors[0];
+  
+  // Utiliser les derniers caractères de l'URI comme seed
+  const seed = actorUri.split('/').pop()?.split('').reduce((acc, char) => {
+    return acc + char.charCodeAt(0);
+  }, 0) || 0;
+  
+  return userColors[seed % userColors.length];
+};
+
 const Note = ({ object, activity, clickOnContent }) => {
   const navigate = useNavigate();
   const translate = useTranslate();
+  const { data: identity } = useGetIdentity();
   const actorUri = object?.attributedTo;
   const [locationName, setLocationName] = useState(null);
+  const theme = useTheme();
+
+  // Determine if the message is from the current user
+  const isOutgoing = actorUri === identity?.id;
+  
+  // Générer une couleur pour l'utilisateur
+  const userColor = useMemo(() => getUserColor(actorUri), [actorUri]);
 
   // Récupérer le nom de la commune à partir des coordonnées
   useEffect(() => {
@@ -42,16 +78,13 @@ const Note = ({ object, activity, clickOnContent }) => {
   const content = useMemo(() => {
     let content = object.content || object.contentMap;
 
-    // If we have a contentMap, take first value
     if (isObject(content)) {
       content = Object.values(content)?.[0];
     }
 
-    // Find all mentions
     const mentions = arrayOf(object.tag || activity?.tag).filter(tag => tag.type === 'Mention');
 
     if (mentions.length > 0) {
-      // Replace mentions to local actor links
       content = content.replaceAll(mentionRegex, (match, actorUri, actorName) => {
         const mention = mentions.find(mention => mention.name.startsWith(`@${actorName}@`));
         if (mention) {
@@ -69,7 +102,6 @@ const Note = ({ object, activity, clickOnContent }) => {
     return arrayOf(object.attachment || object.icon || []);
   }, [object]);
 
-  // Catch links to actors with react-router
   const onContentClick = e => {
     const link = e.target.closest('a')?.getAttribute('href');
     if (link?.startsWith('/actor/')) {
@@ -78,111 +110,174 @@ const Note = ({ object, activity, clickOnContent }) => {
     }
   };
 
-  // Check if the note is expired
-   const isExpired = object.endTime 
-   ? new Date(object.endTime) < new Date() 
-   : false;
-
-  //  if (isExpired) return null;
+  const isExpired = object.endTime 
+    ? new Date(object.endTime) < new Date() 
+    : false;
 
   return (
-    <>
-      <Box pl={8} sx={{ position: 'relative' }}>
-        <Link to={`/actor/${actor?.username}`}>
-          <Avatar
-            src={actor?.image}
-            alt={actor?.name}
-            sx={{
-              position: 'absolute',
-              top: 0,
-              left: 0,
-              width: 50,
-              height: 50
-            }}
-          />
-          <Typography
-            sx={{
-              textOverflow: 'ellipsis',
-              overflow: 'hidden',
-              whiteSpace: 'nowrap',
-              color: 'black',
-              pr: 8
-            }}
-          >
-            <strong>{actor?.name}</strong>{' '}
-            <Typography component="span" sx={{ color: 'grey' }}>
-              <em>{actor?.username}</em>
-            </Typography>
-          </Typography>
-        </Link>
-
-{/* why ? */}
-        {object?.published && (
-          <Box sx={{ position: 'absolute', top: 0, right: 0 }}>
-            <RelativeDate date={object?.published} sx={{ fontSize: 13, color: 'grey' }} />
-          </Box>
-        )}
-
-         {/* Add the created date display */}
-         {object["dc:created"] && (
-          <Box sx={{ position: 'absolute', top: 10, right: 0 }}>
-            <Typography 
-              sx={{ 
-                fontSize: 13, 
-                color: isExpired ? 'red' : 'grey' 
+    <Box 
+      sx={{ 
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: isOutgoing ? 'flex-end' : 'flex-start',
+        mb: 1,
+        mx: 2,
+        maxWidth: '80%',
+        width: '100%'
+      }}
+    >
+      <Box 
+        sx={{ 
+          display: 'flex',
+          alignItems: 'flex-start',
+          flexDirection: isOutgoing ? 'row-reverse' : 'row',
+          gap: 1,
+          width: '100%'
+        }}
+      >
+        {!isOutgoing && (
+          <Link to={`/actor/${actor?.username}`}>
+            <Avatar
+              src={actor?.image}
+              alt={actor?.name}
+              sx={{
+                width: 40,
+                height: 40
               }}
-            >
-              {`Created: ${new Date(object["dc:created"]).toLocaleDateString("fr-FR", { year: "numeric", month: "long", day: "numeric", hour: "2-digit", minute: "2-digit" })}`}
-            </Typography>
-          </Box>
-        )}
-
-         {/* Add tag display */}
-         {object.tag && arrayOf(object.tag).map((tag, index) => (
-          <Typography key={index} component="span" sx={{ color: 'blue', marginRight: 1 }}>
-            <em>{tag.name || tag.type || JSON.stringify(tag)}</em>
-          </Typography>
-        ))}
-         
-
-        {/* Add expiration date display */}
-         {object.endTime && (
-          <Box sx={{ position: 'absolute', top: 25, right: 0 }}>
-            <Typography 
-              sx={{ 
-                fontSize: 13, 
-                color: isExpired ? 'red' : 'grey' 
-              }}
-              data-testid="expiration-date"
-            >
-              {isExpired ? 'Expired' : `Expires: ${new Date(object.endTime).toLocaleDateString()}`}
-            </Typography>
-          </Box>
-        )}
-
-        {clickOnContent ? (
-          <Link to={`/activity/${encodeURIComponent(activity?.id || object.id)}`} onClick={onContentClick}>
-            <Typography data-testid="noteContent" sx={{ color: 'black' , paddingTop: "15px" }} dangerouslySetInnerHTML={{ __html: content }} />
+            />
           </Link>
-        ) : (
-          <Typography sx={{ color: 'black' }} dangerouslySetInnerHTML={{ __html: content }} />
         )}
-        {images && images.map(image => <img data-testid="note-image" src={image?.url} style={{ width: "100%", marginTop: 10 }} />)}
 
-        {/* Display geographic scope */}
-        {object.geoScope && (
-          <Typography 
+        <Box
+          sx={{
+            backgroundColor: isOutgoing ? theme.palette.chat.outgoing : theme.palette.chat.incoming,
+            borderRadius: 2,
+            p: 1.5,
+            position: 'relative',
+            maxWidth: 'calc(100% - 50px)',
+            width: 'fit-content'
+          }}
+        >
+          {!isOutgoing && (
+            <Typography
+              variant="body2"
+              sx={{
+                color: userColor,
+                fontWeight: 500,
+                mb: 0.5,
+                fontSize: '0.9375rem'
+              }}
+            >
+              {actor?.name}
+            </Typography>
+          )}
+
+          {clickOnContent ? (
+            <Link 
+              to={`/activity/${encodeURIComponent(activity?.id || object.id)}`} 
+              onClick={onContentClick}
+              sx={{ textDecoration: 'none' }}
+            >
+              <Typography 
+                data-testid="noteContent" 
+                sx={{ 
+                  color: isOutgoing ? '#FFFFFF' : '#000000',
+                  wordBreak: 'break-word',
+                  fontSize: '0.9375rem',
+                  lineHeight: 1.4
+                }} 
+                dangerouslySetInnerHTML={{ __html: content }} 
+              />
+            </Link>
+          ) : (
+            <Typography 
+              sx={{ 
+                color: isOutgoing ? '#FFFFFF' : '#000000',
+                wordBreak: 'break-word',
+                fontSize: '0.9375rem',
+                lineHeight: 1.4
+              }} 
+              dangerouslySetInnerHTML={{ __html: content }} 
+            />
+          )}
+
+          {images && images.map((image, index) => (
+            <img 
+              key={index}
+              data-testid="note-image" 
+              src={image?.url} 
+              style={{ 
+                width: "100%", 
+                marginTop: 10,
+                borderRadius: 8
+              }} 
+            />
+          ))}
+
+          {object.geoScope && (
+            <Typography 
+              sx={{ 
+                fontSize: 12,
+                color: isOutgoing ? 'rgba(255,255,255,0.8)' : 'grey.600',
+                mt: 1
+              }}
+            >
+              {`${object.geoScope.radius} km`}
+            </Typography>
+          )}
+
+          <Box 
             sx={{ 
-              fontSize: 13, 
-              color: 'grey',
-              mt: 1
+              display: 'flex',
+              justifyContent: 'flex-end',
+              alignItems: 'center',
+              mt: 0.5,
+              gap: 1
             }}
           >
-            {`${object.geoScope.radius} km`}
-          </Typography>
-        )}
+            <Box
+              sx={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: 2
+              }}
+            >
+              {object.endTime && (
+                <Typography 
+                  sx={{ 
+                    fontSize: 12,
+                    color: isOutgoing ? 'rgba(255,255,255,0.8)' : 'grey.600',
+                    opacity: 0.8
+                  }}
+                >
+                  exp. {new Date(object.endTime).toLocaleDateString('fr-FR', {
+                    day: 'numeric',
+                    month: 'numeric'
+                  })}
+                </Typography>
+              )}
+              <Typography 
+                sx={{ 
+                  fontSize: 12,
+                  color: isOutgoing ? 'rgba(255,255,255,0.8)' : 'grey.600',
+                  opacity: 0.8
+                }}
+              >
+                <RelativeDate date={object?.published || object?.["dc:created"] || activity?.published} />
+              </Typography>
+            </Box>
+          </Box>
+        </Box>
       </Box>
-      <Box pl={8} pt={2} display="flex" justifyContent="space-between">
+
+      <Box 
+        sx={{ 
+          display: 'flex',
+          gap: 1,
+          mt: 0.5,
+          [isOutgoing ? 'mr' : 'ml']: 7
+        }}
+      >
         <ReplyButton objectUri={object.id || activity.id} />
         <BoostButton activity={activity} object={object} />
         <LikeButton activity={activity} object={object} />
@@ -190,7 +285,7 @@ const Note = ({ object, activity, clickOnContent }) => {
           <MenuItem onClick={() => {}}>{translate('app.action.unfollow')}</MenuItem>
         </MoreButton>
       </Box>
-    </>
+    </Box>
   );
 };
 

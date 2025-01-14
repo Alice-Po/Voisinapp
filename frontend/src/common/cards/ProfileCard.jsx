@@ -63,7 +63,6 @@ const ProfileCard = () => {
       }
     };
     fetchLocation();
-    console.log('actor', actor?.profile);
   }, [actor]);
 
   const isLoading = actor.isLoading;

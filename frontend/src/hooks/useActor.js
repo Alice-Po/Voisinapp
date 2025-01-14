@@ -79,13 +79,6 @@ const useActor = (actorUri) => {
     return image?.url || image;
   }, [webId, profile]);
 
-  // Debug logs
-  console.log('=== DEBUG useActor ===');
-  console.log('actorUri:', normalizedActorUri);
-  console.log('webId:', webId);
-  console.log('profile:', profile);
-  console.log('location:', location);
-  console.log('=== END DEBUG useActor ===');
 
   return {
     ...webId,
