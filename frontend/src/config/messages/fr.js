@@ -15,6 +15,7 @@ export default {
     page: {
       my_inbox: 'Boîte de réception',
       my_outbox: "Boîte d'envoi",
+      feed: 'Fil d\'actualités',
       followers: 'Abonnés',
       following: 'Abonnements',
       posts: 'Messages',

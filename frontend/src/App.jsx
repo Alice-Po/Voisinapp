@@ -16,8 +16,6 @@ import { default as ActorFollowers } from './pages/ActorPage/Followers';
 import { default as ActorFollowing } from './pages/ActorPage/Following';
 import MainPage from './pages/MainPage/MainPage';
 import Home from './pages/MainPage/Home';
-import Inbox from './pages/MainPage/Inbox';
-import Outbox from './pages/MainPage/Outbox';
 import Followers from './pages/MainPage/Followers';
 import ActivityPage from './pages/ActivityPage/ActivityPage';
 import Following from './pages/MainPage/Following';

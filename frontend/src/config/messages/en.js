@@ -13,8 +13,7 @@ export default {
       like: 'Like'
     },
     page: {
-      my_inbox: 'My inbox',
-      my_outbox: 'My outbox',
+      feed: 'Feed',
       followers: 'Followers',
       following: 'Following',
       posts: 'Posts',

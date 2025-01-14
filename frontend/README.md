@@ -74,3 +74,32 @@ When running tests, you might encounter issues with Puppeteer on GNOME systems. 
 
 - Avoid using arrow functions with React hooks
 - Follow the project's ESLint and Prettier configurations
+
+## Routes
+
+The application uses the following main routes:
+
+- `/` - Home page (redirects to `/home`)
+- `/home` - Unified feed showing all messages in chronological order
+- `/activity/:id` - Individual activity view
+- `/actor/:username` - User profile view
+- `/followers` - List of followers
+- `/following` - List of following users
+
+## Components
+
+### Main Components
+
+- `UnifiedFeed` - Main feed component that displays all messages in chronological order
+- `ActivityBlock` - Displays individual activities/messages
+- `PostBlock` - Form for creating new messages
+- `Note` - Message display component with chat-like styling
+
+### Features
+
+- Real-time message updates
+- Message expiration dates
+- Geographic radius for message visibility
+- Image attachments
+- Message reactions (like, boost)
+- Reply functionality

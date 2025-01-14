@@ -74,7 +74,7 @@
   - Adaptation des boutons d'action
 
 ## 5. Mise à jour des Tests
-- [ ] Adapter les tests existants
+- [x] Adapter les tests existants
 
 ## 6. Nettoyage
 - [ ] Déprécier les anciens composants Inbox/Outbox
@@ -82,19 +82,4 @@
 - [ ] Nettoyer les imports inutilisés
 - [ ] Mettre à jour la documentation
 
-## 7. Tests et Validation
-- [ ] Tester toutes les fonctionnalités
-- [ ] Vérifier la performance
-- [ ] Tester les cas d'erreur
-- [ ] Valider sur différents navigateurs
 
-## 8. Documentation
-- [ ] Mettre à jour la documentation technique
-- [ ] Documenter les nouveaux composants
-- [ ] Documenter les changements de breaking changes
-
-## 9. Déploiement
-- [ ] Planifier la stratégie de déploiement
-- [ ] Préparer les scripts de migration si nécessaire
-- [ ] Prévoir une stratégie de rollback
-- [ ] Communiquer les changements

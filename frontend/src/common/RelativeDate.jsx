@@ -12,7 +12,6 @@ dayjs.extend(isToday);
 
 const RelativeDate = ({ date, ...rest }) => {
   const [locale] = useLocaleState();
-  console.log('Date received in RelativeDate:', date);
   
   if (!date) {
     console.warn('No date provided to RelativeDate component');
@@ -20,7 +19,6 @@ const RelativeDate = ({ date, ...rest }) => {
   }
 
   const formattedDate = dayjs(date).locale(locale);
-  console.log('Formatted date:', formattedDate.format());
 
   let dateStr = '';
   if (formattedDate.isToday()) {
