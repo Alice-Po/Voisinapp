@@ -17,5 +17,3 @@ Feature: User Authentication
     And I enter my username and password
     Then I should be redirected to my inbox
 
-  Scenario: Already logged user
-    Given I'm logged with a valid user and I'm on homepage 

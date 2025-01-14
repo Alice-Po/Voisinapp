@@ -214,12 +214,12 @@ Then('I should be redirected to my inbox', async function() {
 
   // Vérifier l'URL
   const currentUrl = this.page.url();
-  if (!currentUrl.includes('/inbox')) {
-    throw new Error(`Redirection vers l'inbox échouée. URL actuelle : ${currentUrl}`);
+  if (!currentUrl.includes('/home')) {
+    throw new Error(`Redirection vers le feed unifié échouée. URL actuelle : ${currentUrl}`);
   }
 
-  // Vérifier que la page inbox est chargée
-  await this.page.waitForSelector('[data-testid="inbox-page"]', {
+  // Vérifier que la page du feed unifié est chargée
+  await this.page.waitForSelector('[data-testid="unified-feed"]', {
     timeout: 30000
   });
 }); 
