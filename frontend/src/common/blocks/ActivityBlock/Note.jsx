@@ -10,6 +10,7 @@ import RelativeDate from '../../RelativeDate';
 import useActor from '../../../hooks/useActor';
 import { arrayOf } from '../../../utils';
 import MoreButton from '../../buttons/MoreButton';
+import { LocationOnOutlined } from '@mui/icons-material';
 
 const mentionRegex = /\<a href="([^"]*)" class=\"[^"]*?mention[^"]*?\">@\<span>(.*?)\<\/span>\<\/a\>/gm;
 
@@ -151,11 +152,12 @@ const Note = ({ object, activity, clickOnContent }) => {
         <Box
           sx={{
             backgroundColor: isOutgoing ? theme.palette.chat.outgoing : theme.palette.chat.incoming,
-            borderRadius: 2,
+            borderRadius: isOutgoing ? '18px 18px 4px 18px' : '18px 18px 18px 4px',
             p: 1.5,
             position: 'relative',
             maxWidth: 'calc(100% - 50px)',
-            width: 'fit-content'
+            width: 'fit-content',
+            boxShadow: '0 1px 0.5px rgba(0, 0, 0, 0.13)'
           }}
         >
           {!isOutgoing && (
