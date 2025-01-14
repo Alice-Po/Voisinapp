@@ -58,15 +58,6 @@ Feature: Creating Geolocated Notes
     Then I should see "Note sent successfully"
     And I should see my note "Note with custom radius" with the name of my city and the custom radius``
 
-```gherkin:frontend/features/note_visibility.feature
-Feature: Geolocated Notes Visibility
-  As a user
-  I want to see only notes within my perimeter
-  In order to access locally relevant content
-
-  Background:     
-    And I am logged in as "test"
-
 # this step should be improved
   Scenario: Visibility based on radius
     And I should see "This is a geographic note from Sainte-Honorine-la-Guillaume" from nearby in my feed
@@ -75,13 +66,10 @@ Feature: Geolocated Notes Visibility
 ```
 
 ### 1.3 Implémentation des Steps de Base
-```javascript:frontend/features/step_definitions/geolocation_steps.js
-- [ ] Implémenter le scénario "Creating a note with default radius"
-- [ ] Implémenter le scénario "Customizing the broadcast radius"
-- [ ] Implémenter la feature "Geolocated Notes Visibility"
-```
+- [x] Implémentation des Steps
 
 ## Phase 2 : Développement du Backend
+<!-- J'ai préféré commencer par le front. Une mauvaise pratique ? -->
 
 ### 2.1 Modèle de Données
 - [ ] Étendre le modèle Note avec les propriétés géographiques
