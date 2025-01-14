@@ -38,6 +38,7 @@ const PostBlock = ({ inReplyTo, mention }) => {
   const [imageFiles, setImageFiles] = useState([]);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [content, setContent] = useState('');
+  const [radius, setRadius] = useState(15);
 
   useEffect(() => {
     if (hash === "#reply" && inputRef.current) {
@@ -244,51 +245,87 @@ const PostBlock = ({ inReplyTo, mention }) => {
               <Box 
                 sx={{ 
                   display: 'flex', 
-                  alignItems: 'center', 
-                  gap: 1,
-                  px: 1
+                  alignItems: 'unset', 
+                  gap: 2,
+                  mt: 1
                 }}
               >
-                <Typography 
-                  variant="body2" 
+                <Box sx={{ 
+                  flex: 1, 
+                  maxWidth: 'fit-content'
+                  }}>
+                  <DateTimeInput
+                    source="endTime"
+                    validate={validateExpirationDate}
+                    margin="none"
+                    label="Date d'expiration"
+                    sx={{
+                      '& .MuiOutlinedInput-root': {
+                        backgroundColor: '#f0f2f5',
+                        height: '36px',
+                        borderRadius: '12px',
+                        '& fieldset': {
+                          borderColor: 'transparent'
+                        },
+                        '&:hover fieldset': {
+                          borderColor: 'transparent'
+                        },
+                        '&.Mui-focused fieldset': {
+                          borderColor: 'transparent'
+                        },
+                        '& input': {
+                          padding: '8px 12px',
+                          fontSize: '0.875rem',
+                          color: '#050505',
+                          height: '20px'
+                        }
+                      },
+                      '& .MuiFormLabel-root': {
+                        display: 'none'
+                      },
+                      '& .MuiFormControl-root': {
+                        margin: 0
+                      }
+                    }}
+                  />
+                </Box>
+                <Box 
                   sx={{ 
-                    color: '#65676B',
-                    fontSize: '0.8125rem',
-                    fontWeight: 500
+                    display: 'flex',                    backgroundColor: '#f0f2f5',
+                    borderRadius: '12px',
+                    height: '36px',
+                    padding: '0 12px',
+                    minWidth: '80px'
                   }}
                 >
-                  Date d'expiration
-                </Typography>
-                <DateTimeInput
-                  source="endTime"
-                  validate={validateExpirationDate}
-                  margin="dense"
-                  sx={{
-                    flex: 1,
-                    '& .MuiOutlinedInput-root': {
-                      borderRadius: '12px',
-                      backgroundColor: '#f8f9fa',
-                      height: '36px',
-                      '& fieldset': {
-                        borderColor: 'transparent'
-                      },
-                      '&:hover fieldset': {
-                        borderColor: 'transparent'
-                      },
-                      '&.Mui-focused fieldset': {
-                        borderColor: 'transparent'
-                      },
+                  <InputBase
+                    type="number"
+                    value={radius}
+                    onChange={(e) => setRadius(Math.max(0, parseInt(e.target.value) || 15))}
+                    sx={{
+                      width: '40px',
                       '& input': {
-                        padding: '8px 12px',
-                        fontSize: '0.8125rem',
-                        color: '#65676B'
+                        padding: 0,
+                        textAlign: 'right',
+                        fontSize: '0.875rem',
+                        color: '#050505',
+                        height: '20px'
+                      },
+                      '& input::-webkit-outer-spin-button, & input::-webkit-inner-spin-button': {
+                        display: 'none'
                       }
-                    },
-                    '& .MuiInputLabel-root': {
-                      display: 'none'
-                    }
-                  }}
-                />
+                    }}
+                  />
+                  <Typography 
+                    sx={{ 
+                      color: '#050505',
+                      fontSize: '0.875rem',
+                      m: 'auto'
+                    }}
+                  >
+                    km
+                  </Typography>
+                </Box>
               </Box>
 
               {imageFiles.length > 0 && (
