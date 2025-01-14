@@ -1,6 +1,5 @@
 import { useLocaleState } from 'react-admin';
 import dayjs from 'dayjs';
-import { Typography } from '@mui/material';
 import localizedFormat from 'dayjs/plugin/localizedFormat';
 import isYesterday from 'dayjs/plugin/isYesterday';
 import isToday from 'dayjs/plugin/isToday';
@@ -10,7 +9,7 @@ dayjs.extend(localizedFormat);
 dayjs.extend(isYesterday);
 dayjs.extend(isToday);
 
-const RelativeDate = ({ date, ...rest }) => {
+const RelativeDate = ({ date }) => {
   const [locale] = useLocaleState();
   
   if (!date) {
@@ -29,11 +28,7 @@ const RelativeDate = ({ date, ...rest }) => {
     dateStr = formattedDate.format('DD/MM/YYYY HH:mm');
   }
 
-  return (
-    <Typography {...rest}>
-      {dateStr}
-    </Typography>
-  );
+  return dateStr;
 };
 
 export default RelativeDate;

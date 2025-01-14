@@ -205,7 +205,7 @@ const Note = ({ object, activity, clickOnContent }) => {
 
           {images && images.map((image, index) => (
             <img 
-              key={index}
+              key={`${image?.url}-${index}`}
               data-testid="note-image" 
               src={image?.url} 
               style={{ 
@@ -228,6 +228,35 @@ const Note = ({ object, activity, clickOnContent }) => {
             </Typography>
           )}
 
+          {object.location && (
+            <Box
+              sx={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: 0.5,
+                mt: 0.5,
+                mb: -0.5
+              }}
+            >
+              <LocationOnOutlined 
+                sx={{ 
+                  fontSize: 16,
+                  color: isOutgoing ? 'rgba(255,255,255,0.8)' : 'grey.600',
+                  opacity: 0.8
+                }} 
+              />
+              <Typography 
+                sx={{ 
+                  fontSize: '0.8125rem',
+                  color: isOutgoing ? 'rgba(255,255,255,0.8)' : 'grey.600',
+                  opacity: 0.8
+                }}
+              >
+                {object.location.name} • {object.location.radius} km
+              </Typography>
+            </Box>
+          )}
+
           <Box 
             sx={{ 
               display: 'flex',
@@ -246,9 +275,10 @@ const Note = ({ object, activity, clickOnContent }) => {
             >
               {object.endTime && (
                 <Typography 
+                  component="span"
                   data-testid="expiration-date"
                   sx={{ 
-                    fontSize: 12,
+                    fontSize: '0.8125rem',
                     color: isOutgoing ? 'rgba(255,255,255,0.8)' : 'grey.600',
                     opacity: 0.8
                   }}
@@ -260,8 +290,9 @@ const Note = ({ object, activity, clickOnContent }) => {
                 </Typography>
               )}
               <Typography 
+                component="span"
                 sx={{ 
-                  fontSize: 12,
+                  fontSize: '0.8125rem',
                   color: isOutgoing ? 'rgba(255,255,255,0.8)' : 'grey.600',
                   opacity: 0.8
                 }}
@@ -281,10 +312,10 @@ const Note = ({ object, activity, clickOnContent }) => {
           [isOutgoing ? 'mr' : 'ml']: 7
         }}
       >
-        <ReplyButton objectUri={object.id || activity.id} />
-        <BoostButton activity={activity} object={object} />
-        <LikeButton activity={activity} object={object} />
-        <MoreButton>
+        <ReplyButton key={`reply-${object.id || activity.id}`} objectUri={object.id || activity.id} />
+        <BoostButton key={`boost-${object.id || activity.id}`} activity={activity} object={object} />
+        <LikeButton key={`like-${object.id || activity.id}`} activity={activity} object={object} />
+        <MoreButton key={`more-${object.id || activity.id}`}>
           <MenuItem onClick={() => {}}>{translate('app.action.unfollow')}</MenuItem>
         </MoreButton>
       </Box>

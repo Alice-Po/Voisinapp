@@ -18,6 +18,7 @@ import {
   OBJECT_TYPES,
   PUBLIC_URI,
 } from "@semapps/activitypub-components";
+import { reverseGeocode } from '../../utils/geocoding';
 
 const validateExpirationDate = (value) => {
   if (!value) return undefined;
@@ -79,8 +80,21 @@ const PostBlock = ({ inReplyTo, mention }) => {
     async (values) => {
       if (!content.trim()) return;
 
-      setIsSubmitting(true);
+    setIsSubmitting(true);
       try {
+        const latitude = identity?.profileData?.['vcard:hasGeo']?.['vcard:latitude'];
+        const longitude = identity?.profileData?.['vcard:hasGeo']?.['vcard:longitude'];
+        
+        let locationName = "Location inconnue";
+
+        console.log(identity)
+        if (latitude && longitude) {
+          const geoData = await reverseGeocode(latitude, longitude);
+          if (geoData?.city) {
+            locationName = geoData.city;
+          }
+        }
+
         const activity = {
           type: OBJECT_TYPES.NOTE,
           attributedTo: outbox.owner,
@@ -90,6 +104,13 @@ const PostBlock = ({ inReplyTo, mention }) => {
             ? [PUBLIC_URI, identity?.webIdData?.followers, mention.uri]
             : [PUBLIC_URI, identity?.webIdData?.followers],
           ...(values.endTime && { endTime: values.endTime }),
+          location: {
+            type: "Place",
+            name: locationName,
+            latitude,
+            longitude,
+            radius: radius
+          }
         };
 
         let attachments = await handleAttachments();
@@ -102,7 +123,7 @@ const PostBlock = ({ inReplyTo, mention }) => {
         clearForm();
         setContent('');
 
-        if (inReplyTo) {
+      if (inReplyTo) {
           redirect(`/activity/${encodeURIComponent(activityUri)}`);
         }
       } catch (e) {
@@ -114,7 +135,7 @@ const PostBlock = ({ inReplyTo, mention }) => {
         setIsSubmitting(false);
       }
     },
-    [content, outbox, identity, notify, mention, inReplyTo, redirect, handleAttachments, clearForm]
+    [content, outbox, identity, notify, mention, inReplyTo, redirect, handleAttachments, clearForm, radius]
   );
 
   const handleFileChange = useCallback((event) => {
@@ -254,9 +275,9 @@ const PostBlock = ({ inReplyTo, mention }) => {
                   flex: 1, 
                   maxWidth: 'fit-content'
                   }}>
-                  <DateTimeInput
-                    source="endTime"
-                    validate={validateExpirationDate}
+            <DateTimeInput
+              source="endTime"
+              validate={validateExpirationDate}
                     margin="none"
                     label="Date d'expiration"
                     sx={{
@@ -328,62 +349,62 @@ const PostBlock = ({ inReplyTo, mention }) => {
                 </Box>
               </Box>
 
-              {imageFiles.length > 0 && (
-                <Box
-                  sx={{
-                    display: 'flex',
-                    gap: 1,
-                    flexWrap: 'wrap',
+            {imageFiles.length > 0 && (
+              <Box
+                sx={{
+                  display: 'flex',
+                  gap: 1,
+                  flexWrap: 'wrap',
                     px: 1,
                     pt: 0.5
-                  }}
-                >
-                  {imageFiles.map((image, index) => (
-                    <Box
-                      key={image.preview}
-                      sx={{
+                }}
+              >
+                {imageFiles.map((image, index) => (
+                  <Box
+                    key={image.preview}
+                    sx={{
                         height: 90,
                         width: 90,
                         borderRadius: '12px',
-                        overflow: 'hidden',
-                        position: 'relative',
+                      overflow: 'hidden',
+                      position: 'relative',
                         backgroundColor: '#f8f9fa'
+                    }}
+                  >
+                    <img
+                      src={image.preview}
+                      alt="Preview"
+                      style={{
+                        width: '100%',
+                        height: '100%',
+                        objectFit: 'cover',
                       }}
-                    >
-                      <img
-                        src={image.preview}
-                        alt="Preview"
-                        style={{
-                          width: '100%',
-                          height: '100%',
-                          objectFit: 'cover',
-                        }}
-                      />
-                      <IconButton
-                        onClick={() => handleRemoveImage(index)}
-                        sx={{
-                          position: 'absolute',
-                          top: 4,
-                          right: 4,
-                          backgroundColor: 'rgba(0, 0, 0, 0.5)',
-                          color: 'white',
-                          padding: '4px',
-                          '&:hover': {
+                    />
+                    <IconButton
+                      onClick={() => handleRemoveImage(index)}
+                      sx={{
+                        position: 'absolute',
+                        top: 4,
+                        right: 4,
+                        backgroundColor: 'rgba(0, 0, 0, 0.5)',
+                        color: 'white',
+                        padding: '4px',
+                        '&:hover': {
                             backgroundColor: 'rgba(0, 0, 0, 0.7)',
-                          }
-                        }}
-                        size="small"
-                      >
-                        <DeleteIcon fontSize="small" />
-                      </IconButton>
-                    </Box>
-                  ))}
-                </Box>
-              )}
+                        }
+                      }}
+                      size="small"
+                    >
+                      <DeleteIcon fontSize="small" />
+                    </IconButton>
+                  </Box>
+                ))}
+              </Box>
+            )}
             </Box>
           </Form>
         </Box>
-      </Card>
+    </Card>
     </Box>
   );
 };

@@ -106,7 +106,7 @@ const ProfileCard = () => {
         >
           {actor?.username}
         </Typography>
-        {location && (
+        {/* {location && (
           <Typography
             variant="body2"
             color="text.secondary"
@@ -115,7 +115,7 @@ const ProfileCard = () => {
           >
             Favorite address from the pods : {favoriteAddressFromPods?.city} ({favoriteAddressFromPods?.postcode})
           </Typography>
-        )}
+        )} */}
         {reverseGeocodeLocation && (
           <Typography
             variant="body2"
@@ -123,7 +123,7 @@ const ProfileCard = () => {
             align="center"
             sx={{ mt: 1 }}
           >
-            With reverseGeocode : {reverseGeocodeLocation.city} ({reverseGeocodeLocation.postcode})
+           {reverseGeocodeLocation.city}
           </Typography>
         )}
       </Box>
