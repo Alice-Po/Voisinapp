@@ -19,6 +19,7 @@ import {
   PUBLIC_URI,
 } from "@semapps/activitypub-components";
 import { reverseGeocode } from '../../utils/geocoding';
+import TagSelector from '../components/TagSelector';
 
 const validateExpirationDate = (value) => {
   if (!value) return undefined;
@@ -40,6 +41,7 @@ const PostBlock = ({ inReplyTo, mention }) => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [content, setContent] = useState('');
   const [radius, setRadius] = useState(15);
+  const [selectedTags, setSelectedTags] = useState([]);
 
   useEffect(() => {
     if (hash === "#reply" && inputRef.current) {
@@ -80,20 +82,35 @@ const PostBlock = ({ inReplyTo, mention }) => {
     async (values) => {
       if (!content.trim()) return;
 
-    setIsSubmitting(true);
+      console.log('=== Début soumission du formulaire ===');
+      console.log('Tags sélectionnés:', selectedTags);
+
+      setIsSubmitting(true);
       try {
         const latitude = identity?.profileData?.['vcard:hasGeo']?.['vcard:latitude'];
         const longitude = identity?.profileData?.['vcard:hasGeo']?.['vcard:longitude'];
         
         let locationName = "Location inconnue";
 
-        console.log(identity)
         if (latitude && longitude) {
           const geoData = await reverseGeocode(latitude, longitude);
           if (geoData?.city) {
             locationName = geoData.city;
           }
         }
+
+        // Formatage des tags pour l'activité
+        const formattedTags = selectedTags.map(tag => {
+          console.log('Traitement du tag:', tag);
+          return {
+            type: 'skos:Concept',
+            id: tag.id,
+            prefLabel: tag.prefLabel,
+            color: tag.color
+          };
+        });
+
+        console.log('Tags formatés:', formattedTags);
 
         const activity = {
           type: OBJECT_TYPES.NOTE,
@@ -110,23 +127,28 @@ const PostBlock = ({ inReplyTo, mention }) => {
             latitude,
             longitude,
             radius: radius
-          }
+          },
+          tag: formattedTags
         };
 
-        let attachments = await handleAttachments();
-        if (attachments.length > 0) {
-          activity.attachment = attachments;
-        }
+        console.log('Activité avant envoi:', activity);
+        console.log('Tags dans l\'activité:', activity.tag);
 
         const activityUri = await outbox.post(activity);
+        console.log('Activité créée avec URI:', activityUri);
+
         notify("app.notification.message_sent", { type: "success" });
         clearForm();
         setContent('');
+        setSelectedTags([]);
+        console.log('=== Fin soumission du formulaire ===');
 
-      if (inReplyTo) {
+        if (inReplyTo) {
           redirect(`/activity/${encodeURIComponent(activityUri)}`);
         }
       } catch (e) {
+        console.error('Erreur lors de la soumission:', e);
+        console.log('État des tags au moment de l\'erreur:', selectedTags);
         notify("app.notification.activity_send_error", {
           type: "error",
           messageArgs: { error: e.message },
@@ -135,7 +157,7 @@ const PostBlock = ({ inReplyTo, mention }) => {
         setIsSubmitting(false);
       }
     },
-    [content, outbox, identity, notify, mention, inReplyTo, redirect, handleAttachments, clearForm, radius]
+    [content, outbox, identity, notify, mention, inReplyTo, redirect, handleAttachments, clearForm, radius, selectedTags]
   );
 
   const handleFileChange = useCallback((event) => {
@@ -161,6 +183,12 @@ const PostBlock = ({ inReplyTo, mention }) => {
       imageFiles.forEach((image) => URL.revokeObjectURL(image.preview));
     };
   }, []);
+
+  // Log des changements de tags
+  const handleTagChange = (newTags) => {
+    console.log('Changement des tags:', newTags);
+    setSelectedTags(newTags);
+  };
 
   return (
     <Box>
@@ -392,6 +420,19 @@ const PostBlock = ({ inReplyTo, mention }) => {
                 ))}
               </Box>
             )}
+
+              <Box 
+                sx={{ 
+                  backgroundColor: '#f0f2f5',
+                  borderRadius: '12px',
+                  p: 1
+                }}
+              >
+                <TagSelector
+                  value={selectedTags}
+                  onChange={handleTagChange}
+                />
+              </Box>
             </Box>
           </Form>
         </Box>

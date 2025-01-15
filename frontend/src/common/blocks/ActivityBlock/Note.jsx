@@ -11,6 +11,7 @@ import useActor from '../../../hooks/useActor';
 import { arrayOf } from '../../../utils';
 import MoreButton from '../../buttons/MoreButton';
 import { LocationOnOutlined } from '@mui/icons-material';
+import TagDisplay from '../../components/TagDisplay';
 
 const mentionRegex = /\<a href="([^"]*)" class=\"[^"]*?mention[^"]*?\">@\<span>(.*?)\<\/span>\<\/a\>/gm;
 
@@ -301,6 +302,14 @@ const Note = ({ object, activity, clickOnContent }) => {
               </Typography>
             </Box>
           </Box>
+
+          {object.tag && object.tag.length > 0 && (
+            <TagDisplay 
+              tags={object.tag} 
+              maxDisplay={3}
+              isOutgoing={isOutgoing}
+            />
+          )}
         </Box>
       </Box>
 
