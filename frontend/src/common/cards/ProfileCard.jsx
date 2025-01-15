@@ -68,7 +68,7 @@ const ProfileCard = () => {
   const isLoading = actor.isLoading;
 
   return (
-    <Card>
+    <Card data-testid="profile-card">
       <Box className={classes.title}>
         <Box
           display="flex"
@@ -116,15 +116,20 @@ const ProfileCard = () => {
             Favorite address from the pods : {favoriteAddressFromPods?.city} ({favoriteAddressFromPods?.postcode})
           </Typography>
         )} */}
-        {reverseGeocodeLocation && (
-          <Typography
-            variant="body2"
-            color="text.secondary"
-            align="center"
-            sx={{ mt: 1 }}
-          >
-           {reverseGeocodeLocation.city}
-          </Typography>
+        {isLoading ? (
+          <div data-testid="profile-loading">Loading...</div>
+        ) : (
+          reverseGeocodeLocation && (
+            <Typography
+              variant="body2"
+              color="text.secondary"
+              align="center"
+              sx={{ mt: 1 }}
+              data-testid="profile-location"
+            >
+              {reverseGeocodeLocation.city}
+            </Typography>
+          )
         )}
       </Box>
 

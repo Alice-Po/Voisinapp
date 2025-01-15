@@ -9,7 +9,7 @@ import {
   useDataProvider
 } from "react-admin";
 import { useLocation } from "react-router-dom";
-import { Card, Box, Button, IconButton, CircularProgress, Backdrop, Typography, InputBase } from "@mui/material";
+import { Card, Box, Button, IconButton, CircularProgress, Backdrop, Typography, InputBase, TextField, InputAdornment } from "@mui/material";
 import SendIcon from "@mui/icons-material/Send";
 import InsertPhotoIcon from "@mui/icons-material/InsertPhoto";
 import DeleteIcon from "@mui/icons-material/Delete";
@@ -320,21 +320,12 @@ const PostBlock = ({ inReplyTo, mention }) => {
                   }}
                 >
                   <InputBase
+                    data-testid="radius-input"
                     type="number"
                     value={radius}
-                    onChange={(e) => setRadius(Math.max(0, parseInt(e.target.value) || 15))}
+                    onChange={(e) => setRadius(e.target.value)}
                     sx={{
                       width: '40px',
-                      '& input': {
-                        padding: 0,
-                        textAlign: 'right',
-                        fontSize: '0.875rem',
-                        color: '#050505',
-                        height: '20px'
-                      },
-                      '& input::-webkit-outer-spin-button, & input::-webkit-inner-spin-button': {
-                        display: 'none'
-                      }
                     }}
                   />
                   <Typography 

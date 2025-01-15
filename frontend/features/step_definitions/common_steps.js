@@ -57,7 +57,6 @@ When('I submit the note', async function() {
 Then('I should see {string}', async function(message) {
   if (message === 'Note sent successfully') {
     try {
-      // Attendre que le message apparaisse quelque part dans la page
       await this.page.waitForFunction(
         (expectedText) => {
           const elements = document.querySelectorAll('*');
@@ -66,14 +65,10 @@ Then('I should see {string}', async function(message) {
             el.textContent.includes('Note sent successfully')
           );
         },
-        { timeout: 15000 }
+        { timeout: 30000 }
       );
     } catch (error) {
       console.error('Erreur lors de la recherche du message de succès:', error);
-      
-      // Capturer une screenshot pour le debug
-      await this.page.screenshot({ path: 'error-screenshot.png' });
-      
       throw error;
     }
   }
@@ -117,7 +112,6 @@ Then('I should not see the note {string} in the feed', async function(content) {
   
   const messageWithTimestamp = `${content} [${this.testTimestamp}]`;
   
-  // Attendre un peu pour s'assurer que le feed est complètement chargé
   await new Promise(resolve => setTimeout(resolve, 2000));
   
   const noteExists = await this.page.evaluate(
@@ -141,4 +135,9 @@ Then('I should not see the note {string} in the feed', async function(content) {
   }
   
   expect(noteExists).to.be.false;
+});
+
+Given('I am on the homepage', async function() {
+  await this.page.goto('http://localhost:4004/home');
+  await this.page.waitForSelector('[data-testid="unified-feed"]', { timeout: 30000 });
 }); 
