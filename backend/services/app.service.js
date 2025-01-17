@@ -26,7 +26,22 @@ module.exports = {
       required: [
         {
           registeredClass: 'as:Note',
-          accessMode: ['acl:Read', 'acl:Write']
+          accessMode: ['acl:Read', 'acl:Write'],
+          fields: {
+            'as:content': ['acl:Read', 'acl:Write'],
+            'as:tag': ['acl:Read', 'acl:Write'],
+            'as:location': ['acl:Read', 'acl:Write']
+          }
+        },
+        {
+          // Ajout de la configuration pour les Tags
+          registeredClass: 'as:Tag',
+          accessMode: ['acl:Read', 'acl:Write'],
+          fields: {
+            'as:name': ['acl:Read', 'acl:Write'],
+            'as:color': ['acl:Read', 'acl:Write'],
+            'as:id': ['acl:Read', 'acl:Write']
+          }
         },
         {
           registeredClass: 'vcard:Individual',
@@ -49,6 +64,13 @@ module.exports = {
           fr: 'Messages'
         },
         openEndpoint: urlJoin(CONFIG.FRONT_URL, '/r')
+      },
+      'as:Tag': {  // Ajout de la description des tags
+        label: {
+          en: 'Tags',
+          fr: 'Étiquettes'
+        },
+        openEndpoint: urlJoin(CONFIG.FRONT_URL, '/tags')
       }
     },
     queueServiceUrl: CONFIG.QUEUE_SERVICE_URL

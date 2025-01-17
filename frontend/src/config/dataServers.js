@@ -14,6 +14,15 @@ const dataServers = {
       }
     },
     uploadsContainer: '/semapps/file'
+  },
+  app: {
+    baseUrl: 'http://localhost:3004',
+    sparqlEndpoint: 'http://localhost:3004/sparql',
+    containers: {
+      app: {
+        'as:Tag': ['/tags']
+      }
+    }
   }
 };
 

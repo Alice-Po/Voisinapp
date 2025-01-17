@@ -26,7 +26,7 @@ services:
       SEMAPPS_JENA_PASSWORD: admin
       SEMAPPS_APP_LANG: en
       SEMAPPS_MAPBOX_ACCESS_TOKEN: ${MAPBOX_ACCESS_TOKEN:?You must set it in the .env.local file}
-    # Allow the Pod backend to access the app backend as localhost:3001
+    # Allow the Pod backend to access the app backend as localhost:3004
     # See https://docs.docker.com/network/drivers/host/
     network_mode: "host"
 

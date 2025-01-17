@@ -10,7 +10,7 @@ const TagSelector = ({ value, onChange }) => {
   useEffect(() => {
     const fetchTags = async () => {
       try {
-        const { data } = await dataProvider.getList('concepts', {
+        const { data } = await dataProvider.getList('tags', {
           pagination: { page: 1, perPage: 100 },
           sort: { field: 'prefLabel', order: 'ASC' },
         });

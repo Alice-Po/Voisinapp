@@ -19,6 +19,10 @@ const dataModels = {
     types: ["vcard:Location"],
     list: {},
   },
+  Tag: {
+    types: ["as:Tag"],
+    list: {},
+  }
 };
 
 export default dataModels;

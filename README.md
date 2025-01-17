@@ -42,7 +42,7 @@ Built on the [ActivityPods](https://activitypods.org) framework.
 
    The application should now be accessible at:
    - Frontend: http://localhost:3000
-   - Backend: http://localhost:3001
+   - Backend: http://localhost:3004
    - Mailcatcher UI: http://localhost:1080
    - Arena UI: http://localhost:4567
 

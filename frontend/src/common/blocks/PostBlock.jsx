@@ -78,12 +78,19 @@ const PostBlock = ({ inReplyTo, mention }) => {
     setImageFiles([]);
   }, []);
 
+  const handleTagChange = (newTags) => {
+    console.log('=== Changement de tags ===');
+    console.log('Nouveaux tags:', newTags);
+    console.log('Format des tags:', JSON.stringify(newTags, null, 2));
+    setSelectedTags(newTags);
+  };
+
   const onSubmit = useCallback(
     async (values) => {
       if (!content.trim()) return;
 
       console.log('=== Début soumission du formulaire ===');
-      console.log('Tags sélectionnés:', selectedTags);
+      console.log('Tags sélectionnés avant formatage:', selectedTags);
 
       setIsSubmitting(true);
       try {
@@ -92,6 +99,7 @@ const PostBlock = ({ inReplyTo, mention }) => {
         
         let locationName = "Location inconnue";
 
+        console.log(identity)
         if (latitude && longitude) {
           const geoData = await reverseGeocode(latitude, longitude);
           if (geoData?.city) {
@@ -99,18 +107,13 @@ const PostBlock = ({ inReplyTo, mention }) => {
           }
         }
 
-        // Formatage des tags pour l'activité
-        const formattedTags = selectedTags.map(tag => {
-          console.log('Traitement du tag:', tag);
-          return {
-            type: 'skos:Concept',
-            id: tag.id,
-            prefLabel: tag.prefLabel,
-            color: tag.color
-          };
-        });
+        const formattedTags = selectedTags.map(tag => ({
+          type: 'Tag',
+          name: tag.prefLabel,
+          color: tag.color
+        }));
 
-        console.log('Tags formatés:', formattedTags);
+        console.log('Tags formatés pour l\'activité:', formattedTags);
 
         const activity = {
           type: OBJECT_TYPES.NOTE,
@@ -131,23 +134,32 @@ const PostBlock = ({ inReplyTo, mention }) => {
           tag: formattedTags
         };
 
-        console.log('Activité avant envoi:', activity);
-        console.log('Tags dans l\'activité:', activity.tag);
+        console.log('=== Activité complète avant envoi ===');
+        console.log('Activity:', JSON.stringify(activity, null, 2));
 
         const activityUri = await outbox.post(activity);
-        console.log('Activité créée avec URI:', activityUri);
+        console.log('URI de l\'activité créée:', activityUri);
+
+        try {
+          const createdNote = await dataProvider.getOne('Note', { id: activityUri });
+          console.log('=== Note créée ===');
+          console.log('Note complète:', JSON.stringify(createdNote, null, 2));
+          console.log('Tags dans la note:', createdNote.data.tag);
+        } catch (error) {
+          console.error('Erreur lors de la récupération de la note:', error);
+        }
 
         notify("app.notification.message_sent", { type: "success" });
         clearForm();
         setContent('');
         setSelectedTags([]);
-        console.log('=== Fin soumission du formulaire ===');
 
         if (inReplyTo) {
           redirect(`/activity/${encodeURIComponent(activityUri)}`);
         }
       } catch (e) {
-        console.error('Erreur lors de la soumission:', e);
+        console.error('=== Erreur lors de la soumission ===');
+        console.error('Erreur:', e);
         console.log('État des tags au moment de l\'erreur:', selectedTags);
         notify("app.notification.activity_send_error", {
           type: "error",
@@ -183,12 +195,6 @@ const PostBlock = ({ inReplyTo, mention }) => {
       imageFiles.forEach((image) => URL.revokeObjectURL(image.preview));
     };
   }, []);
-
-  // Log des changements de tags
-  const handleTagChange = (newTags) => {
-    console.log('Changement des tags:', newTags);
-    setSelectedTags(newTags);
-  };
 
   return (
     <Box>
