@@ -107,11 +107,15 @@ const PostBlock = ({ inReplyTo, mention }) => {
           }
         }
 
-        const formattedTags = selectedTags.map(tag => ({
-          type: 'skos:Concept',
-          name: tag.prefLabel,
-          color: tag.color
-        }));
+        const formattedTags = selectedTags.map(tag => {
+          const tagColor = tag.color || getTagColor(tag.prefLabel || tag.inputValue);
+          const label = tag.prefLabel || tag.inputValue;
+          return {
+            type: 'skos:Concept',
+            'skos:prefLabel': label,
+            'schema:color': tagColor
+          };
+        });
 
         console.log('Tags formatés pour l\'activité:', formattedTags);
 

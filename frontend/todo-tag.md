@@ -7,48 +7,91 @@ Implémentation d'un système de tags pour les notes permettant aux utilisateurs
 
 ### 2.1 Structure de la Base de Données
 ```javascript
-// Collection : tags
+// Collection : tags (skos:Concept)
 {
-  id: string,
-  name: string,
-  color: string,        // Couleur associée au tag (optionnel)
-  createdAt: DateTime,
-  usageCount: number    // Nombre d'utilisations du tag
+  type: "skos:Concept",
+  "skos:prefLabel": string,     // Nom du tag
+  "schema:color": string,       // Couleur associée au tag
 }
 
-// Dans les notes (structure existante à modifier)
+// Dans les notes
 {
   // ... autres champs existants ...
-  tags: [
-    {
-      id: string,      // Référence vers la collection tags
-      name: string     // Dénormalisation pour performance
-    }
-  ]
+  tag: {
+    type: "skos:Concept",
+    "skos:prefLabel": string,   // Nom du tag
+    "schema:color": string      // Couleur du tag
+  }
 }
 ```
 
-## 3. Composants Frontend à Créer/Modifier
+### 2.2 Contexte JSON-LD
+Le contexte est défini globalement dans core.service.js :
+```javascript
+{
+  "@context": {
+    "@vocab": "http://www.w3.org/ns/activitystreams#",
+    "skos": "http://www.w3.org/2004/02/skos/core#",
+    "schema": "http://schema.org/",
+    "color": {
+      "@id": "schema:color",
+      "@type": "http://www.w3.org/2001/XMLSchema#string"
+    },
+    "prefLabel": {
+      "@id": "skos:prefLabel",
+      "@type": "http://www.w3.org/2001/XMLSchema#string"
+    }
+  }
+}
+```
 
-### 3.1 Nouveau Composant : TagSelector
-- Champ de saisie avec autocomplétion
-- Liste déroulante des tags existants
-- Option "Créer nouveau tag"
-- Affichage des tags sélectionnés avec option de suppression
+## Ce qu'il reste à faire
 
-### 3.2 Nouveau Composant : TagDisplay
-- Affichage compact des tags dans les notes
-- Style visuel distinctif (pills/badges)
-- Gestion des couleurs
+### 1. Gestion des Tags comme Ressources Indépendantes
 
-### 3.3 Modification du PostBlock
-- Intégration du TagSelector
-- Mise à jour du formulaire de création de note
-- Gestion de la soumission avec tags
+#### État Actuel
+- Les tags sont actuellement créés comme des objets intégrés directement dans les notes
+- Exemple de structure actuelle d'un tag dans une note :
+```json
+"tag": {
+  "type": "skos:Concept",
+  "schema:color": "#F44336",
+  "skos:prefLabel": "monTag"
+}
+```
+- Problèmes :
+  - Pas d'identifiant unique (URI) pour les tags
+  - Impossibilité de réutiliser les tags existants
+  - Recherche et indexation difficiles
+  - Duplication des données
 
-### 3.4 Modification de ActivityBlock
-- Intégration du TagDisplay
-- Adaptation du layout pour inclure les tags
+#### Objectif
+Transformer les tags en ressources indépendantes stockées dans le container `/taxonomy`.
 
-## 4. API Backend à Implémenter
+#### Implémentation Requise
+
+1. **Backend (Container Taxonomy)**
+   - [x] Service taxonomy configuré sur `/taxonomy`
+   - [ ] ...
+
+2. **Frontend (TagSelector)**
+   - [ ] Modification du composant pour interroger le container `/taxonomy`
+   - [ ] Implémentation de l'autocomplétion avec les tags existants
+   - [ ] Création automatique des nouveaux tags dans `/taxonomy`
+   - [ ] Récupération des URIs des tags pour les références
+
+3. **Modification du PostBlock**
+   - [ ] Adaptation du formatage des tags pour utiliser les URIs
+   - [ ] Structure attendue dans la note :
+```json
+"tag": {
+  "type": "skos:Concept",
+  "id": "http://localhost:3004/taxonomy/[id-unique]",
+  "@context": "http://localhost:3004/.well-known/context.jsonld"
+}
+```
+
+4. **Fonctionnalités de Recherche**
+   - [ ] Création d'index pour les tags
+
 

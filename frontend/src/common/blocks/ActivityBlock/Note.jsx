@@ -303,12 +303,15 @@ const Note = ({ object, activity, clickOnContent }) => {
             </Box>
           </Box>
 
-          {object.tag && object.tag.length > 0 && (
-            <TagDisplay 
-              tags={object.tag} 
-              maxDisplay={3}
-              isOutgoing={isOutgoing}
-            />
+
+          {object.tag && (Array.isArray(object.tag) ? object.tag.length > 0 : true) && (
+            <>
+              <TagDisplay 
+                tags={Array.isArray(object.tag) ? object.tag : [object.tag]} 
+                maxDisplay={3}
+                isOutgoing={isOutgoing}
+              />
+            </>
           )}
         </Box>
       </Box>

@@ -3,6 +3,23 @@ const { CoreService } = require('@semapps/core');
 const { apods, notify, interop, oidc, skos } = require('@semapps/ontologies');
 const CONFIG = require('../../config/config');
 
+// Définition de notre contexte personnalisé
+const customContext = {
+  "@context": {
+    "@vocab": "http://www.w3.org/ns/activitystreams#",
+    "skos": "http://www.w3.org/2004/02/skos/core#",
+    "schema": "http://schema.org/",
+    "color": {
+      "@id": "schema:color",
+      "@type": "http://www.w3.org/2001/XMLSchema#string"
+    },
+    "prefLabel": {
+      "@id": "skos:prefLabel",
+      "@type": "http://www.w3.org/2001/XMLSchema#string"
+    }
+  }
+};
+
 module.exports = {
   mixins: [CoreService],
   settings: {
@@ -16,7 +33,8 @@ module.exports = {
     },
     ontologies: [apods, notify, interop, oidc, skos],
     activitypub: {
-      queueServiceUrl: CONFIG.QUEUE_SERVICE_URL
+      queueServiceUrl: CONFIG.QUEUE_SERVICE_URL,
+      context: customContext
     },
     api: {
       port: CONFIG.PORT

@@ -1,4 +1,5 @@
 const { ControlledContainerMixin } = require('@semapps/ldp');
+const path = require('path');
 
 module.exports = {
   name: 'taxonomy',
