@@ -86,12 +86,14 @@ const TagSelector = ({ value, onChange }) => {
         <TextField
           {...params}
           variant="outlined"
-          label="Tags"
-          placeholder="Sélectionner ou créer des tags"
+          placeholder="Evenement, don..."
           sx={{
-            backgroundColor: '#f0f2f5',
-            borderRadius: '12px',
+            backgroundColor: '#fff',
+            borderRadius: '8px',
+            height: '32px',
             '& .MuiOutlinedInput-root': {
+              height: '32px',
+              padding: '0 8px',
               '& fieldset': {
                 borderColor: 'transparent'
               },
@@ -100,7 +102,19 @@ const TagSelector = ({ value, onChange }) => {
               },
               '&.Mui-focused fieldset': {
                 borderColor: 'transparent'
+              },
+              '& input': {
+                padding: '6px 4px',
+                fontSize: '0.875rem',
+                height: '20px',
+                '&::placeholder': {
+                  color: '#65676B',
+                  opacity: 1
+                }
               }
+            },
+            '& .MuiAutocomplete-endAdornment': {
+              display: 'none'
             }
           }}
         />
@@ -111,10 +125,16 @@ const TagSelector = ({ value, onChange }) => {
             key={option.id}
             label={option.prefLabel}
             {...getTagProps({ index })}
-            style={{
+            size="small"
+            sx={{
               backgroundColor: option.color || '#e0e0e0',
               color: '#fff',
-              margin: '2px'
+              height: '20px',
+              fontSize: '0.75rem',
+              '& .MuiChip-deleteIcon': {
+                fontSize: '14px',
+                margin: '0 2px'
+              }
             }}
           />
         ))

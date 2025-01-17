@@ -45,10 +45,13 @@ const Create = ({ activity, showReplies, clickOnContent }) => {
 
   return (
     <Card sx={{
-       p: 2,
+       p: 1,
        opacity: isExpired ? 0.5 : 1,
-        backgroundColor: isExpired ? '#f0f0f0' : 'white'
-       }}>
+       backgroundColor: isExpired ? '#f0f0f0' : 'white',
+       '&:not(:last-child)': {
+         mb: 1
+       }
+    }}>
       <Note
         object={createdObject}
         activity={activity}

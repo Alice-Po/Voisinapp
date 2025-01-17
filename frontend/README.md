@@ -1,6 +1,6 @@
 # Frontend
 
-This is the frontend application for Mastopod, built with React and Vite.
+This is the frontend application for VoisinApp, built with React and Vite.
 
 ## Development
 

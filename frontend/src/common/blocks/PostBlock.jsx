@@ -20,6 +20,8 @@ import {
 } from "@semapps/activitypub-components";
 import { reverseGeocode } from '../../utils/geocoding';
 import TagSelector from '../components/TagSelector';
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import ExpandLessIcon from '@mui/icons-material/ExpandLess';
 
 const validateExpirationDate = (value) => {
   if (!value) return undefined;
@@ -42,6 +44,7 @@ const PostBlock = ({ inReplyTo, mention }) => {
   const [content, setContent] = useState('');
   const [radius, setRadius] = useState(15);
   const [selectedTags, setSelectedTags] = useState([]);
+  const [showOptions, setShowOptions] = useState(false);
 
   useEffect(() => {
     if (hash === "#reply" && inputRef.current) {
@@ -212,36 +215,26 @@ const PostBlock = ({ inReplyTo, mention }) => {
           bottom: 0,
           zIndex: 10,
           border: '1px solid rgba(0, 0, 0, 0.08)',
-          borderBottom: 'none',
-          mx: 0,
-          mb: 0
+          borderBottom: 'none'
         }}
       >
-        <Box p="12px 16px" position="relative">
-          <Backdrop
-            sx={{
-              color: '#fff',
-              position: 'absolute',
-              top: 0,
-              left: 0,
-              right: 0,
-              bottom: 0,
-              zIndex: (theme) => theme.zIndex.drawer + 1,
-              backgroundColor: 'rgba(0, 0, 0, 0.3)',
-              borderRadius: '24px 24px 0 0'
-            }}
-            open={isSubmitting}
-          >
-            <CircularProgress color="inherit" />
-          </Backdrop>
+        <Box p={2} position="relative">
           <Form onSubmit={onSubmit}>
-            <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1.5 }}>
+            <Box sx={{ 
+              display: 'flex', 
+              flexDirection: 'column', 
+              gap: 2,
+              pb: 2,
+              borderBottom: '1px solid rgba(0, 0, 0, 0.08)'
+            }}>
               <Box sx={{ display: 'flex', alignItems: 'flex-end', gap: 1 }}>
                 <InputBase
                   data-testid="message-input"
                   value={content}
                   onChange={(e) => setContent(e.target.value)}
                   placeholder={translate('app.placeholder.message')}
+                  multiline
+                  maxRows={4}
                   sx={{
                     flex: 1,
                     backgroundColor: '#f0f2f5',
@@ -250,13 +243,12 @@ const PostBlock = ({ inReplyTo, mention }) => {
                     fontSize: '0.9375rem',
                     color: '#050505',
                     '&::placeholder': {
-                      color: '#050505',
-                      opacity: 0.6
+                      color: '#65676B',
+                      opacity: 1
                     }
                   }}
                 />
-
-                <Box sx={{ display: 'flex', gap: 1, alignItems: 'center' }}>
+                <Box sx={{ display: 'flex', gap: 1 }}>
                   <IconButton
                     component="label"
                     size="medium"
@@ -278,19 +270,15 @@ const PostBlock = ({ inReplyTo, mention }) => {
                     />
                     <InsertPhotoIcon sx={{ fontSize: '1.4rem' }} />
                   </IconButton>
-
                   <IconButton
                     type="submit"
-                    disabled={isSubmitting}
+                    disabled={isSubmitting || !content.trim()}
                     sx={{
-                      backgroundColor: '#0084ff',
-                      color: 'white',
+                      backgroundColor: content.trim() ? '#0084ff' : '#e4e6eb',
+                      color: content.trim() ? 'white' : '#bcc0c4',
                       padding: '8px',
                       '&:hover': {
-                        backgroundColor: '#0073e6'
-                      },
-                      '&.Mui-disabled': {
-                        backgroundColor: '#e4e6eb'
+                        backgroundColor: content.trim() ? '#0073e6' : '#e4e6eb'
                       },
                       minWidth: '36px',
                       height: '36px'
@@ -301,152 +289,179 @@ const PostBlock = ({ inReplyTo, mention }) => {
                 </Box>
               </Box>
 
-              <Box 
-                sx={{ 
-                  display: 'flex', 
-                  alignItems: 'unset', 
-                  gap: 2,
-                  mt: 1
-                }}
-              >
-                <Box sx={{ 
-                  flex: 1, 
-                  maxWidth: 'fit-content'
-                  }}>
-            <DateTimeInput
-              source="endTime"
-              validate={validateExpirationDate}
-                    margin="none"
-                    label="Date d'expiration"
-                    sx={{
-                      '& .MuiOutlinedInput-root': {
-                        backgroundColor: '#f0f2f5',
-                        height: '36px',
-                        borderRadius: '12px',
-                        '& fieldset': {
-                          borderColor: 'transparent'
-                        },
-                        '&:hover fieldset': {
-                          borderColor: 'transparent'
-                        },
-                        '&.Mui-focused fieldset': {
-                          borderColor: 'transparent'
-                        },
-                        '& input': {
-                          padding: '8px 12px',
-                          fontSize: '0.875rem',
-                          color: '#050505',
-                          height: '20px'
-                        }
-                      },
-                      '& .MuiFormLabel-root': {
-                        display: 'none'
-                      },
-                      '& .MuiFormControl-root': {
-                        margin: 0
-                      }
-                    }}
-                  />
-                </Box>
-                <Box 
-                  sx={{ 
-                    display: 'flex',                    backgroundColor: '#f0f2f5',
-                    borderRadius: '12px',
-                    height: '36px',
-                    padding: '0 12px',
-                    minWidth: '80px'
-                  }}
-                >
-                  <InputBase
-                    data-testid="radius-input"
-                    type="number"
-                    value={radius}
-                    onChange={(e) => setRadius(e.target.value)}
-                    sx={{
-                      width: '40px',
-                    }}
-                  />
-                  <Typography 
-                    sx={{ 
-                      color: '#050505',
-                      fontSize: '0.875rem',
-                      m: 'auto'
-                    }}
-                  >
-                    km
-                  </Typography>
-                </Box>
-              </Box>
-
-            {imageFiles.length > 0 && (
-              <Box
-                sx={{
-                  display: 'flex',
-                  gap: 1,
-                  flexWrap: 'wrap',
-                    px: 1,
-                    pt: 0.5
-                }}
-              >
-                {imageFiles.map((image, index) => (
-                  <Box
-                    key={image.preview}
-                    sx={{
+              {imageFiles.length > 0 && (
+                <Box sx={{ display: 'flex', gap: 1, flexWrap: 'wrap' }}>
+                  {imageFiles.map((image, index) => (
+                    <Box
+                      key={image.preview}
+                      sx={{
                         height: 90,
                         width: 90,
                         borderRadius: '12px',
-                      overflow: 'hidden',
-                      position: 'relative',
+                        overflow: 'hidden',
+                        position: 'relative',
                         backgroundColor: '#f8f9fa'
-                    }}
-                  >
-                    <img
-                      src={image.preview}
-                      alt="Preview"
-                      style={{
-                        width: '100%',
-                        height: '100%',
-                        objectFit: 'cover',
                       }}
-                    />
-                    <IconButton
-                      onClick={() => handleRemoveImage(index)}
-                      sx={{
-                        position: 'absolute',
-                        top: 4,
-                        right: 4,
-                        backgroundColor: 'rgba(0, 0, 0, 0.5)',
-                        color: 'white',
-                        padding: '4px',
-                        '&:hover': {
-                            backgroundColor: 'rgba(0, 0, 0, 0.7)',
-                        }
-                      }}
-                      size="small"
                     >
-                      <DeleteIcon fontSize="small" />
-                    </IconButton>
-                  </Box>
-                ))}
-              </Box>
-            )}
+                      <img
+                        src={image.preview}
+                        alt="Preview"
+                        style={{
+                          width: '100%',
+                          height: '100%',
+                          objectFit: 'cover'
+                        }}
+                      />
+                      <IconButton
+                        onClick={() => handleRemoveImage(index)}
+                        sx={{
+                          position: 'absolute',
+                          top: 4,
+                          right: 4,
+                          backgroundColor: 'rgba(0, 0, 0, 0.5)',
+                          color: 'white',
+                          padding: '4px',
+                          '&:hover': {
+                            backgroundColor: 'rgba(0, 0, 0, 0.7)'
+                          }
+                        }}
+                        size="small"
+                      >
+                        <DeleteIcon fontSize="small" />
+                      </IconButton>
+                    </Box>
+                  ))}
+                </Box>
+              )}
+            </Box>
 
-              <Box 
-                sx={{ 
-                  backgroundColor: '#f0f2f5',
+            <Box sx={{ mt: 1 }}>
+              <Button
+                onClick={() => setShowOptions(!showOptions)}
+                sx={{
+                  color: '#65676B',
+                  textTransform: 'none',
+                  fontSize: '0.8125rem',
+                  padding: '4px 8px',
+                  minWidth: 0,
+                  '&:hover': {
+                    backgroundColor: 'rgba(0, 0, 0, 0.04)'
+                  }
+                }}
+                startIcon={showOptions ? <ExpandLessIcon /> : <ExpandMoreIcon />}
+              >
+                {showOptions ? "Moins d'options" : "Plus d'options"}
+              </Button>
+
+              {showOptions && (
+                <Box sx={{ 
+                  mt: 1,
+                  display: 'flex', 
+                  flexDirection: 'column',
+                  backgroundColor: '#f8f9fa',
                   borderRadius: '12px',
                   p: 1
-                }}
-              >
-                <TagSelector
-                  value={selectedTags}
-                  onChange={handleTagChange}
-                />
-              </Box>
+                }}>
+                  <Box sx={{ 
+                    display: 'flex', 
+                    flexDirection: { xs: 'column', sm: 'row' },
+                    alignItems: { xs: 'stretch', sm: 'center' },
+                    gap: 1 
+                  }}>
+                    <Box sx={{ 
+                      width: { xs: '100%', sm: '33%' }
+                    }}>
+                      <Typography variant="caption" sx={{ color: '#65676B', mb: 0.5, display: 'block' }}>
+                        Expire le
+                      </Typography>
+                      <Box sx={{ 
+                        backgroundColor: '#fff',
+                        borderRadius: '8px',
+                        height: '32px',
+                        display: 'flex',
+                        alignItems: 'center',
+                        overflow: 'hidden'
+                      }}>
+                        <DateTimeInput
+                          source="endTime"
+                          validate={validateExpirationDate}
+                          margin="none"
+                          size="medium"
+                          label="Date d'expiration"
+                          sx={{
+                            width: '100%',
+                            '& .MuiOutlinedInput-notchedOutline': {
+                              border: 'none'
+                            },
+                            '& .MuiFormLabel-root': {
+                              display: 'none'
+                            }
+                          }}
+                        />
+                      </Box>
+                    </Box>
+                    <Box sx={{ 
+                      width: { xs: '100%', sm: 'auto' },
+                      minWidth: { sm: '80px' }
+                    }}>
+                      <Typography variant="caption" sx={{ color: '#65676B', mb: 0.5, display: 'block' }}>
+                        Rayon
+                      </Typography>
+                      <Box 
+                        sx={{ 
+                          display: 'flex',
+                          backgroundColor: '#fff',
+                          borderRadius: '8px',
+                          height: '32px',
+                          padding: '0 10px',
+                          alignItems: 'center',
+                          width: { xs: '100%', sm: 'auto' }
+                        }}
+                      >
+                        <InputBase
+                          data-testid="radius-input"
+                          type="number"
+                          value={radius}
+                          onChange={(e) => setRadius(e.target.value)}
+                          sx={{
+                            flex: { xs: 1, sm: 'none' },
+                            '& input': {
+                              padding: '6px 0',
+                              fontSize: '0.875rem',
+                              color: '#050505',
+                              textAlign: { xs: 'left', sm: 'right' },
+                              width: { xs: '100%', sm: '32px' }
+                            }
+                          }}
+                        />
+                        <Typography sx={{ 
+                          color: '#65676B', 
+                          fontSize: '0.875rem',
+                          ml: 1,
+                          whiteSpace: 'nowrap'
+                        }}>
+                          km
+                        </Typography>
+                      </Box>
+                    </Box>
+                    <Box sx={{ 
+                      width: { xs: '100%', sm: '33%' }
+                    }}>
+                      <Typography variant="caption" sx={{ color: '#65676B', mb: 0.5, display: 'block' }}>
+                        Tags
+                      </Typography>
+                      <TagSelector
+                        value={selectedTags}
+                        onChange={handleTagChange}
+                      />
+                    </Box>
+                  </Box>
+                </Box>
+              )}
             </Box>
           </Form>
         </Box>
-    </Card>
+      </Card>
     </Box>
   );
 };

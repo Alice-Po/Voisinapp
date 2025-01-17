@@ -14,7 +14,7 @@ const useStyles = makeStyles((theme) => ({
     backgroundImage: `radial-gradient(circle at 50% 14em, ${theme.palette.primary.light} 0%, ${theme.palette.primary.main} 100%)`,
     color: theme.palette.primary.contrastText,
     height: 85,
-    position: "relative",
+    position: "relative"
   },
   avatarWrapper: {
     position: "absolute",
@@ -68,7 +68,8 @@ const ProfileCard = () => {
   const isLoading = actor.isLoading;
 
   return (
-    <Card data-testid="profile-card">
+    <Card data-testid="profile-card"
+>
       <Box className={classes.title}>
         <Box
           display="flex"

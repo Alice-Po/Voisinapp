@@ -5,14 +5,14 @@ import { UserMenu } from '@activitypods/react';
 
 const useStyles = makeStyles(theme => ({
   appBar: {
-    backgroundRepeat: 'no-repeat',
-    backgroundSize: 'cover',
-    backgroundImage: `radial-gradient(circle at 50% 8em, ${theme.palette.primary.light} 0%, ${theme.palette.primary.main} 100%)`
+    backgroundColor: '#FFFFFF',
+    borderBottom: '1px solid rgba(0, 0, 0, 0.1)',
+    boxShadow: 'none'
   },
   logo: {
     position: 'relative',
     top: 3,
-    width: 42,
+    width: 32,
     marginRight: 5
   }
 }));
@@ -20,26 +20,36 @@ const useStyles = makeStyles(theme => ({
 const AppBar = () => {
   const classes = useStyles();
   return (
-    <MuiAppBar position="static" sx={{ flexGrow: 1 }} elevation={0} className={classes.appBar}>
+    <MuiAppBar position="sticky" sx={{ flexGrow: 1 }} elevation={0} className={classes.appBar}>
       <Container maxWidth="md">
-        <Toolbar disableGutters>
+        <Toolbar disableGutters sx={{ minHeight: '60px' }}>
           <Link to="/inbox">
             <img src="/logo-transparent.png" className={classes.logo} />
           </Link>
           <Typography
-            variant="h4"
+            variant="h6"
             sx={{
               flexGrow: 1,
               marginLeft: 1,
+              fontWeight: 600,
               '& a': {
-                color: 'white',
+                color: '#1c1e21',
                 textDecoration: 'none'
               }
             }}
           >
-            <Link to="/inbox">Mastopod</Link>
+            <Link to="/home">VoisinApp</Link>
           </Typography>
-          <UserMenu />
+          <UserMenu 
+            sx={{
+              '& .MuiIconButton-root': {
+                color: '#65676B',
+                '&:hover': {
+                  backgroundColor: 'rgba(0, 0, 0, 0.04)'
+                }
+              }
+            }}
+          />
         </Toolbar>
       </Container>
     </MuiAppBar>

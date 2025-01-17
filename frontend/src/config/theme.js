@@ -3,8 +3,8 @@ import { createTheme } from "@mui/material/styles";
 const theme = createTheme({
   palette: {
     primary: {
-      main: "#A7C340",
-      light: "#74A6F0",
+      main: "#0084ff",
+      light: "#4C8BF5",
       contrastText: "#FFFFFF",
     },
     secondary: {
@@ -12,11 +12,15 @@ const theme = createTheme({
       contrastText: "#FFFFFF",
     },
     background: {
-      default: "#DDDDDD",
+      default: "#F0F2F5",
     },
     chat: {
-      outgoing: "#4C8BF5",
-      incoming: "#E9E9E9",
+      outgoing: "#0084ff",
+      incoming: "#E4E6EB",
+      text: {
+        outgoing: "#FFFFFF",
+        incoming: "#050505"
+      }
     }
   },
   components: {
@@ -33,8 +37,8 @@ const theme = createTheme({
     MuiButton: {
       styleOverrides: {
         contained: {
-          borderRadius: 2,
-          padding: "6px 12px",
+          borderRadius: 20,
+          padding: "8px 16px",
           minWidth: 100,
         },
       },
@@ -46,9 +50,27 @@ const theme = createTheme({
       styleOverrides: {
         root: {
           marginBottom: 0,
+          borderRadius: 0,
         },
       },
     },
+    MuiAvatar: {
+      styleOverrides: {
+        root: {
+          backgroundColor: '#65676B'
+        }
+      }
+    },
+    MuiIconButton: {
+      styleOverrides: {
+        root: {
+          color: '#65676B',
+          '&:hover': {
+            backgroundColor: 'rgba(0, 0, 0, 0.04)'
+          }
+        }
+      }
+    }
   },
 });
 

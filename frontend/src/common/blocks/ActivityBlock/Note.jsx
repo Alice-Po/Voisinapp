@@ -122,16 +122,16 @@ const Note = ({ object, activity, clickOnContent }) => {
         display: 'flex',
         flexDirection: 'column',
         alignItems: isOutgoing ? 'flex-end' : 'flex-start',
-        mb: 1,
-        mx: 2,
-        maxWidth: '80%',
-        width: '100%'
+        mb: 1.5,
+        mx: 1,
+        maxWidth: '85%',
+        alignSelf: isOutgoing ? 'flex-end' : 'flex-start'
       }}
     >
       <Box 
         sx={{ 
           display: 'flex',
-          alignItems: 'flex-start',
+          alignItems: 'flex-end',
           flexDirection: isOutgoing ? 'row-reverse' : 'row',
           gap: 1,
           width: '100%'
@@ -143,8 +143,9 @@ const Note = ({ object, activity, clickOnContent }) => {
               src={actor?.image}
               alt={actor?.name}
               sx={{
-                width: 40,
-                height: 40
+                width: 28,
+                height: 28,
+                mb: 0.5
               }}
             />
           </Link>
@@ -153,166 +154,123 @@ const Note = ({ object, activity, clickOnContent }) => {
         <Box
           sx={{
             backgroundColor: isOutgoing ? theme.palette.chat.outgoing : theme.palette.chat.incoming,
+            color: isOutgoing ? theme.palette.chat.text.outgoing : theme.palette.chat.text.incoming,
             borderRadius: isOutgoing ? '18px 18px 4px 18px' : '18px 18px 18px 4px',
             p: 1.5,
             position: 'relative',
-            maxWidth: 'calc(100% - 50px)',
+            maxWidth: '100%',
             width: 'fit-content',
-            boxShadow: '0 1px 0.5px rgba(0, 0, 0, 0.13)'
+            boxShadow: '0 1px 0.5px rgba(0, 0, 0, 0.13)',
+            wordBreak: 'break-word'
           }}
         >
           {!isOutgoing && (
-            <Typography
-              variant="body2"
-              sx={{
+            <Typography 
+              variant="subtitle2" 
+              sx={{ 
                 color: userColor,
-                fontWeight: 500,
+                fontWeight: 600,
+                fontSize: '0.8125rem',
                 mb: 0.5,
-                fontSize: '0.9375rem'
+                lineHeight: 1.2
               }}
             >
-              {actor?.name}
+              <Link to={`/actor/${actor?.username}`} style={{ color: 'inherit', textDecoration: 'none' }}>
+                {actor?.name}
+              </Link>
             </Typography>
           )}
 
-          {clickOnContent ? (
-            <Link 
-              to={`/activity/${encodeURIComponent(activity?.id || object.id)}`} 
-              onClick={onContentClick}
-              sx={{ textDecoration: 'none' }}
-            >
-              <Typography 
-                data-testid="noteContent" 
-                sx={{ 
-                  color: isOutgoing ? '#FFFFFF' : '#000000',
-                  wordBreak: 'break-word',
-                  fontSize: '0.9375rem',
-                  lineHeight: 1.4
-                }} 
-                dangerouslySetInnerHTML={{ __html: content }} 
-              />
-            </Link>
-          ) : (
-            <Typography 
-              sx={{ 
-                color: isOutgoing ? '#FFFFFF' : '#000000',
-                wordBreak: 'break-word',
+          <Box
+            dangerouslySetInnerHTML={{ __html: content }}
+            onClick={clickOnContent ? onContentClick : undefined}
+            sx={{
+              '& a': {
+                color: isOutgoing ? 'inherit' : theme.palette.primary.main,
+                textDecoration: 'none',
+                '&:hover': {
+                  textDecoration: 'underline'
+                }
+              },
+              '& p': {
+                m: 0,
                 fontSize: '0.9375rem',
                 lineHeight: 1.4
-              }} 
-              dangerouslySetInnerHTML={{ __html: content }} 
-            />
-          )}
+              }
+            }}
+          />
 
-          {images && images.map((image, index) => (
-            <img 
-              key={`${image?.url}-${index}`}
-              data-testid="note-image" 
-              src={image?.url} 
-              style={{ 
-                width: "100%", 
-                marginTop: 10,
-                borderRadius: 8
-              }} 
-            />
-          ))}
-
-          {object.geoScope && (
-            <Typography 
-              sx={{ 
-                fontSize: 12,
-                color: isOutgoing ? 'rgba(255,255,255,0.8)' : 'grey.600',
-                mt: 1
+          {images.length > 0 && (
+            <Box
+              sx={{
+                display: 'grid',
+                gap: 1,
+                mt: 1,
+                gridTemplateColumns: images.length === 1 ? '1fr' : 'repeat(2, 1fr)',
+                width: '100%',
+                maxWidth: 400
               }}
             >
-              {`${object.geoScope.radius} km`}
-            </Typography>
+              {images.map((image, index) => (
+                <Box
+                  key={image.url}
+                  sx={{
+                    borderRadius: 2,
+                    overflow: 'hidden',
+                    aspectRatio: '1',
+                    backgroundColor: '#f8f9fa'
+                  }}
+                >
+                  <img
+                    src={image.url}
+                    alt=""
+                    style={{
+                      width: '100%',
+                      height: '100%',
+                      objectFit: 'cover'
+                    }}
+                  />
+                </Box>
+              ))}
+            </Box>
           )}
 
           {object.location && (
-            <Box
-              sx={{
+            <Box 
+              sx={{ 
                 display: 'flex',
                 alignItems: 'center',
                 gap: 0.5,
                 mt: 0.5,
-                mb: -0.5
+                color: isOutgoing ? 'rgba(255,255,255,0.7)' : 'rgba(0,0,0,0.5)',
+                fontSize: '0.75rem'
               }}
             >
-              <LocationOnOutlined 
-                sx={{ 
-                  fontSize: 16,
-                  color: isOutgoing ? 'rgba(255,255,255,0.8)' : 'grey.600',
-                  opacity: 0.8
-                }} 
-              />
-              <Typography 
-                sx={{ 
-                  fontSize: '0.8125rem',
-                  color: isOutgoing ? 'rgba(255,255,255,0.8)' : 'grey.600',
-                  opacity: 0.8
-                }}
-              >
-                {object.location.name} • {object.location.radius} km
-              </Typography>
+              <LocationOnOutlined sx={{ fontSize: '0.875rem' }} />
+              {object.location.name} • {object.location.radius}km
             </Box>
           )}
-
-          <Box 
-            sx={{ 
-              display: 'flex',
-              justifyContent: 'flex-end',
-              alignItems: 'center',
-              mt: 0.5,
-              gap: 1
-            }}
-          >
-            <Box
-              sx={{
-                display: 'flex',
-                alignItems: 'center',
-                gap: 2
-              }}
-            >
-              {object.endTime && (
-                <Typography 
-                  component="span"
-                  data-testid="expiration-date"
-                  sx={{ 
-                    fontSize: '0.8125rem',
-                    color: isOutgoing ? 'rgba(255,255,255,0.8)' : 'grey.600',
-                    opacity: 0.8
-                  }}
-                >
-                  exp. {new Date(object.endTime).toLocaleDateString('fr-FR', {
-                    day: 'numeric',
-                    month: 'numeric'
-                  })}
-                </Typography>
-              )}
-              <Typography 
-                component="span"
-                sx={{ 
-                  fontSize: '0.8125rem',
-                  color: isOutgoing ? 'rgba(255,255,255,0.8)' : 'grey.600',
-                  opacity: 0.8
-                }}
-              >
-                <RelativeDate date={object?.published || object?.["dc:created"] || activity?.published} />
-              </Typography>
-            </Box>
-          </Box>
-
 
           {object.tag && (Array.isArray(object.tag) ? object.tag.length > 0 : true) && (
-            <>
-              <TagDisplay 
-                tags={Array.isArray(object.tag) ? object.tag : [object.tag]} 
-                maxDisplay={3}
-                isOutgoing={isOutgoing}
-              />
-            </>
+            <TagDisplay 
+              tags={Array.isArray(object.tag) ? object.tag : [object.tag]} 
+              maxDisplay={3}
+              isOutgoing={isOutgoing}
+            />
           )}
+
+          <Typography 
+            variant="caption" 
+            sx={{ 
+              display: 'block',
+              mt: 0.5,
+              color: isOutgoing ? 'rgba(255,255,255,0.7)' : 'rgba(0,0,0,0.5)',
+              fontSize: '0.6875rem',
+              textAlign: isOutgoing ? 'right' : 'left'
+            }}
+          >
+            <RelativeDate date={activity?.published || object?.published} />
+          </Typography>
         </Box>
       </Box>
 
@@ -320,8 +278,15 @@ const Note = ({ object, activity, clickOnContent }) => {
         sx={{ 
           display: 'flex',
           gap: 1,
-          mt: 0.5,
-          [isOutgoing ? 'mr' : 'ml']: 7
+          mt: 1,
+          [isOutgoing ? 'mr' : 'ml']: 3,
+          '& .MuiIconButton-root': {
+            padding: '4px',
+            '& svg': {
+              width: '0.9rem',
+              height: '0.9rem'
+            }
+          }
         }}
       >
         <ReplyButton key={`reply-${object.id || activity.id}`} objectUri={object.id || activity.id} />

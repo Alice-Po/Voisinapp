@@ -1,6 +1,7 @@
 [![SemApps](https://badgen.net/badge/Powered%20by/SemApps/28CDFB)](https://semapps.org)
 
-# Mastopod
+# Voisinapp
+ fork of [Mastopod](https://github.com/activitypods/mastopod)
 
 A Mastodon-compatible app that saves all data on your Pod.
 
