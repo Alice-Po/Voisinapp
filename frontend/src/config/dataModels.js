@@ -20,7 +20,7 @@ const dataModels = {
     list: {},
   },
   Tag: {
-    types: ["as:Tag"],
+    types: ["skos:Concept"],
     list: {},
   }
 };

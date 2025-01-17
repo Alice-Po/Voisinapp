@@ -20,7 +20,7 @@ const dataServers = {
     sparqlEndpoint: 'http://localhost:3004/sparql',
     containers: {
       app: {
-        'as:Tag': ['/tags']
+        'skos:Concept': ['/taxonomy']
       }
     }
   }

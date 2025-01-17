@@ -108,7 +108,7 @@ const PostBlock = ({ inReplyTo, mention }) => {
         }
 
         const formattedTags = selectedTags.map(tag => ({
-          type: 'Tag',
+          type: 'skos:Concept',
           name: tag.prefLabel,
           color: tag.color
         }));
