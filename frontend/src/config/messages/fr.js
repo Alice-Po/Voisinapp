@@ -18,6 +18,7 @@ export default {
       feed: 'Fil d\'actualités',
       followers: 'Abonnés',
       following: 'Abonnements',
+      about: 'À propos',
       posts: 'Messages',
       posts_and_replies: 'Messages & Réponses'
     },

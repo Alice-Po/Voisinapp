@@ -114,7 +114,7 @@ const PostBlock = ({ inReplyTo, mention }) => {
           const tagColor = tag.color || getTagColor(tag.prefLabel || tag.inputValue);
           const label = tag.prefLabel || tag.inputValue;
           return {
-            type: 'skos:Concept',
+          type: 'skos:Concept',
             'skos:prefLabel': label,
             'schema:color': tagColor
           };
@@ -143,6 +143,11 @@ const PostBlock = ({ inReplyTo, mention }) => {
 
         console.log('=== Activité complète avant envoi ===');
         console.log('Activity:', JSON.stringify(activity, null, 2));
+
+        if (imageFiles.length > 0) {
+          const attachments = await handleAttachments();
+          activity.attachment = attachments;
+        }
 
         const activityUri = await outbox.post(activity);
         console.log('URI de l\'activité créée:', activityUri);
@@ -204,18 +209,22 @@ const PostBlock = ({ inReplyTo, mention }) => {
   }, []);
 
   return (
-    <Box>
+    <Box sx={{ 
+      position: { xs: 'fixed', sm: 'static' },
+      bottom: { xs: 0, sm: 'auto' },
+      left: { xs: 0, sm: 'auto' },
+      right: { xs: 0, sm: 'auto' },
+      zIndex: 1200,
+      width: '100%'
+    }}>
       <Card 
         data-testid="post-block"
         sx={{
-          borderRadius: '24px 24px 0 0',
+          borderRadius: { xs: '24px 24px 0 0', sm: '12px' },
           boxShadow: 'none',
           backgroundColor: '#fff',
-          position: 'sticky',
-          bottom: 0,
-          zIndex: 10,
           border: '1px solid rgba(0, 0, 0, 0.08)',
-          borderBottom: 'none'
+          borderBottom: { xs: 'none', sm: '1px solid rgba(0, 0, 0, 0.08)' }
         }}
       >
         <Box p={2} position="relative">
@@ -289,56 +298,56 @@ const PostBlock = ({ inReplyTo, mention }) => {
                 </Box>
               </Box>
 
-              {imageFiles.length > 0 && (
+            {imageFiles.length > 0 && (
                 <Box sx={{ display: 'flex', gap: 1, flexWrap: 'wrap' }}>
-                  {imageFiles.map((image, index) => (
-                    <Box
-                      key={image.preview}
-                      sx={{
+                {imageFiles.map((image, index) => (
+                  <Box
+                    key={image.preview}
+                    sx={{
                         height: 90,
                         width: 90,
                         borderRadius: '12px',
-                        overflow: 'hidden',
-                        position: 'relative',
+                      overflow: 'hidden',
+                      position: 'relative',
                         backgroundColor: '#f8f9fa'
-                      }}
-                    >
-                      <img
-                        src={image.preview}
-                        alt="Preview"
-                        style={{
-                          width: '100%',
-                          height: '100%',
+                    }}
+                  >
+                    <img
+                      src={image.preview}
+                      alt="Preview"
+                      style={{
+                        width: '100%',
+                        height: '100%',
                           objectFit: 'cover'
-                        }}
-                      />
-                      <IconButton
-                        onClick={() => handleRemoveImage(index)}
-                        sx={{
-                          position: 'absolute',
-                          top: 4,
-                          right: 4,
-                          backgroundColor: 'rgba(0, 0, 0, 0.5)',
-                          color: 'white',
-                          padding: '4px',
-                          '&:hover': {
+                      }}
+                    />
+                    <IconButton
+                      onClick={() => handleRemoveImage(index)}
+                      sx={{
+                        position: 'absolute',
+                        top: 4,
+                        right: 4,
+                        backgroundColor: 'rgba(0, 0, 0, 0.5)',
+                        color: 'white',
+                        padding: '4px',
+                        '&:hover': {
                             backgroundColor: 'rgba(0, 0, 0, 0.7)'
-                          }
-                        }}
-                        size="small"
-                      >
-                        <DeleteIcon fontSize="small" />
-                      </IconButton>
-                    </Box>
-                  ))}
-                </Box>
-              )}
+                        }
+                      }}
+                      size="small"
+                    >
+                      <DeleteIcon fontSize="small" />
+                    </IconButton>
+                  </Box>
+                ))}
+              </Box>
+            )}
             </Box>
 
             <Box sx={{ mt: 1 }}>
               <Button
                 onClick={() => setShowOptions(!showOptions)}
-                sx={{
+                sx={{ 
                   color: '#65676B',
                   textTransform: 'none',
                   fontSize: '0.8125rem',
@@ -450,18 +459,18 @@ const PostBlock = ({ inReplyTo, mention }) => {
                       <Typography variant="caption" sx={{ color: '#65676B', mb: 0.5, display: 'block' }}>
                         Tags
                       </Typography>
-                      <TagSelector
-                        value={selectedTags}
-                        onChange={handleTagChange}
-                      />
-                    </Box>
+                <TagSelector
+                  value={selectedTags}
+                  onChange={handleTagChange}
+                />
+              </Box>
                   </Box>
                 </Box>
               )}
             </Box>
           </Form>
         </Box>
-      </Card>
+    </Card>
     </Box>
   );
 };

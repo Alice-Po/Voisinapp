@@ -156,78 +156,51 @@ const Note = ({ object, activity, clickOnContent }) => {
             backgroundColor: isOutgoing ? theme.palette.chat.outgoing : theme.palette.chat.incoming,
             color: isOutgoing ? theme.palette.chat.text.outgoing : theme.palette.chat.text.incoming,
             borderRadius: isOutgoing ? '18px 18px 4px 18px' : '18px 18px 18px 4px',
-            p: 1.5,
             position: 'relative',
             maxWidth: '100%',
             width: 'fit-content',
             boxShadow: '0 1px 0.5px rgba(0, 0, 0, 0.13)',
-            wordBreak: 'break-word'
+            wordBreak: 'break-word',
+            overflow: 'hidden'
           }}
         >
           {!isOutgoing && (
-            <Typography 
+            <Typography
               variant="subtitle2" 
-              sx={{ 
+              sx={{
                 color: userColor,
                 fontWeight: 600,
                 fontSize: '0.8125rem',
                 mb: 0.5,
-                lineHeight: 1.2
+                lineHeight: 1.2,
+                px: 1.5,
+                pt: 1
               }}
             >
               <Link to={`/actor/${actor?.username}`} style={{ color: 'inherit', textDecoration: 'none' }}>
-                {actor?.name}
+              {actor?.name}
               </Link>
             </Typography>
           )}
 
-          <Box
-            dangerouslySetInnerHTML={{ __html: content }}
-            onClick={clickOnContent ? onContentClick : undefined}
-            sx={{
-              '& a': {
-                color: isOutgoing ? 'inherit' : theme.palette.primary.main,
-                textDecoration: 'none',
-                '&:hover': {
-                  textDecoration: 'underline'
-                }
-              },
-              '& p': {
-                m: 0,
-                fontSize: '0.9375rem',
-                lineHeight: 1.4
-              }
-            }}
-          />
-
           {images.length > 0 && (
-            <Box
-              sx={{
-                display: 'grid',
-                gap: 1,
-                mt: 1,
-                gridTemplateColumns: images.length === 1 ? '1fr' : 'repeat(2, 1fr)',
-                width: '100%',
-                maxWidth: 400
-              }}
-            >
+            <Box sx={{ width: '100%', mb: images.length > 0 ? 0 : 1 }}>
               {images.map((image, index) => (
                 <Box
                   key={image.url}
                   sx={{
-                    borderRadius: 2,
-                    overflow: 'hidden',
-                    aspectRatio: '1',
-                    backgroundColor: '#f8f9fa'
+                    width: '100%',
+                    marginBottom: index < images.length - 1 ? 1 : 0
                   }}
                 >
                   <img
                     src={image.url}
                     alt=""
+                    data-testid="note-image"
                     style={{
                       width: '100%',
-                      height: '100%',
-                      objectFit: 'cover'
+                      display: 'block',
+                      borderRadius: !isOutgoing && index === 0 ? '0 18px 0 0' : '0'
                     }}
                   />
                 </Box>
@@ -235,42 +208,63 @@ const Note = ({ object, activity, clickOnContent }) => {
             </Box>
           )}
 
+          <Box sx={{ p: 1.5 }}>
+            <Box
+              dangerouslySetInnerHTML={{ __html: content }}
+              onClick={clickOnContent ? onContentClick : undefined}
+                sx={{ 
+                '& a': {
+                  color: isOutgoing ? 'inherit' : theme.palette.primary.main,
+                  textDecoration: 'none',
+                  '&:hover': {
+                    textDecoration: 'underline'
+                  }
+                },
+                '& p': {
+                  m: 0,
+                  fontSize: '0.9375rem',
+                  lineHeight: 1.4
+                }
+              }}
+            />
+
           {object.location && (
-            <Box 
-              sx={{ 
+            <Box
+              sx={{
                 display: 'flex',
                 alignItems: 'center',
                 gap: 0.5,
                 mt: 0.5,
-                color: isOutgoing ? 'rgba(255,255,255,0.7)' : 'rgba(0,0,0,0.5)',
-                fontSize: '0.75rem'
-              }}
-            >
-              <LocationOnOutlined sx={{ fontSize: '0.875rem' }} />
-              {object.location.name} • {object.location.radius}km
+                  color: isOutgoing ? 'rgba(255,255,255,0.7)' : 'rgba(0,0,0,0.5)',
+                  fontSize: '0.75rem'
+                }}
+              >
+                <LocationOnOutlined sx={{ fontSize: '0.875rem' }} />
+                {object.location.name} • {object.location.radius}km
             </Box>
           )}
 
-          {object.tag && (Array.isArray(object.tag) ? object.tag.length > 0 : true) && (
-            <TagDisplay 
-              tags={Array.isArray(object.tag) ? object.tag : [object.tag]} 
-              maxDisplay={3}
-              isOutgoing={isOutgoing}
-            />
-          )}
+            {object.tag && (Array.isArray(object.tag) ? object.tag.length > 0 : true) && (
+              <TagDisplay 
+                tags={Array.isArray(object.tag) ? object.tag : [object.tag]} 
+                maxDisplay={3}
+                isOutgoing={isOutgoing}
+              />
+            )}
 
-          <Typography 
-            variant="caption" 
+            <Typography 
+              variant="caption" 
             sx={{ 
-              display: 'block',
+                display: 'block',
               mt: 0.5,
-              color: isOutgoing ? 'rgba(255,255,255,0.7)' : 'rgba(0,0,0,0.5)',
-              fontSize: '0.6875rem',
-              textAlign: isOutgoing ? 'right' : 'left'
-            }}
-          >
-            <RelativeDate date={activity?.published || object?.published} />
-          </Typography>
+                color: isOutgoing ? 'rgba(255,255,255,0.7)' : 'rgba(0,0,0,0.5)',
+                fontSize: '0.6875rem',
+                textAlign: isOutgoing ? 'right' : 'left'
+              }}
+            >
+              <RelativeDate date={activity?.published || object?.published} />
+              </Typography>
+          </Box>
         </Box>
       </Box>
 

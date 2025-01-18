@@ -17,7 +17,8 @@ export default {
       followers: 'Followers',
       following: 'Following',
       posts: 'Posts',
-      posts_and_replies: 'Posts & Replies'
+      posts_and_replies: 'Posts & Replies',
+      about: 'About',
     },
     card: {
       find_user: 'Find user'

@@ -12,6 +12,17 @@ const FindUserCard = ({ stripCard }) => {
 
   return stripCard ? (
     <Form onSubmit={onSubmit}>
+      <Typography 
+        variant="body2" 
+        sx={{ 
+          color: '#65676B',
+          fontSize: '0.8125rem',
+          mb: 1,
+          fontWeight: 500
+        }}
+      >
+        Rechercher un utilisateur
+      </Typography>
       <SearchInput 
         placeholder="Rechercher un utilisateur (@user@instance.com)"
         source="username" 
@@ -32,8 +43,8 @@ const FindUserCard = ({ stripCard }) => {
             padding: '8px 16px',
             fontSize: '0.9375rem',
             '&::placeholder': {
-              color: '#65676B',
-              opacity: 1
+              color: '#050505',
+              opacity: 0.6
             }
           }
         }}
@@ -78,6 +89,7 @@ const FindUserCard = ({ stripCard }) => {
           {translate('app.helper.find_user')}
         </Typography>
         <Form onSubmit={onSubmit}>
+
           <SearchInput
             placeholder="Rechercher un utilisateur (@user@instance.com)"
             source="username"
@@ -98,8 +110,8 @@ const FindUserCard = ({ stripCard }) => {
                 padding: '8px 16px',
                 fontSize: '0.9375rem',
                 '&::placeholder': {
-                  color: '#65676B',
-                  opacity: 1
+                  color: '#050505',
+                  opacity: 0.6
                 }
               }
             }}

@@ -6,6 +6,7 @@ import { useTranslate } from 'react-admin';
 import HomeIcon from '@mui/icons-material/Home';
 import PeopleIcon from '@mui/icons-material/People';
 import PersonAddIcon from '@mui/icons-material/PersonAdd';
+import InfoIcon from '@mui/icons-material/Info';
 import useActorContext from '../../hooks/useActorContext';
 
 const SubBar = () => {
@@ -37,7 +38,7 @@ const SubBar = () => {
       {!isMobile && <span>{label}</span>}
       {count !== undefined && (
         <Box component="span" sx={{ 
-          fontSize: '0.85rem',
+          fontSize: { xs: '0.75rem', sm: '0.85rem' },
           color: '#65676B',
           ml: { xs: 0, sm: 0.5 },
           position: { xs: 'absolute', sm: 'static' },
@@ -46,7 +47,6 @@ const SubBar = () => {
           backgroundColor: { xs: '#E4E6EB', sm: 'transparent' },
           padding: { xs: '0 6px', sm: 0 },
           borderRadius: { xs: '10px', sm: 0 },
-          fontSize: { xs: '0.75rem', sm: '0.85rem' },
           minWidth: { xs: '16px', sm: 'auto' },
           textAlign: { xs: 'center', sm: 'left' }
         }}>
@@ -128,6 +128,19 @@ const SubBar = () => {
               />
             }
             value="/following"
+            sx={{ 
+              fontWeight: 'normal',
+              minWidth: 'auto'
+            }}
+          />
+          <Tab
+            label={
+              <TabLabel 
+                icon={<InfoIcon />} 
+                label={translate('app.page.about')}
+              />
+            }
+            value="/about"
             sx={{ 
               fontWeight: 'normal',
               minWidth: 'auto'

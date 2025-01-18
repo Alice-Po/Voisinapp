@@ -19,6 +19,7 @@ import Home from './pages/MainPage/Home';
 import Followers from './pages/MainPage/Followers';
 import ActivityPage from './pages/ActivityPage/ActivityPage';
 import Following from './pages/MainPage/Following';
+import About from './pages/MainPage/About';
 
 import theme from './config/theme';
 import i18nProvider from './config/i18nProvider';
@@ -68,9 +69,10 @@ export const App = () => (
       </CustomRoutes>
       <CustomRoutes>
         <Route element={<MainPage />}>
-        <Route path="home" element={<Home />} />
+          <Route path="home" element={<Home />} />
           <Route path="followers" element={<Followers />} />
           <Route path="following" element={<Following />} />
+          <Route path="about" element={<About />} />
         </Route>
         <Route path="/activity/:activityUri" element={<ActivityPage />} />
         <Route path="/actor/:username" element={<ActorPage />}>
