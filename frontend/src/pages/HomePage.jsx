@@ -64,7 +64,13 @@ const HomePage = () => {
       </Box>
       <p>{new Date(Date.now()).toISOString()}</p>
       <Box className={classes.root}>
-        <img src="/logo-transparent.png" style={{ width: 150 }} />
+        <img
+          src="/logo-transparent.png"
+          style={{
+            width: 150,
+            filter: 'brightness(0) invert(1)'
+          }}
+        />
         <Typography variant="h4" className={classes.title}>
           {import.meta.env.VITE_APP_NAME}
         </Typography>
