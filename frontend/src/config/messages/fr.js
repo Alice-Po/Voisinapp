@@ -15,7 +15,7 @@ export default {
     page: {
       my_inbox: 'Boîte de réception',
       my_outbox: "Boîte d'envoi",
-      feed: 'Fil d\'actualités',
+      feed: "Fil d'actualités",
       followers: 'Abonnés',
       following: 'Abonnements',
       about: 'À propos',
@@ -47,15 +47,22 @@ export default {
     notification: {
       message_sent: 'Votre message a été envoyé',
       message_send_error: 'Erreur en envoyant le message: %{error}',
+      activity_send_error: "Erreur lors de l'envoi de l'activité : %{error}",
       post_boosted: 'Le message a été boosté',
       post_liked: 'Le message a été liké',
       post_like_removed: 'Le like du message a été enlevé',
       actor_followed: 'Vous suivez maintenant cet acteur',
       actor_unfollowed: 'Vous ne suivez plus cet acteur',
-      image_upload_error: 'Echec de l\'upload de l\'image',
+      image_upload_error: "Echec de l'upload de l'image"
     },
     validation: {
       radius_range: 'Le rayon doit être compris entre 0 et 50 kilomètres'
+    },
+    tag: {
+      create: 'Créer un nouveau tag',
+      label: 'Nom du tag',
+      add: 'Ajouter un tag',
+      cancel: 'Annuler'
     }
   }
 };

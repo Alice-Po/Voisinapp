@@ -7,23 +7,30 @@ import {
   useGetIdentity,
   useRedirect,
   useDataProvider
-} from "react-admin";
-import { useLocation } from "react-router-dom";
-import { Card, Box, Button, IconButton, CircularProgress, Backdrop, Typography, InputBase, TextField, InputAdornment } from "@mui/material";
-import SendIcon from "@mui/icons-material/Send";
-import InsertPhotoIcon from "@mui/icons-material/InsertPhoto";
-import DeleteIcon from "@mui/icons-material/Delete";
+} from 'react-admin';
+import { useLocation } from 'react-router-dom';
 import {
-  useOutbox,
-  OBJECT_TYPES,
-  PUBLIC_URI,
-} from "@semapps/activitypub-components";
+  Card,
+  Box,
+  Button,
+  IconButton,
+  CircularProgress,
+  Backdrop,
+  Typography,
+  InputBase,
+  TextField,
+  InputAdornment
+} from '@mui/material';
+import SendIcon from '@mui/icons-material/Send';
+import InsertPhotoIcon from '@mui/icons-material/InsertPhoto';
+import DeleteIcon from '@mui/icons-material/Delete';
+import { useOutbox, OBJECT_TYPES, PUBLIC_URI } from '@semapps/activitypub-components';
 import { reverseGeocode } from '../../utils/geocoding';
 import TagSelector from '../components/TagSelector';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import ExpandLessIcon from '@mui/icons-material/ExpandLess';
 
-const validateExpirationDate = (value) => {
+const validateExpirationDate = value => {
   if (!value) return undefined;
   const expirationDate = new Date(value);
   const today = new Date();
@@ -47,49 +54,51 @@ const PostBlock = ({ inReplyTo, mention }) => {
   const [showOptions, setShowOptions] = useState(false);
 
   useEffect(() => {
-    if (hash === "#reply" && inputRef.current) {
+    if (hash === '#reply' && inputRef.current) {
       inputRef.current.focus();
     }
   }, [hash, inputRef.current]);
 
-  const uploadImage = useCallback(async (file) => {
-    try {
-      let imageUrl = await dataProvider.uploadFile(file);
-      return imageUrl;
-    } catch (error) {
-      console.error(error);
-      throw new Error(translate("app.notification.image_upload_error"));
-    }
-  }, [dataProvider, translate]);
+  const uploadImage = useCallback(
+    async file => {
+      try {
+        let imageUrl = await dataProvider.uploadFile(file);
+        return imageUrl;
+      } catch (error) {
+        console.error(error);
+        throw new Error(translate('app.notification.image_upload_error'));
+      }
+    },
+    [dataProvider, translate]
+  );
 
-  const handleAttachments = useCallback(async () =>  {
+  const handleAttachments = useCallback(async () => {
     const attachments = await Promise.all(
-      imageFiles.map(async (file) => {
+      imageFiles.map(async file => {
         const imageUrl = await uploadImage(file.file);
         return {
-          type: "Image",
+          type: 'Image',
           mediaType: file.type,
-          url: imageUrl,
+          url: imageUrl
         };
       })
     );
     return attachments;
   }, [imageFiles, uploadImage]);
 
-  const clearForm = useCallback(() =>  {
-    imageFiles.forEach((image) => URL.revokeObjectURL(image.preview));
+  const clearForm = useCallback(() => {
+    imageFiles.forEach(image => URL.revokeObjectURL(image.preview));
     setImageFiles([]);
   }, []);
 
-  const handleTagChange = (newTags) => {
+  const handleTagChange = newTags => {
     console.log('=== Changement de tags ===');
     console.log('Nouveaux tags:', newTags);
-    console.log('Format des tags:', JSON.stringify(newTags, null, 2));
     setSelectedTags(newTags);
   };
 
   const onSubmit = useCallback(
-    async (values) => {
+    async values => {
       if (!content.trim()) return;
 
       console.log('=== Début soumission du formulaire ===');
@@ -99,10 +108,10 @@ const PostBlock = ({ inReplyTo, mention }) => {
       try {
         const latitude = identity?.profileData?.['vcard:hasGeo']?.['vcard:latitude'];
         const longitude = identity?.profileData?.['vcard:hasGeo']?.['vcard:longitude'];
-        
-        let locationName = "Location inconnue";
 
-        console.log(identity)
+        let locationName = 'Location inconnue';
+
+        console.log(identity);
         if (latitude && longitude) {
           const geoData = await reverseGeocode(latitude, longitude);
           if (geoData?.city) {
@@ -110,17 +119,13 @@ const PostBlock = ({ inReplyTo, mention }) => {
           }
         }
 
-        const formattedTags = selectedTags.map(tag => {
-          const tagColor = tag.color || getTagColor(tag.prefLabel || tag.inputValue);
-          const label = tag.prefLabel || tag.inputValue;
-          return {
+        const formattedTags = selectedTags.map(tag => ({
           type: 'skos:Concept',
-            'skos:prefLabel': label,
-            'schema:color': tagColor
-          };
-        });
+          'skos:prefLabel': tag['skos:prefLabel'],
+          'schema:color': tag['schema:color']
+        }));
 
-        console.log('Tags formatés pour l\'activité:', formattedTags);
+        console.log("Tags formatés pour l'activité:", formattedTags);
 
         const activity = {
           type: OBJECT_TYPES.NOTE,
@@ -132,7 +137,7 @@ const PostBlock = ({ inReplyTo, mention }) => {
             : [PUBLIC_URI, identity?.webIdData?.followers],
           ...(values.endTime && { endTime: values.endTime }),
           location: {
-            type: "Place",
+            type: 'Place',
             name: locationName,
             latitude,
             longitude,
@@ -150,7 +155,7 @@ const PostBlock = ({ inReplyTo, mention }) => {
         }
 
         const activityUri = await outbox.post(activity);
-        console.log('URI de l\'activité créée:', activityUri);
+        console.log("URI de l'activité créée:", activityUri);
 
         try {
           const createdNote = await dataProvider.getOne('Note', { id: activityUri });
@@ -161,7 +166,7 @@ const PostBlock = ({ inReplyTo, mention }) => {
           console.error('Erreur lors de la récupération de la note:', error);
         }
 
-        notify("app.notification.message_sent", { type: "success" });
+        notify('app.notification.message_sent', { type: 'success' });
         clearForm();
         setContent('');
         setSelectedTags([]);
@@ -172,29 +177,41 @@ const PostBlock = ({ inReplyTo, mention }) => {
       } catch (e) {
         console.error('=== Erreur lors de la soumission ===');
         console.error('Erreur:', e);
-        console.log('État des tags au moment de l\'erreur:', selectedTags);
-        notify("app.notification.activity_send_error", {
-          type: "error",
-          messageArgs: { error: e.message },
+        console.log("État des tags au moment de l'erreur:", selectedTags);
+        notify('app.notification.activity_send_error', {
+          type: 'error',
+          messageArgs: { error: e.message }
         });
       } finally {
         setIsSubmitting(false);
       }
     },
-    [content, outbox, identity, notify, mention, inReplyTo, redirect, handleAttachments, clearForm, radius, selectedTags]
+    [
+      content,
+      outbox,
+      identity,
+      notify,
+      mention,
+      inReplyTo,
+      redirect,
+      handleAttachments,
+      clearForm,
+      radius,
+      selectedTags
+    ]
   );
 
-  const handleFileChange = useCallback((event) => {
+  const handleFileChange = useCallback(event => {
     const files = Array.from(event.target.files);
-    const newFiles = files.map((file) => ({
+    const newFiles = files.map(file => ({
       file,
-      preview: URL.createObjectURL(file),
+      preview: URL.createObjectURL(file)
     }));
-    setImageFiles((prevFiles) => [...prevFiles, ...newFiles]);
+    setImageFiles(prevFiles => [...prevFiles, ...newFiles]);
   }, []);
 
-  const handleRemoveImage = useCallback((index) => {
-    setImageFiles((prevFiles) => {
+  const handleRemoveImage = useCallback(index => {
+    setImageFiles(prevFiles => {
       const updatedFiles = [...prevFiles];
       const [removedFile] = updatedFiles.splice(index, 1);
       URL.revokeObjectURL(removedFile.preview);
@@ -204,20 +221,22 @@ const PostBlock = ({ inReplyTo, mention }) => {
 
   useEffect(() => {
     return () => {
-      imageFiles.forEach((image) => URL.revokeObjectURL(image.preview));
+      imageFiles.forEach(image => URL.revokeObjectURL(image.preview));
     };
   }, []);
 
   return (
-    <Box sx={{ 
-      position: { xs: 'fixed', sm: 'static' },
-      bottom: { xs: 0, sm: 'auto' },
-      left: { xs: 0, sm: 'auto' },
-      right: { xs: 0, sm: 'auto' },
-      zIndex: 1200,
-      width: '100%'
-    }}>
-      <Card 
+    <Box
+      sx={{
+        position: { xs: 'fixed', sm: 'static' },
+        bottom: { xs: 0, sm: 'auto' },
+        left: { xs: 0, sm: 'auto' },
+        right: { xs: 0, sm: 'auto' },
+        zIndex: 1200,
+        width: '100%'
+      }}
+    >
+      <Card
         data-testid="post-block"
         sx={{
           borderRadius: { xs: '24px 24px 0 0', sm: '12px' },
@@ -229,18 +248,20 @@ const PostBlock = ({ inReplyTo, mention }) => {
       >
         <Box p={2} position="relative">
           <Form onSubmit={onSubmit}>
-            <Box sx={{ 
-              display: 'flex', 
-              flexDirection: 'column', 
-              gap: 2,
-              pb: 2,
-              borderBottom: '1px solid rgba(0, 0, 0, 0.08)'
-            }}>
+            <Box
+              sx={{
+                display: 'flex',
+                flexDirection: 'column',
+                gap: 2,
+                pb: 2,
+                borderBottom: '1px solid rgba(0, 0, 0, 0.08)'
+              }}
+            >
               <Box sx={{ display: 'flex', alignItems: 'flex-end', gap: 1 }}>
                 <InputBase
                   data-testid="message-input"
                   value={content}
-                  onChange={(e) => setContent(e.target.value)}
+                  onChange={e => setContent(e.target.value)}
                   placeholder={translate('app.placeholder.message')}
                   multiline
                   maxRows={4}
@@ -270,13 +291,7 @@ const PostBlock = ({ inReplyTo, mention }) => {
                     }}
                     disabled={isSubmitting}
                   >
-                    <input
-                      type="file"
-                      accept="image/*"
-                      multiple
-                      hidden
-                      onChange={handleFileChange}
-                    />
+                    <input type="file" accept="image/*" multiple hidden onChange={handleFileChange} />
                     <InsertPhotoIcon sx={{ fontSize: '1.4rem' }} />
                   </IconButton>
                   <IconButton
@@ -298,56 +313,56 @@ const PostBlock = ({ inReplyTo, mention }) => {
                 </Box>
               </Box>
 
-            {imageFiles.length > 0 && (
+              {imageFiles.length > 0 && (
                 <Box sx={{ display: 'flex', gap: 1, flexWrap: 'wrap' }}>
-                {imageFiles.map((image, index) => (
-                  <Box
-                    key={image.preview}
-                    sx={{
+                  {imageFiles.map((image, index) => (
+                    <Box
+                      key={image.preview}
+                      sx={{
                         height: 90,
                         width: 90,
                         borderRadius: '12px',
-                      overflow: 'hidden',
-                      position: 'relative',
+                        overflow: 'hidden',
+                        position: 'relative',
                         backgroundColor: '#f8f9fa'
-                    }}
-                  >
-                    <img
-                      src={image.preview}
-                      alt="Preview"
-                      style={{
-                        width: '100%',
-                        height: '100%',
-                          objectFit: 'cover'
                       }}
-                    />
-                    <IconButton
-                      onClick={() => handleRemoveImage(index)}
-                      sx={{
-                        position: 'absolute',
-                        top: 4,
-                        right: 4,
-                        backgroundColor: 'rgba(0, 0, 0, 0.5)',
-                        color: 'white',
-                        padding: '4px',
-                        '&:hover': {
-                            backgroundColor: 'rgba(0, 0, 0, 0.7)'
-                        }
-                      }}
-                      size="small"
                     >
-                      <DeleteIcon fontSize="small" />
-                    </IconButton>
-                  </Box>
-                ))}
-              </Box>
-            )}
+                      <img
+                        src={image.preview}
+                        alt="Preview"
+                        style={{
+                          width: '100%',
+                          height: '100%',
+                          objectFit: 'cover'
+                        }}
+                      />
+                      <IconButton
+                        onClick={() => handleRemoveImage(index)}
+                        sx={{
+                          position: 'absolute',
+                          top: 4,
+                          right: 4,
+                          backgroundColor: 'rgba(0, 0, 0, 0.5)',
+                          color: 'white',
+                          padding: '4px',
+                          '&:hover': {
+                            backgroundColor: 'rgba(0, 0, 0, 0.7)'
+                          }
+                        }}
+                        size="small"
+                      >
+                        <DeleteIcon fontSize="small" />
+                      </IconButton>
+                    </Box>
+                  ))}
+                </Box>
+              )}
             </Box>
 
             <Box sx={{ mt: 1 }}>
               <Button
                 onClick={() => setShowOptions(!showOptions)}
-                sx={{ 
+                sx={{
                   color: '#65676B',
                   textTransform: 'none',
                   fontSize: '0.8125rem',
@@ -363,34 +378,42 @@ const PostBlock = ({ inReplyTo, mention }) => {
               </Button>
 
               {showOptions && (
-                <Box sx={{ 
-                  mt: 1,
-                  display: 'flex', 
-                  flexDirection: 'column',
-                  backgroundColor: '#f8f9fa',
-                  borderRadius: '12px',
-                  p: 1
-                }}>
-                  <Box sx={{ 
-                    display: 'flex', 
-                    flexDirection: { xs: 'column', sm: 'row' },
-                    alignItems: { xs: 'stretch', sm: 'center' },
-                    gap: 1 
-                  }}>
-                    <Box sx={{ 
-                      width: { xs: '100%', sm: '33%' }
-                    }}>
+                <Box
+                  sx={{
+                    mt: 1,
+                    display: 'flex',
+                    flexDirection: 'column',
+                    backgroundColor: '#f8f9fa',
+                    borderRadius: '12px',
+                    p: 1
+                  }}
+                >
+                  <Box
+                    sx={{
+                      display: 'flex',
+                      flexDirection: { xs: 'column', sm: 'row' },
+                      alignItems: { xs: 'stretch', sm: 'center' },
+                      gap: 1
+                    }}
+                  >
+                    <Box
+                      sx={{
+                        width: { xs: '100%', sm: '33%' }
+                      }}
+                    >
                       <Typography variant="caption" sx={{ color: '#65676B', mb: 0.5, display: 'block' }}>
                         Expire le
                       </Typography>
-                      <Box sx={{ 
-                        backgroundColor: '#fff',
-                        borderRadius: '8px',
-                        height: '32px',
-                        display: 'flex',
-                        alignItems: 'center',
-                        overflow: 'hidden'
-                      }}>
+                      <Box
+                        sx={{
+                          backgroundColor: '#fff',
+                          borderRadius: '8px',
+                          height: '32px',
+                          display: 'flex',
+                          alignItems: 'center',
+                          overflow: 'hidden'
+                        }}
+                      >
                         <DateTimeInput
                           source="endTime"
                           validate={validateExpirationDate}
@@ -409,15 +432,17 @@ const PostBlock = ({ inReplyTo, mention }) => {
                         />
                       </Box>
                     </Box>
-                    <Box sx={{ 
-                      width: { xs: '100%', sm: 'auto' },
-                      minWidth: { sm: '80px' }
-                    }}>
+                    <Box
+                      sx={{
+                        width: { xs: '100%', sm: 'auto' },
+                        minWidth: { sm: '80px' }
+                      }}
+                    >
                       <Typography variant="caption" sx={{ color: '#65676B', mb: 0.5, display: 'block' }}>
                         Rayon
                       </Typography>
-                      <Box 
-                        sx={{ 
+                      <Box
+                        sx={{
                           display: 'flex',
                           backgroundColor: '#fff',
                           borderRadius: '8px',
@@ -431,7 +456,7 @@ const PostBlock = ({ inReplyTo, mention }) => {
                           data-testid="radius-input"
                           type="number"
                           value={radius}
-                          onChange={(e) => setRadius(e.target.value)}
+                          onChange={e => setRadius(e.target.value)}
                           sx={{
                             flex: { xs: 1, sm: 'none' },
                             '& input': {
@@ -443,34 +468,35 @@ const PostBlock = ({ inReplyTo, mention }) => {
                             }
                           }}
                         />
-                        <Typography sx={{ 
-                          color: '#65676B', 
-                          fontSize: '0.875rem',
-                          ml: 1,
-                          whiteSpace: 'nowrap'
-                        }}>
+                        <Typography
+                          sx={{
+                            color: '#65676B',
+                            fontSize: '0.875rem',
+                            ml: 1,
+                            whiteSpace: 'nowrap'
+                          }}
+                        >
                           km
                         </Typography>
                       </Box>
                     </Box>
-                    <Box sx={{ 
-                      width: { xs: '100%', sm: '33%' }
-                    }}>
+                    <Box
+                      sx={{
+                        width: { xs: '100%', sm: '33%' }
+                      }}
+                    >
                       <Typography variant="caption" sx={{ color: '#65676B', mb: 0.5, display: 'block' }}>
                         Tags
                       </Typography>
-                <TagSelector
-                  value={selectedTags}
-                  onChange={handleTagChange}
-                />
-              </Box>
+                      <TagSelector selectedTags={selectedTags} onChange={handleTagChange} />
+                    </Box>
                   </Box>
                 </Box>
               )}
             </Box>
           </Form>
         </Box>
-    </Card>
+      </Card>
     </Box>
   );
 };

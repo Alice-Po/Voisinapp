@@ -16,13 +16,7 @@ const dataServers = {
     uploadsContainer: '/semapps/file'
   },
   app: {
-    baseUrl: 'http://localhost:3004',
-    sparqlEndpoint: 'http://localhost:3004/sparql',
-    containers: {
-      app: {
-        'skos:Concept': ['/taxonomy']
-      }
-    }
+    baseUrl: 'http://localhost:3004'
   }
 };
 

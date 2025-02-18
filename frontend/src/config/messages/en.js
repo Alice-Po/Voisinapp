@@ -49,6 +49,12 @@ export default {
       actor_unfollowed: 'You are not following this actor anymore',
       image_upload_error: 'Uploading picture failed',
     },
-    validation: {}
+    validation: {},
+    tag: {
+      create: 'Create a new tag',
+      label: 'Tag name',
+      add: 'Add a tag',
+      cancel: 'Cancel'
+    }
   }
 };

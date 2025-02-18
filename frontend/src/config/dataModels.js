@@ -1,27 +1,27 @@
 const dataModels = {
   Note: {
-    types: ["as:Note"],
-    list: {},
+    types: ['as:Note'],
+    list: {}
   },
   Activity: {
-    types: ["as:Activity"],
-    list: {},
+    types: ['as:Activity'],
+    list: {}
   },
   Actor: {
-    types: ["as:Actor"],
-    list: {},
+    types: ['as:Actor'],
+    list: {}
   },
   Profile: {
-    types: ["vcard:Individual"],
-    list: {},
+    types: ['vcard:Individual'],
+    list: {}
   },
-  "vcard:Location": {
-    types: ["vcard:Location"],
-    list: {},
+  'vcard:Location': {
+    types: ['vcard:Location'],
+    list: {}
   },
   Tag: {
-    types: ["skos:Concept"],
-    list: {},
+    types: ['skos:Concept'],
+    list: {}
   }
 };
 

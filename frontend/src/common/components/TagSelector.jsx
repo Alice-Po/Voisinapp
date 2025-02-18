@@ -1,148 +1,185 @@
-import React, { useState, useEffect } from 'react';
-import { Autocomplete, TextField, Chip } from '@mui/material';
-import { useDataProvider } from 'react-admin';
+import React, { useCallback, useEffect, useState, useMemo } from 'react';
+import { useTranslate } from 'react-admin';
+import {
+  Chip,
+  Box,
+  Button,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
+  TextField,
+  MenuItem,
+  Menu
+} from '@mui/material';
+import ControlPointIcon from '@mui/icons-material/ControlPoint';
+import EditIcon from '@mui/icons-material/Edit';
 
-// Palette de couleurs contrastées pour les tags
-const tagColors = [
-  '#2196F3', // Bleu
-  '#F44336', // Rouge
-  '#4CAF50', // Vert
-  '#9C27B0', // Violet
-  '#FF9800', // Orange
-  '#607D8B', // Bleu gris
-  '#E91E63', // Rose
-  '#3F51B5', // Indigo
-  '#009688', // Sarcelle
-  '#795548', // Marron
-  '#673AB7', // Violet foncé
-  '#FF5722', // Orange foncé
+const colors = [
+  '#F44336',
+  '#E91E63',
+  '#9C27B0',
+  '#673AB7',
+  '#3F51B5',
+  '#2196F3',
+  '#03A9F4',
+  '#00BCD4',
+  '#009688',
+  '#4CAF50'
 ];
 
-// Fonction pour obtenir une couleur cohérente pour un tag
-const getTagColor = (tagName) => {
-  const seed = tagName.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0);
-  return tagColors[seed % tagColors.length];
-};
+/**
+ * @typedef {object} TagSelectorProps
+ * @property {Array} selectedTags
+ * @property {Function} onChange
+ * @property {string} [namePredicate='skos:prefLabel']
+ * @property {string} [colorPredicate='schema:color']
+ * @property {boolean} [allowCreate=true]
+ */
 
-const TagSelector = ({ value, onChange }) => {
-  const [options, setOptions] = useState([]);
-  const [inputValue, setInputValue] = useState('');
-  const dataProvider = useDataProvider();
+/**
+ * @param {TagSelectorProps} props
+ * @returns {JSX.Element}
+ */
+const TagSelector = ({
+  selectedTags = [],
+  onChange,
+  namePredicate = 'skos:prefLabel',
+  colorPredicate = 'schema:color',
+  allowCreate = true
+}) => {
+  const [isCreateDialogOpen, setCreateDialogOpen] = useState(false);
+  const [newTagName, setNewTagName] = useState('');
+  const [newTagColor, setNewTagColor] = useState(colors[0]);
+  const [disabledCreateBtn, setDisabledCreateBtn] = useState(false);
 
-  useEffect(() => {
-    const fetchTags = async () => {
-      try {
-        const { data } = await dataProvider.getList('tags', {
-          pagination: { page: 1, perPage: 100 },
-          sort: { field: 'prefLabel', order: 'ASC' },
-        });
-        setOptions(data);
-      } catch (error) {
-        console.error("Error loading tags:", error);
-      }
-    };
-    fetchTags();
-  }, [dataProvider]);
+  const [menuAnchorEl, setMenuAnchorEl] = useState(null);
 
-  const handleChange = (event, newValue) => {
-    const processedValues = newValue.map(tag => {
-      if (typeof tag === 'string') {
-        return {
-          id: `temp-${Date.now()}-${tag}`,
-          prefLabel: tag,
-          color: getTagColor(tag)
-        };
-      }
-      if (!tag.color) {
-        return {
-          ...tag,
-          color: getTagColor(tag.prefLabel)
-        };
-      }
-      return tag;
-    });
-    onChange(processedValues);
-  };
+  const translate = useTranslate();
+
+  const handleOpen = useCallback(event => {
+    setMenuAnchorEl(event.currentTarget);
+  }, []);
+
+  const handleClose = useCallback(() => {
+    setMenuAnchorEl(null);
+  }, []);
+
+  const handleDeleteTag = useCallback(
+    tagToDelete => {
+      onChange(selectedTags.filter(tag => tag.id !== tagToDelete.id));
+    },
+    [onChange, selectedTags]
+  );
+
+  const handleOpenCreateDialog = useCallback(() => {
+    setCreateDialogOpen(true);
+    setMenuAnchorEl(null);
+    setDisabledCreateBtn(false);
+  }, []);
+
+  const handleCreateTag = useCallback(
+    event => {
+      event.preventDefault();
+      setDisabledCreateBtn(true);
+      const newTag = {
+        type: 'skos:Concept',
+        [namePredicate]: newTagName,
+        [colorPredicate]: newTagColor
+      };
+      onChange([...selectedTags, newTag]);
+      setCreateDialogOpen(false);
+      setNewTagName('');
+      setNewTagColor(colors[0]);
+    },
+    [newTagName, newTagColor, onChange, selectedTags, namePredicate, colorPredicate]
+  );
 
   return (
-    <Autocomplete
-      multiple
-      value={value || []}
-      onChange={handleChange}
-      inputValue={inputValue}
-      onInputChange={(event, newInputValue) => {
-        setInputValue(newInputValue);
-      }}
-      options={options}
-      getOptionLabel={(option) => {
-        if (typeof option === 'string') return option;
-        return option.prefLabel || '';
-      }}
-      isOptionEqualToValue={(option, value) => {
-        if (!option || !value) return false;
-        return option.id === value.id;
-      }}
-      renderInput={(params) => (
-        <TextField
-          {...params}
-          variant="outlined"
-          placeholder="Evenement, don..."
+    <>
+      {selectedTags.map(tag => (
+        <Chip
+          key={tag.id}
+          size="small"
+          onDelete={() => handleDeleteTag(tag)}
+          label={tag[namePredicate]}
           sx={{
-            backgroundColor: '#fff',
-            borderRadius: '8px',
-            height: '32px',
-            '& .MuiOutlinedInput-root': {
-              height: '32px',
-              padding: '0 8px',
-              '& fieldset': {
-                borderColor: 'transparent'
-              },
-              '&:hover fieldset': {
-                borderColor: 'transparent'
-              },
-              '&.Mui-focused fieldset': {
-                borderColor: 'transparent'
-              },
-              '& input': {
-                padding: '6px 4px',
-                fontSize: '0.875rem',
-                height: '20px',
-                '&::placeholder': {
-                  color: '#65676B',
-                  opacity: 1
-                }
-              }
-            },
-            '& .MuiAutocomplete-endAdornment': {
-              display: 'none'
-            }
+            backgroundColor: tag[colorPredicate],
+            color: '#fff',
+            border: 0,
+            mr: 1,
+            mb: 1
           }}
         />
+      ))}
+
+      <Chip
+        icon={<ControlPointIcon />}
+        size="small"
+        onClick={handleOpen}
+        label={translate('app.tag.add')}
+        color="primary"
+        sx={{ border: 0, mr: 1, mb: 1 }}
+      />
+
+      <Menu open={Boolean(menuAnchorEl)} onClose={handleClose} anchorEl={menuAnchorEl}>
+        {allowCreate && (
+          <MenuItem onClick={handleOpenCreateDialog}>
+            <Chip icon={<EditIcon />} size="small" color="primary" label={translate('app.tag.create')} />
+          </MenuItem>
+        )}
+      </Menu>
+
+      {allowCreate && (
+        <Dialog
+          open={isCreateDialogOpen}
+          onClose={() => setCreateDialogOpen(false)}
+          aria-labelledby="form-dialog-title"
+        >
+          <form onSubmit={handleCreateTag}>
+            <DialogTitle id="form-dialog-title">{translate('app.tag.create')}</DialogTitle>
+            <DialogContent>
+              <TextField
+                autoFocus
+                label={translate('app.tag.label')}
+                fullWidth
+                value={newTagName}
+                onChange={event => setNewTagName(event.target.value)}
+                sx={{ mt: 1 }}
+              />
+              <Box display="flex" flexWrap="wrap" width={230} mt={2}>
+                {colors.map(color => (
+                  <Box
+                    key={color}
+                    component="button"
+                    type="button"
+                    sx={{
+                      bgcolor: color,
+                      width: 30,
+                      height: 30,
+                      borderRadius: 15,
+                      border: color === newTagColor ? '2px solid grey' : 'none',
+                      display: 'inline-block',
+                      margin: 1
+                    }}
+                    onClick={() => setNewTagColor(color)}
+                  />
+                ))}
+              </Box>
+            </DialogContent>
+            <DialogActions>
+              <Button onClick={() => setCreateDialogOpen(false)} color="primary">
+                {translate('app.tag.cancel')}
+              </Button>
+              <Button type="submit" color="primary" disabled={disabledCreateBtn}>
+                {translate('app.tag.create')}
+              </Button>
+            </DialogActions>
+          </form>
+        </Dialog>
       )}
-      renderTags={(tagValue, getTagProps) =>
-        tagValue.map((option, index) => (
-          <Chip
-            key={option.id}
-            label={option.prefLabel}
-            {...getTagProps({ index })}
-            size="small"
-            sx={{
-              backgroundColor: option.color || '#e0e0e0',
-              color: '#fff',
-              height: '20px',
-              fontSize: '0.75rem',
-              '& .MuiChip-deleteIcon': {
-                fontSize: '14px',
-                margin: '0 2px'
-              }
-            }}
-          />
-        ))
-      }
-      freeSolo
-      filterSelectedOptions
-    />
+    </>
   );
 };
 
-export default TagSelector; 
+export default TagSelector;
