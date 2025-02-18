@@ -1,22 +1,20 @@
 import { CircularProgress, Box } from '@mui/material';
 import { useCollection } from '@semapps/activitypub-components';
 import { useCheckAuthenticated } from '@semapps/auth-provider';
-import useActorContext from "../../hooks/useActorContext";
+import useActorContext from '../../hooks/useActorContext';
 import ActivityBlock from '../../common/blocks/ActivityBlock/ActivityBlock';
 import PostBlock from '../../common/blocks/PostBlock';
 import LoadMore from '../../common/LoadMore';
+import LoadingFeed from '../../common/components/LoadingFeed';
 import { useMemo } from 'react';
-import { useState, useEffect } from "react";
+import { useState, useEffect } from 'react';
 import { reverseGeocode } from '../../utils/geocoding';
 import { filterNotesByLocation } from '../../utils/geocoding';
-
 
 const Home = () => {
   useCheckAuthenticated();
   const actor = useActorContext();
   const [locationData, setLocationData] = useState(null);
-
-
 
   // Fetch inbox activities
   const {
@@ -29,7 +27,7 @@ const Home = () => {
   } = useCollection('inbox', {
     liveUpdates: true,
     dereferenceItems: true,
-    onError: (error) => {
+    onError: error => {
       console.error('Inbox collection error:', {
         status: error.status,
         message: error.message,
@@ -49,7 +47,7 @@ const Home = () => {
   } = useCollection('outbox', {
     liveUpdates: true,
     dereferenceItems: true,
-    onError: (error) => {
+    onError: error => {
       console.error('Outbox collection error:', {
         status: error.status,
         message: error.message,
@@ -58,9 +56,7 @@ const Home = () => {
     }
   });
 
-
   const allActivities = useMemo(() => {
-    
     const filteredInboxActivities = filterNotesByLocation(inboxActivities, locationData);
     const combined = [...filteredInboxActivities, ...outboxActivities].sort((a1, a2) => {
       const date1 = new Date(a1.object?.published || a1.published);
@@ -74,11 +70,8 @@ const Home = () => {
     const fetchLocation = async () => {
       if (actor?.profile?.['vcard:hasGeo']) {
         const geo = actor.profile['vcard:hasGeo'];
-        const geoData = await reverseGeocode(
-          geo['vcard:latitude'],
-          geo['vcard:longitude']
-        );
-        
+        const geoData = await reverseGeocode(geo['vcard:latitude'], geo['vcard:longitude']);
+
         setLocationData({
           ...geoData,
           latitude: geo['vcard:latitude'],
@@ -86,38 +79,30 @@ const Home = () => {
         });
       }
     };
-    
+
     fetchLocation();
   }, [actor]);
 
   const isLoading = isLoadingInbox || isLoadingOutbox;
   const error = inboxError || outboxError;
 
-
   return (
     <div data-testid="unified-feed">
       <PostBlock />
-      
-      {error && (
-        <div style={{ color: 'red', padding: '1rem' }}>
-          Error loading messages: {error.message}
-        </div>
-      )}
 
-      {allActivities && allActivities.map(activity => (
-        <ActivityBlock
-          activity={activity}
-          key={activity.id}
-          showReplies
-          onError={(err) => console.error('Activity render error:', err)}
-        />
-      ))}
+      {error && <div style={{ color: 'red', padding: '1rem' }}>Error loading messages: {error.message}</div>}
 
-      {(!allActivities || allActivities.length === 0) && isLoading && (
-        <Box height={50} mt={4} mb={4} display="flex" justifyContent="center">
-          <CircularProgress />
-        </Box>
-      )}
+      {allActivities &&
+        allActivities.map(activity => (
+          <ActivityBlock
+            activity={activity}
+            key={activity.id}
+            showReplies
+            onError={err => console.error('Activity render error:', err)}
+          />
+        ))}
+
+      {(!allActivities || allActivities.length === 0) && isLoading && <LoadingFeed />}
 
       {(hasNextInbox || hasNextOutbox) && (
         <LoadMore
@@ -132,4 +117,4 @@ const Home = () => {
   );
 };
 
-export default Home; 
+export default Home;
