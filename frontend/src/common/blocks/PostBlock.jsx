@@ -29,6 +29,7 @@ import { reverseGeocode } from '../../utils/geocoding';
 import TagSelector from '../components/TagSelector';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import ExpandLessIcon from '@mui/icons-material/ExpandLess';
+import AdvancedSharingDialog from '../components/AdvancedSharingDialog';
 
 const validateExpirationDate = value => {
   if (!value) return undefined;
@@ -52,6 +53,7 @@ const PostBlock = ({ inReplyTo, mention }) => {
   const [radius, setRadius] = useState(15);
   const [selectedTags, setSelectedTags] = useState([]);
   const [showOptions, setShowOptions] = useState(false);
+  const [openDialog, setOpenDialog] = useState(false);
 
   useEffect(() => {
     if (hash === '#reply' && inputRef.current) {
@@ -95,6 +97,14 @@ const PostBlock = ({ inReplyTo, mention }) => {
     console.log('=== Changement de tags ===');
     console.log('Nouveaux tags:', newTags);
     setSelectedTags(newTags);
+  };
+
+  const handleOpenDialog = () => {
+    setOpenDialog(true);
+  };
+
+  const handleCloseDialog = () => {
+    setOpenDialog(false);
   };
 
   const onSubmit = useCallback(
@@ -491,12 +501,32 @@ const PostBlock = ({ inReplyTo, mention }) => {
                       <TagSelector selectedTags={selectedTags} onChange={handleTagChange} />
                     </Box>
                   </Box>
+                  <Button
+                    sx={{
+                      color: '#65676B',
+
+                      textTransform: 'none',
+                      fontSize: '0.75rem',
+                      padding: '4px 8px',
+                      minWidth: 0,
+                      alignSelf: 'flex-end',
+                      mt: 1,
+                      textDecoration: 'underline',
+                      '&:hover': {
+                        backgroundColor: 'rgba(0, 0, 0, 0.04)'
+                      }
+                    }}
+                    onClick={handleOpenDialog}
+                  >
+                    Options de partage avancées
+                  </Button>
                 </Box>
               )}
             </Box>
           </Form>
         </Box>
       </Card>
+      <AdvancedSharingDialog open={openDialog} onClose={handleCloseDialog} />
     </Box>
   );
 };
