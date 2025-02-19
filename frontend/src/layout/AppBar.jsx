@@ -40,7 +40,7 @@ const AppBar = () => {
           >
             <Link to="/home">VoisinApp</Link>
           </Typography>
-          <UserMenu 
+          <UserMenu
             sx={{
               '& .MuiIconButton-root': {
                 color: '#65676B',

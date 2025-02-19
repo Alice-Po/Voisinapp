@@ -15,7 +15,7 @@ const theme = createTheme({
       default: '#F0F2F5'
     },
     chat: {
-      outgoing: '#0084ff',
+      outgoing: '#2E61D9',
       incoming: '#E4E6EB',
       text: {
         outgoing: '#FFFFFF',

@@ -27,29 +27,34 @@ const SubBar = () => {
   };
 
   const TabLabel = ({ icon, label, count }) => (
-    <Box sx={{ 
-      display: 'flex', 
-      alignItems: 'center', 
-      gap: 1,
-      fontSize: '0.95rem',
-      position: 'relative'
-    }}>
+    <Box
+      sx={{
+        display: 'flex',
+        alignItems: 'center',
+        gap: 1,
+        fontSize: '0.95rem',
+        position: 'relative'
+      }}
+    >
       {icon}
       {!isMobile && <span>{label}</span>}
       {count !== undefined && (
-        <Box component="span" sx={{ 
-          fontSize: { xs: '0.75rem', sm: '0.85rem' },
-          color: '#65676B',
-          ml: { xs: 0, sm: 0.5 },
-          position: { xs: 'absolute', sm: 'static' },
-          top: { xs: -8, sm: 'auto' },
-          right: { xs: -8, sm: 'auto' },
-          backgroundColor: { xs: '#E4E6EB', sm: 'transparent' },
-          padding: { xs: '0 6px', sm: 0 },
-          borderRadius: { xs: '10px', sm: 0 },
-          minWidth: { xs: '16px', sm: 'auto' },
-          textAlign: { xs: 'center', sm: 'left' }
-        }}>
+        <Box
+          component="span"
+          sx={{
+            fontSize: { xs: '0.75rem', sm: '0.85rem' },
+            color: '#65676B',
+            ml: { xs: 0, sm: 0.5 },
+            position: { xs: 'absolute', sm: 'static' },
+            top: { xs: -8, sm: 'auto' },
+            right: { xs: -8, sm: 'auto' },
+            backgroundColor: { xs: '#E4E6EB', sm: 'transparent' },
+            padding: { xs: '0 6px', sm: 0 },
+            borderRadius: { xs: '10px', sm: 0 },
+            minWidth: { xs: '16px', sm: 'auto' },
+            textAlign: { xs: 'center', sm: 'left' }
+          }}
+        >
           {count}
         </Box>
       )}
@@ -67,10 +72,10 @@ const SubBar = () => {
       }}
     >
       <Container maxWidth="md">
-        <Tabs 
-          value={tab} 
-          onChange={onChange} 
-          indicatorColor="primary" 
+        <Tabs
+          value={tab}
+          onChange={onChange}
+          indicatorColor="primary"
           textColor="primary"
           sx={{
             '& .MuiTabs-indicator': {
@@ -83,7 +88,7 @@ const SubBar = () => {
               padding: { xs: '0 24px', sm: '0 16px' },
               color: '#65676B',
               '&.Mui-selected': {
-                color: '#0084ff',
+                color: '#2E61D9',
                 fontWeight: 600
               },
               '& .MuiSvgIcon-root': {
@@ -92,56 +97,34 @@ const SubBar = () => {
             }
           }}
         >
-          <Tab 
-            label={
-              <TabLabel 
-                icon={<HomeIcon />} 
-                label={translate('app.page.feed')} 
-              />
-            }
-            value="/home" 
-            sx={{ 
+          <Tab
+            label={<TabLabel icon={<HomeIcon />} label={translate('app.page.feed')} />}
+            value="/home"
+            sx={{
               fontWeight: 'normal',
               minWidth: 'auto'
-            }} 
+            }}
           />
           <Tab
-            label={
-              <TabLabel 
-                icon={<PeopleIcon />} 
-                label={translate('app.page.followers')}
-                count={numFollowers}
-              />
-            }
+            label={<TabLabel icon={<PeopleIcon />} label={translate('app.page.followers')} count={numFollowers} />}
             value="/followers"
-            sx={{ 
+            sx={{
               fontWeight: 'normal',
               minWidth: 'auto'
             }}
           />
           <Tab
-            label={
-              <TabLabel 
-                icon={<PersonAddIcon />} 
-                label={translate('app.page.following')}
-                count={numFollowing}
-              />
-            }
+            label={<TabLabel icon={<PersonAddIcon />} label={translate('app.page.following')} count={numFollowing} />}
             value="/following"
-            sx={{ 
+            sx={{
               fontWeight: 'normal',
               minWidth: 'auto'
             }}
           />
           <Tab
-            label={
-              <TabLabel 
-                icon={<InfoIcon />} 
-                label={translate('app.page.about')}
-              />
-            }
+            label={<TabLabel icon={<InfoIcon />} label={translate('app.page.about')} />}
             value="/about"
-            sx={{ 
+            sx={{
               fontWeight: 'normal',
               minWidth: 'auto'
             }}
