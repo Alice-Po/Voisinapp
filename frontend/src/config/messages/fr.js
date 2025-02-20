@@ -106,7 +106,16 @@ export default {
       add: 'Ajouter un tag',
       cancel: 'Annuler'
     },
-    backed_by_organization: 'Soutenu par %{organizationName}'
+    backed_by_organization: 'Soutenu par %{organizationName}',
+    loading: {
+      title: 'Refaire le web prends du temps..',
+      feed_loading: "Votre fil d'actualité est en cours de chargement.",
+      explanation:
+        "Si le chargement prend un peu de temps, c'est parce que nous avons fait des choix technologique qui respectent réellement les humains et leur autonomie. Les temps de chargement sont en cours d'amélioration.",
+      activitypods_intro: "VoisinApp s'appuie sur",
+      activitypods_description:
+        ', une technologie aux ambitions révolutionnaires qui vous redonne le contrôle de vos données et de vos interactions numériques.'
+    }
   },
   auth: {
     action: {

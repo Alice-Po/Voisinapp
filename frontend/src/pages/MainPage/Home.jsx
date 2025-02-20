@@ -1,4 +1,3 @@
-import { CircularProgress, Box } from '@mui/material';
 import { useCollection } from '@semapps/activitypub-components';
 import { useCheckAuthenticated } from '@semapps/auth-provider';
 import useActorContext from '../../hooks/useActorContext';
@@ -69,7 +68,6 @@ const Home = () => {
     return combined;
   }, [inboxActivities, outboxActivities, locationData]);
 
-  // Effet pour vérifier la localisation
   useEffect(() => {
     console.log('Location check effect running', {
       actor,
@@ -79,10 +77,7 @@ const Home = () => {
     });
 
     const checkLocation = async () => {
-      // Ne vérifier que si l'acteur est chargé et que nous n'avons pas déjà vérifié
       if (actor && !actor.isLoading && !hasCheckedLocation) {
-        console.log('Checking location status...');
-
         if (actor.profile?.['vcard:hasGeo']) {
           console.log('User has location, fetching geocode data...');
           const geo = actor.profile['vcard:hasGeo'];
@@ -111,7 +106,6 @@ const Home = () => {
     checkLocation();
   }, [actor, hasCheckedLocation]);
 
-  // Effet pour réinitialiser la vérification si l'acteur change
   useEffect(() => {
     if (actor?.isLoading) {
       setHasCheckedLocation(false);

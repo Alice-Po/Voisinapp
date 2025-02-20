@@ -107,7 +107,16 @@ export default {
       add: 'Add a tag',
       cancel: 'Cancel'
     },
-    backed_by_organization: 'Backed by %{organizationName}'
+    backed_by_organization: 'Backed by %{organizationName}',
+    loading: {
+      title: 'Rebuilding the web takes time..',
+      feed_loading: 'Your news feed is loading.',
+      explanation:
+        "If loading takes a while, it's because we made technological choices that truly respect humans and their autonomy. Loading times are being improved.",
+      activitypods_intro: 'VoisinApp relies on',
+      activitypods_description:
+        ', a technology with revolutionary ambitions that gives you back control of your data and your digital interactions.'
+    }
   },
   auth: {
     action: {
