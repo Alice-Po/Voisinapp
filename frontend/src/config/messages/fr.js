@@ -3,6 +3,22 @@
 export default {
   app: {
     welcome: 'Bienvenue sur VoisinApp !',
+    tagline:
+      "VoisinApp est une application de communication de voisinage afin de favoriser le lien, le partage et la solidarité entre habitants d'un même coin.",
+    features: {
+      title: "Aujourd'hui :",
+      current: {
+        0: 'Écrivez des messages public à portée géographique avec vos voisins',
+        1: "Taggez vos messages pour les organiser et choissisez ou pas une date d'expiration",
+        2: 'Booster, aimer ou répondez aux messages de vos voisins'
+      },
+      coming_soon_title: 'Bientôt :',
+      coming_soon: {
+        0: "Créez des cercles d'intimité pour des partages privés",
+        1: "Communiquez avec des groupes d'intérêt locaux",
+        2: 'Contrôlez la portée de diffusion de vos messages : restreinte ou virale'
+      }
+    },
     welcome_dialog: {
       title: 'Bienvenue sur VoisinApp - Preuve de Concept',
       intro:
@@ -20,16 +36,6 @@ export default {
       contact: 'Nous contacter',
       continue: "J'ai compris, continuer vers VoisinApp"
     },
-    description:
-      'VoisinApp réinvente la communication de voisinage en combinant le meilleur des réseaux sociaux et le respect de votre vie privée.\n\n' +
-      "Aujourd'hui :\n" +
-      '• Partagez des messages géolocalisés avec vos voisins\n' +
-      '• Gardez le contrôle total de vos données grâce à votre Pod personnel\n' +
-      '• Connectez-vous au Fediverse (Mastodon)\n\n' +
-      'Bientôt :\n' +
-      "• Créez des cercles d'intimité pour des partages privés\n" +
-      "• Communiquez avec des groupes d'intérêt locaux\n" +
-      '• Contrôlez la portée de diffusion de vos messages',
     action: {
       edit_profile: 'Editer le profile',
       follow: 'Suivre',

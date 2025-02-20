@@ -3,6 +3,22 @@
 export default {
   app: {
     welcome: 'Welcome to VoisinApp!',
+    tagline:
+      'VoisinApp is a neighborhood communication app that promotes connection, sharing, and solidarity between residents of the same area.',
+    features: {
+      title: 'Today:',
+      current: {
+        0: 'Share geolocated messages with your neighbors',
+        1: 'Keep full control of your data with your personal Pod',
+        2: 'Connect to the Fediverse (Mastodon)'
+      },
+      coming_soon_title: 'Coming soon:',
+      coming_soon: {
+        0: 'Create privacy circles for private sharing',
+        1: 'Communicate with local interest groups',
+        2: 'Control the reach of your messages'
+      }
+    },
     welcome_dialog: {
       title: 'Welcome to VoisinApp - Proof of Concept',
       intro:
