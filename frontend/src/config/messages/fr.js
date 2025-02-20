@@ -16,7 +16,7 @@ export default {
       },
       contribute_title: 'Contribuer au projet',
       report_issue: 'Signaler un bug ou proposer une amélioration',
-      learn_more: 'En savoir plus sur le projet',
+      learn_more: 'Un billet de blog pour en savoir plus sur le projet',
       contact: 'Nous contacter',
       continue: "J'ai compris, continuer vers VoisinApp"
     },
@@ -68,8 +68,7 @@ export default {
     },
     message: {
       early_dev_warning:
-        'Cette application est en cours de développement. Utilisez-la pour des tests uniquement, et veuillez remonter les bugs que vous trouvez sur',
-      actor_boosted: '%{actor} a boosté'
+        'Cette application est en cours de développement. Utilisez-la pour des tests uniquement, et veuillez remonter les bugs que vous trouvez sur'
     },
     notification: {
       message_sent: 'Votre message a été envoyé',
@@ -90,6 +89,17 @@ export default {
       label: 'Nom du tag',
       add: 'Ajouter un tag',
       cancel: 'Annuler'
+    },
+    backed_by_organization: 'Soutenu par %{organizationName}'
+  },
+  auth: {
+    action: {
+      signup: "S'inscrire"
+    }
+  },
+  ra: {
+    auth: {
+      sign_in: 'Se connecter'
     }
   }
 };

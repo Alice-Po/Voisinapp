@@ -1,9 +1,12 @@
 import { Dialog, DialogTitle, DialogContent, DialogActions, Typography, Button, Box, Link } from '@mui/material';
+import { useTranslate } from 'react-admin';
 import GitHubIcon from '@mui/icons-material/GitHub';
 import ArticleIcon from '@mui/icons-material/Article';
 import EmailIcon from '@mui/icons-material/Email';
 
 const WelcomeDialog = ({ open, onClose }) => {
+  const translate = useTranslate();
+
   return (
     <Dialog
       open={open}
@@ -24,35 +27,33 @@ const WelcomeDialog = ({ open, onClose }) => {
           color: '#543F2E'
         }}
       >
-        Bienvenue sur VoisinApp - Preuve de Concept
+        {translate('app.welcome_dialog.title')}
       </DialogTitle>
       <DialogContent sx={{ py: 3 }}>
         <Typography variant="body1" sx={{ mb: 3 }}>
-          VoisinApp est une démonstration technique issue de 4 années d'étude des réseaux de voisinage sur Signal,
-          WhatsApp et Telegram. Notre objectif est de combiner les meilleures pratiques observées tout en surmontant les
-          limitations identifiées.
+          {translate('app.welcome_dialog.intro')}
         </Typography>
 
         <Typography variant="h6" sx={{ mb: 2, color: '#543F2E', fontWeight: 600 }}>
-          À propos de cette démonstration
+          {translate('app.welcome_dialog.about_title')}
         </Typography>
         <Typography variant="body1" sx={{ mb: 3 }}>
-          Cette preuve de concept restera en ligne jusqu'au 21 février 2026. Elle vise à :
+          {translate('app.welcome_dialog.about_intro')}
         </Typography>
         <Box component="ul" sx={{ mb: 3 }}>
           <Typography component="li" sx={{ mb: 1 }}>
-            • Démontrer la faisabilité technique du projet
+            {translate('app.welcome_dialog.about_points.0')}
           </Typography>
           <Typography component="li" sx={{ mb: 1 }}>
-            • Recueillir les retours des utilisateurs
+            {translate('app.welcome_dialog.about_points.1')}
           </Typography>
           <Typography component="li" sx={{ mb: 1 }}>
-            • Explorer des pistes pour un modèle économique viable
+            {translate('app.welcome_dialog.about_points.2')}
           </Typography>
         </Box>
 
         <Typography variant="h6" sx={{ mb: 2, color: '#543F2E', fontWeight: 600 }}>
-          Contribuer au projet
+          {translate('app.welcome_dialog.contribute_title')}
         </Typography>
         <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
           <Link
@@ -60,20 +61,20 @@ const WelcomeDialog = ({ open, onClose }) => {
             target="_blank"
             sx={{ display: 'flex', alignItems: 'center', gap: 1, color: '#543F2E' }}
           >
-            <GitHubIcon /> Signaler un bug ou proposer une amélioration
+            <GitHubIcon /> {translate('app.welcome_dialog.report_issue')}
           </Link>
           <Link
             href="https://article-a-definir.com"
             target="_blank"
             sx={{ display: 'flex', alignItems: 'center', gap: 1, color: '#543F2E' }}
           >
-            <ArticleIcon /> En savoir plus sur le projet
+            <ArticleIcon /> {translate('app.welcome_dialog.learn_more')}
           </Link>
           <Link
             href="mailto:alice.poggioli@assemblee-virtuelle.org"
             sx={{ display: 'flex', alignItems: 'center', gap: 1, color: '#543F2E' }}
           >
-            <EmailIcon /> Nous contacter
+            <EmailIcon /> {translate('app.welcome_dialog.contact')}
           </Link>
         </Box>
       </DialogContent>
@@ -92,7 +93,7 @@ const WelcomeDialog = ({ open, onClose }) => {
             px: 3
           }}
         >
-          J'ai compris, continuer vers VoisinApp
+          {translate('app.welcome_dialog.continue')}
         </Button>
       </DialogActions>
     </Dialog>

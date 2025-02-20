@@ -23,13 +23,13 @@ export default {
     description:
       'VoisinApp reinvents neighborhood communication by combining the best of social networks with privacy respect.\n\n' +
       'Today:\n' +
-      'Share geolocated messages with your neighbors\n' +
-      'Keep full control of your data with your personal Pod\n' +
-      'Connect to the Fediverse (Mastodon)\n\n' +
+      '• Share geolocated messages with your neighbors\n' +
+      '• Keep full control of your data with your personal Pod\n' +
+      '• Connect to the Fediverse (Mastodon)\n\n' +
       'Coming soon:\n' +
-      'Create privacy circles for private sharing\n' +
-      'Communicate with local interest groups\n' +
-      'Control the reach of your messages',
+      '• Create privacy circles for private sharing\n' +
+      '• Communicate with local interest groups\n' +
+      '• Control the reach of your messages',
     action: {
       edit_profile: 'Edit profile',
       follow: 'Follow',
@@ -63,8 +63,7 @@ export default {
     },
     message: {
       early_dev_warning:
-        'This application is in early development. Use it for tests only, and please report issues you find on',
-      actor_boosted: '%{actor} boosted'
+        'This application is in early development. Use it for tests only, and please report issues you find on'
     },
     notification: {
       activity_send_error: 'Error while posting the activity: %{error}',
@@ -82,6 +81,17 @@ export default {
       label: 'Tag name',
       add: 'Add a tag',
       cancel: 'Cancel'
+    },
+    backed_by_organization: 'Backed by %{organizationName}'
+  },
+  auth: {
+    action: {
+      signup: 'Sign up'
+    }
+  },
+  ra: {
+    auth: {
+      sign_in: 'Sign in'
     }
   }
 };
