@@ -1,15 +1,15 @@
-import { useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useGetIdentity, useTranslate, Link, useRedirect, LocalesMenuButton } from 'react-admin';
 import { Box, Button, Typography, ThemeProvider, Alert } from '@mui/material';
 import makeStyles from '@mui/styles/makeStyles';
-import { useGetIdentity, useTranslate, Link, useRedirect, LocalesMenuButton } from 'react-admin';
 import theme from '../config/theme';
+import WelcomeDialog from '../common/components/WelcomeDialog';
 
 const useStyles = makeStyles(() => ({
   root: {
     display: 'flex',
     flexDirection: 'column',
     minHeight: '100vh',
-    height: '1px',
     alignItems: 'center',
     justifyContent: 'center',
     backgroundRepeat: 'no-repeat',
@@ -28,18 +28,22 @@ const useStyles = makeStyles(() => ({
     fontStyle: 'italic',
     paddingTop: 12,
     whiteSpace: 'pre-line',
-    maxWidth: 250
+    maxWidth: 600,
+    textAlign: 'center'
   },
   link: {
     textDecoration: 'underline',
     color: 'white'
   },
   logo: {
-    fontSize: 100,
-    color: 'white'
+    width: 150,
+    marginBottom: 20,
+    filter: 'brightness(0) invert(1)'
   },
   button: {
-    margin: 5
+    margin: 5,
+    borderRadius: 20,
+    textTransform: 'none'
   }
 }));
 
@@ -48,70 +52,84 @@ const HomePage = () => {
   const redirect = useRedirect();
   const { data: identity, isLoading } = useGetIdentity();
   const translate = useTranslate();
+  const [showWelcome, setShowWelcome] = useState(true);
 
-  useEffect(() => {
-    if (!isLoading && identity?.id) {
-      redirect('/home');
-    }
-  }, [identity, isLoading, redirect]);
+  const handleCloseWelcome = () => {
+    setShowWelcome(false);
+    localStorage.setItem('welcomeShown', 'true');
+  };
 
   if (isLoading) return null;
 
   return (
     <ThemeProvider theme={theme}>
-      <Box sx={{ position: 'absolute', top: 0, right: 0, p: 1, zIndex: 20 }}>
-        <LocalesMenuButton />
-      </Box>
-      <p>{new Date(Date.now()).toISOString()}</p>
-      <Box className={classes.root}>
-        <img
-          src="/logo-transparent.png"
-          style={{
-            width: 150,
-            filter: 'brightness(0) invert(1)'
-          }}
-        />
-        <Typography variant="h4" className={classes.title}>
-          {import.meta.env.VITE_APP_NAME}
-        </Typography>
-        <Typography align="center" className={classes.description}>
-          {translate('app.description')}
-        </Typography>
+      {showWelcome ? (
+        <WelcomeDialog open={true} onClose={handleCloseWelcome} />
+      ) : (
+        <Box className={classes.root}>
+          <Box sx={{ position: 'absolute', top: 16, right: 16 }}>
+            <LocalesMenuButton />
+          </Box>
 
-        {import.meta.env.VITE_ORGANIZATION_NAME && (
-          <a
-            href={import.meta.env.VITE_ORGANIZATION_URL}
-            target="_blank"
-            rel="noopener noreferrer"
-            className={classes.link}
+          <img src="/logo-transparent.png" alt="VoisinApp Logo" className={classes.logo} />
+
+          <Typography variant="h3" component="h1" className={classes.title} gutterBottom>
+            {translate('app.welcome')}
+          </Typography>
+
+          <Typography className={classes.description}>{translate('app.description')}</Typography>
+
+          {import.meta.env.VITE_ORGANIZATION_NAME && (
+            <a
+              href={import.meta.env.VITE_ORGANIZATION_URL}
+              target="_blank"
+              rel="noopener noreferrer"
+              className={classes.link}
+            >
+              <Typography className={classes.description}>
+                {translate('app.backed_by_organization', {
+                  organizationName: import.meta.env.VITE_ORGANIZATION_NAME
+                })}
+              </Typography>
+            </a>
+          )}
+
+          <Box display="flex" pt={3} pb={3} alignItems="center">
+            <Link to="/login?signup">
+              <Button variant="contained" color="secondary" className={classes.button}>
+                {translate('auth.action.signup')}
+              </Button>
+            </Link>
+            &nbsp;&nbsp;
+            <Link to="/login">
+              <Button variant="contained" color="secondary" className={classes.button}>
+                {translate('ra.auth.sign_in')}
+              </Button>
+            </Link>
+          </Box>
+
+          <Alert
+            variant="filled"
+            severity="warning"
+            sx={{
+              ml: 3,
+              mr: 3,
+              maxWidth: 350,
+              backgroundColor: '#f57c00'
+            }}
           >
-            <Typography align="center" className={classes.description}>
-              {translate('app.backed_by_organization', {
-                organizationName: import.meta.env.VITE_ORGANIZATION_NAME
-              })}
-            </Typography>
-          </a>
-        )}
-        <Box display="flex" pt={3} pb={3} alignItems="center">
-          <Link to="/login?signup">
-            <Button variant="contained" color="secondary" className={classes.button}>
-              {translate('auth.action.signup')}
-            </Button>
-          </Link>
-          &nbsp;&nbsp;
-          <Link to="/login">
-            <Button variant="contained" color="secondary" className={classes.button}>
-              {translate('ra.auth.sign_in')}
-            </Button>
-          </Link>
+            {translate('app.message.early_dev_warning')}{' '}
+            <a
+              href="https://github.com/Alice-Po/Voisinapp"
+              target="_blank"
+              rel="noopener noreferrer"
+              style={{ color: 'white' }}
+            >
+              GitHub
+            </a>
+          </Alert>
         </Box>
-        <Alert variant="filled" severity="warning" sx={{ ml: 3, mr: 3, maxWidth: 350 }}>
-          {translate('app.message.early_dev_warning')}{' '}
-          <a href="https://github.com/assemblee-virtuelle/mastopod/issues" target="_blank" style={{ color: 'white' }}>
-            GitHub
-          </a>
-        </Alert>
-      </Box>
+      )}
     </ThemeProvider>
   );
 };

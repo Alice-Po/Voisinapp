@@ -70,6 +70,36 @@ const theme = createTheme({
           }
         }
       }
+    },
+    RaLocalesMenuButton: {
+      styleOverrides: {
+        root: {
+          '& .MuiButton-root': {
+            color: 'white',
+            borderColor: 'white',
+            '&:hover': {
+              borderColor: 'white',
+              backgroundColor: 'rgba(255, 255, 255, 0.1)'
+            }
+          },
+          '& .MuiSvgIcon-root': {
+            color: 'white'
+          },
+          '& .MuiSelect-select': {
+            color: 'white'
+          },
+          '& .MuiMenu-paper': {
+            backgroundColor: '#543F2E',
+            color: 'white'
+          },
+          '& .MuiMenuItem-root': {
+            color: 'white',
+            '&:hover': {
+              backgroundColor: 'rgba(255, 255, 255, 0.1)'
+            }
+          }
+        }
+      }
     }
   }
 });

@@ -2,7 +2,34 @@
 
 export default {
   app: {
-    description: 'Une appli compatible Mastodon qui enregistre tout dans votre Pod',
+    welcome: 'Bienvenue sur VoisinApp !',
+    welcome_dialog: {
+      title: 'Bienvenue sur VoisinApp - Preuve de Concept',
+      intro:
+        "VoisinApp est une démonstration technique issue de 4 années d'étude des réseaux de voisinage sur Signal, WhatsApp et Telegram. Notre objectif est de combiner les meilleures pratiques observées tout en surmontant les limitations identifiées.",
+      about_title: 'À propos de cette démonstration',
+      about_intro: "Cette preuve de concept restera en ligne jusqu'au 21 février 2026. Elle vise à :",
+      about_points: {
+        0: 'Démontrer la faisabilité technique du projet',
+        1: 'Recueillir les retours des utilisateurs',
+        2: 'Explorer des pistes pour un modèle économique viable'
+      },
+      contribute_title: 'Contribuer au projet',
+      report_issue: 'Signaler un bug ou proposer une amélioration',
+      learn_more: 'En savoir plus sur le projet',
+      contact: 'Nous contacter',
+      continue: "J'ai compris, continuer vers VoisinApp"
+    },
+    description:
+      'VoisinApp réinvente la communication de voisinage en combinant le meilleur des réseaux sociaux et le respect de votre vie privée.\n\n' +
+      "Aujourd'hui :\n" +
+      '• Partagez des messages géolocalisés avec vos voisins\n' +
+      '• Gardez le contrôle total de vos données grâce à votre Pod personnel\n' +
+      '• Connectez-vous au Fediverse (Mastodon)\n\n' +
+      'Bientôt :\n' +
+      "• Créez des cercles d'intimité pour des partages privés\n" +
+      "• Communiquez avec des groupes d'intérêt locaux\n" +
+      '• Contrôlez la portée de diffusion de vos messages',
     action: {
       edit_profile: 'Editer le profile',
       follow: 'Suivre',
