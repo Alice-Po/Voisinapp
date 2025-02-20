@@ -6,6 +6,7 @@ import ActivityBlock from '../../common/blocks/ActivityBlock/ActivityBlock';
 import PostBlock from '../../common/blocks/PostBlock';
 import LoadMore from '../../common/LoadMore';
 import LoadingFeed from '../../common/components/LoadingFeed';
+import LocationDialog from '../../common/components/LocationDialog';
 import { useMemo } from 'react';
 import { useState, useEffect } from 'react';
 import { reverseGeocode } from '../../utils/geocoding';
@@ -15,6 +16,8 @@ const Home = () => {
   useCheckAuthenticated();
   const actor = useActorContext();
   const [locationData, setLocationData] = useState(null);
+  const [showLocationDialog, setShowLocationDialog] = useState(false);
+  const [hasCheckedLocation, setHasCheckedLocation] = useState(false);
 
   // Fetch inbox activities
   const {
@@ -66,22 +69,60 @@ const Home = () => {
     return combined;
   }, [inboxActivities, outboxActivities, locationData]);
 
+  // Effet pour vérifier la localisation
   useEffect(() => {
-    const fetchLocation = async () => {
-      if (actor?.profile?.['vcard:hasGeo']) {
-        const geo = actor.profile['vcard:hasGeo'];
-        const geoData = await reverseGeocode(geo['vcard:latitude'], geo['vcard:longitude']);
+    console.log('Location check effect running', {
+      actor,
+      isLoading: actor?.isLoading,
+      hasGeo: actor?.profile?.['vcard:hasGeo'],
+      hasCheckedLocation
+    });
 
-        setLocationData({
-          ...geoData,
-          latitude: geo['vcard:latitude'],
-          longitude: geo['vcard:longitude']
-        });
+    const checkLocation = async () => {
+      // Ne vérifier que si l'acteur est chargé et que nous n'avons pas déjà vérifié
+      if (actor && !actor.isLoading && !hasCheckedLocation) {
+        console.log('Checking location status...');
+
+        if (actor.profile?.['vcard:hasGeo']) {
+          console.log('User has location, fetching geocode data...');
+          const geo = actor.profile['vcard:hasGeo'];
+          const geoData = await reverseGeocode(geo['vcard:latitude'], geo['vcard:longitude']);
+
+          setLocationData({
+            ...geoData,
+            latitude: geo['vcard:latitude'],
+            longitude: geo['vcard:longitude']
+          });
+        } else {
+          console.log('No location found, checking if dialog should be shown...');
+          const hasSeenLocationDialog = localStorage.getItem('hasSeenLocationDialog');
+          console.log('Has seen dialog:', hasSeenLocationDialog);
+
+          if (!hasSeenLocationDialog) {
+            console.log('Showing location dialog...');
+            setShowLocationDialog(true);
+          }
+        }
+
+        setHasCheckedLocation(true);
       }
     };
 
-    fetchLocation();
-  }, [actor]);
+    checkLocation();
+  }, [actor, hasCheckedLocation]);
+
+  // Effet pour réinitialiser la vérification si l'acteur change
+  useEffect(() => {
+    if (actor?.isLoading) {
+      setHasCheckedLocation(false);
+    }
+  }, [actor?.isLoading]);
+
+  const handleCloseLocationDialog = () => {
+    console.log('Closing location dialog...');
+    setShowLocationDialog(false);
+    localStorage.setItem('hasSeenLocationDialog', 'true');
+  };
 
   const isLoading = isLoadingInbox || isLoadingOutbox;
   const error = inboxError || outboxError;
@@ -113,6 +154,8 @@ const Home = () => {
           isLoading={isFetchingNextInbox || isFetchingNextOutbox || isLoading}
         />
       )}
+
+      <LocationDialog open={showLocationDialog} onClose={handleCloseLocationDialog} />
     </div>
   );
 };

@@ -36,6 +36,15 @@ export default {
       contact: 'Contact us',
       continue: 'I understand, continue to VoisinApp'
     },
+    location_dialog: {
+      title: 'Set Your Location',
+      subtitle: 'Choose Your Neighborhood',
+      description:
+        'To get the most out of VoisinApp, please set your location in your pod provider settings. This will help you connect with neighbors and see relevant local content.',
+      privacy_note: 'Only your city/town will be visible to other users. Your exact address will remain private.',
+      set_location_button: 'Set Location in Pod Settings',
+      skip_button: 'Skip for Now'
+    },
     description:
       'VoisinApp reinvents neighborhood communication by combining the best of social networks with privacy respect.\n\n' +
       'Today:\n' +

@@ -118,6 +118,12 @@ const HomePage = () => {
   const translate = useTranslate();
   const [showWelcome, setShowWelcome] = useState(true);
 
+  useEffect(() => {
+    if (!isLoading && identity?.id) {
+      redirect('/home');
+    }
+  }, [identity, isLoading, redirect]);
+
   const handleCloseWelcome = () => {
     setShowWelcome(false);
     localStorage.setItem('welcomeShown', 'true');

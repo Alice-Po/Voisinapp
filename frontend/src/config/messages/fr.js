@@ -36,6 +36,16 @@ export default {
       contact: 'Nous contacter',
       continue: "J'ai compris, continuer vers VoisinApp"
     },
+    location_dialog: {
+      title: 'Définir votre localisation',
+      subtitle: 'Choisissez votre quartier',
+      description:
+        'Pour profiter au mieux de VoisinApp, veuillez définir votre localisation dans les paramètres de votre profil sur votre hébergeur de données. Cela vous permettra de vous connecter avec vos voisins et de voir le contenu local pertinent.',
+      privacy_note:
+        "Seule votre ville/commune sera visible pour les autres utilisateurs. Votre adresse exacte restera privée et vous n'êtes d'ailleurs pas obligé de la donner..",
+      set_location_button: 'Définir la localisation dans les paramètres de votre hebergeur de données',
+      skip_button: 'Passer pour le moment'
+    },
     action: {
       edit_profile: 'Editer le profile',
       follow: 'Suivre',
