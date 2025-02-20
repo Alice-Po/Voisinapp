@@ -1,46 +1,52 @@
-import { Box, Card, Typography, Avatar, Button, Skeleton } from "@mui/material";
-import makeStyles from "@mui/styles/makeStyles";
-import { useGetIdentity, useTranslate } from "react-admin";
-import useActorContext from "../../hooks/useActorContext";
-import FollowButton from "../buttons/FollowButton";
-import useOpenExternalApp from "../../hooks/useOpenExternalApp";
-import { useState, useEffect } from "react";
+import { Box, Card, Typography, Avatar, Button, Skeleton } from '@mui/material';
+import makeStyles from '@mui/styles/makeStyles';
+import { useGetIdentity, useTranslate } from 'react-admin';
+import useActorContext from '../../hooks/useActorContext';
+import FollowButton from '../buttons/FollowButton';
+import useOpenExternalApp from '../../hooks/useOpenExternalApp';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import { reverseGeocode } from '../../utils/geocoding';
+import RippleLoader from '../components/RippleLoader';
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles(theme => ({
   title: {
-    backgroundRepeat: "no-repeat",
-    backgroundSize: "cover",
+    backgroundRepeat: 'no-repeat',
+    backgroundSize: 'cover',
     backgroundImage: `radial-gradient(circle at 50% 14em, ${theme.palette.primary.light} 0%, ${theme.palette.primary.main} 100%)`,
     color: theme.palette.primary.contrastText,
     height: 85,
-    position: "relative"
+    position: 'relative'
   },
   avatarWrapper: {
-    position: "absolute",
+    position: 'absolute',
     margin: 10,
     top: 0,
     left: 0,
     right: 0,
-    textAlign: "center",
+    textAlign: 'center'
   },
   block: {
-    backgroundColor: "white",
+    backgroundColor: 'white',
     paddingTop: 80,
-    paddingBottom: 20,
+    paddingBottom: 20
   },
   button: {
-    backgroundColor: "white",
-    textAlign: "center",
-    "& a": {
-      textDecoration: "none",
-    },
+    backgroundColor: 'white',
+    textAlign: 'center',
+    '& a': {
+      textDecoration: 'none'
+    }
   },
   status: {
     marginTop: 8,
-    color: theme.palette.primary.main,
-  },
+    color: theme.palette.primary.main
+  }
 }));
+
+// Cache pour stocker les résultats de géocodage
+const geocodeCache = new Map();
+
+const MIN_LOADING_TIME = 500; // Délai minimum de chargement en ms
 
 const ProfileCard = () => {
   const classes = useStyles();
@@ -50,40 +56,66 @@ const ProfileCard = () => {
   const openExternalApp = useOpenExternalApp();
   const [reverseGeocodeLocation, setReverseGeocodeLocationLocation] = useState(null);
   const [favoriteAddressFromPods, setFavoriteAddressFromPods] = useState(null);
+  const [isLoadingLocation, setIsLoadingLocation] = useState(false);
+  const loadingTimerRef = useRef(null);
+
+  const fetchLocation = useCallback(async () => {
+    if (!actor?.profile?.['vcard:hasGeo']) return;
+
+    const geo = actor.profile['vcard:hasGeo'];
+    const cacheKey = `${geo['vcard:latitude']},${geo['vcard:longitude']}`;
+
+    // Vérifier si le résultat est dans le cache
+    if (geocodeCache.has(cacheKey)) {
+      setReverseGeocodeLocationLocation(geocodeCache.get(cacheKey));
+      return;
+    }
+
+    const loadingStartTime = Date.now();
+    setIsLoadingLocation(true);
+
+    try {
+      const locationData = await reverseGeocode(geo['vcard:latitude'], geo['vcard:longitude']);
+
+      // Mettre en cache le résultat
+      geocodeCache.set(cacheKey, locationData);
+
+      // Calculer le temps restant pour atteindre le délai minimum
+      const elapsedTime = Date.now() - loadingStartTime;
+      const remainingTime = Math.max(0, MIN_LOADING_TIME - elapsedTime);
+
+      // Utiliser setTimeout pour assurer un temps de chargement minimum
+      loadingTimerRef.current = setTimeout(() => {
+        setReverseGeocodeLocationLocation(locationData);
+        setIsLoadingLocation(false);
+      }, remainingTime);
+    } catch (error) {
+      console.error('Error fetching location:', error);
+      setIsLoadingLocation(false);
+    }
+  }, [actor?.profile]);
 
   useEffect(() => {
-    const fetchLocation = async () => {
-      if (actor?.profile?.['vcard:hasGeo']) {
-        const geo = actor.profile['vcard:hasGeo'];
-        const locationData = await reverseGeocode(
-          geo['vcard:latitude'],
-          geo['vcard:longitude']
-        );
-        setReverseGeocodeLocationLocation(locationData);
+    fetchLocation();
+
+    // Cleanup function
+    return () => {
+      if (loadingTimerRef.current) {
+        clearTimeout(loadingTimerRef.current);
       }
     };
-    fetchLocation();
-  }, [actor]);
+  }, [fetchLocation]);
 
   const isLoading = actor.isLoading;
 
   return (
-    <Card data-testid="profile-card"
->
+    <Card data-testid="profile-card">
       <Box className={classes.title}>
-        <Box
-          display="flex"
-          justifyContent="center"
-          className={classes.avatarWrapper}
-        >
+        <Box display="flex" justifyContent="center" className={classes.avatarWrapper}>
           {isLoading ? (
             <Skeleton variant="circular" width={150} height={150} />
           ) : (
-            <Avatar
-              src={actor?.image}
-              alt={actor?.name}
-              sx={{ width: 150, height: 150, bgcolor: "grey" }}
-            />
+            <Avatar src={actor?.image} alt={actor?.name} sx={{ width: 150, height: 150, bgcolor: 'grey' }} />
           )}
         </Box>
       </Box>
@@ -98,11 +130,11 @@ const ProfileCard = () => {
         <Typography
           align="center"
           sx={{
-            textOverflow: "ellipsis",
-            overflow: "hidden",
-            whiteSpace: "nowrap",
+            textOverflow: 'ellipsis',
+            overflow: 'hidden',
+            whiteSpace: 'nowrap',
             pl: 3,
-            pr: 3,
+            pr: 3
           }}
         >
           {actor?.username}
@@ -117,8 +149,10 @@ const ProfileCard = () => {
             Favorite address from the pods : {favoriteAddressFromPods?.city} ({favoriteAddressFromPods?.postcode})
           </Typography>
         )} */}
-        {isLoading ? (
-          <div data-testid="profile-loading">Loading...</div>
+        {isLoadingLocation ? (
+          <Box display="flex" justifyContent="center" py={1}>
+            <RippleLoader />
+          </Box>
         ) : (
           reverseGeocodeLocation && (
             <Typography
@@ -136,9 +170,9 @@ const ProfileCard = () => {
 
       <Box className={classes.button} pb={3} pr={3} pl={3}>
         {actor.isLoggedUser ? (
-          <a href={openExternalApp("as:Profile", identity?.profileData?.id)}>
+          <a href={openExternalApp('as:Profile', identity?.profileData?.id)}>
             <Button variant="contained" color="secondary" type="submit">
-              {translate("app.action.edit_profile")}
+              {translate('app.action.edit_profile')}
             </Button>
           </a>
         ) : (

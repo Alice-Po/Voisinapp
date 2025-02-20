@@ -11,6 +11,7 @@ import SettingsIcon from '@mui/icons-material/Settings';
 import WarningAmberIcon from '@mui/icons-material/WarningAmber';
 import theme from '../config/theme';
 import WelcomeDialog from '../common/components/WelcomeDialog';
+import RippleLoader from '../common/components/RippleLoader';
 
 const useStyles = makeStyles(() => ({
   root: {
@@ -129,9 +130,13 @@ const HomePage = () => {
     localStorage.setItem('welcomeShown', 'true');
   };
 
-  if (isLoading) return null;
+  if (isLoading)
+    return (
+      <Box display="flex" justifyContent="center" alignItems="center" height="100vh">
+        <RippleLoader />
+      </Box>
+    );
 
-  // Créer des tableaux d'indices pour mapper les traductions
   const featureIndices = [0, 1, 2];
 
   return (
