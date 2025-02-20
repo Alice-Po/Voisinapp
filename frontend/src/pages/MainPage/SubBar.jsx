@@ -105,7 +105,7 @@ const SubBar = () => {
               minWidth: 'auto'
             }}
           />
-          <Tab
+          {/* <Tab
             label={<TabLabel icon={<PeopleIcon />} label={translate('app.page.followers')} count={numFollowers} />}
             value="/followers"
             sx={{
@@ -120,7 +120,7 @@ const SubBar = () => {
               fontWeight: 'normal',
               minWidth: 'auto'
             }}
-          />
+          /> */}
           <Tab
             label={<TabLabel icon={<InfoIcon />} label={translate('app.page.about')} />}
             value="/about"
