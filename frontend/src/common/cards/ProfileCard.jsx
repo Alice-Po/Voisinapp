@@ -1,4 +1,4 @@
-import { Box, Card, Typography, Avatar, Button, Skeleton } from '@mui/material';
+import { Box, Card, Typography, Button, Skeleton } from '@mui/material';
 import makeStyles from '@mui/styles/makeStyles';
 import { useGetIdentity, useTranslate } from 'react-admin';
 import useActorContext from '../../hooks/useActorContext';
@@ -7,6 +7,9 @@ import useOpenExternalApp from '../../hooks/useOpenExternalApp';
 import { useState, useEffect, useCallback, useRef } from 'react';
 import { reverseGeocode } from '../../utils/geocoding';
 import RippleLoader from '../components/RippleLoader';
+import LocationOnIcon from '@mui/icons-material/LocationOn';
+import UserAvatar from '../components/UserAvatar';
+import UserName from '../components/UserName';
 
 const useStyles = makeStyles(theme => ({
   title: {
@@ -112,33 +115,20 @@ const ProfileCard = () => {
     <Card data-testid="profile-card">
       <Box className={classes.title}>
         <Box display="flex" justifyContent="center" className={classes.avatarWrapper}>
-          {isLoading ? (
-            <Skeleton variant="circular" width={150} height={150} />
-          ) : (
-            <Avatar src={actor?.image} alt={actor?.name} sx={{ width: 150, height: 150, bgcolor: 'grey' }} />
-          )}
+          <UserAvatar src={actor?.image} name={actor?.name} />
         </Box>
       </Box>
       <Box className={classes.block}>
-        {isLoading ? (
-          <Skeleton variant="text" />
-        ) : (
-          <Typography variant="h4" align="center">
-            {actor?.name}
-          </Typography>
-        )}
-        <Typography
-          align="center"
+        <UserName name={actor?.name} />
+        <UserName
+          name={actor?.username}
+          variant="body2"
           sx={{
-            textOverflow: 'ellipsis',
-            overflow: 'hidden',
-            whiteSpace: 'nowrap',
-            pl: 3,
-            pr: 3
+            color: 'text.secondary',
+            mt: 1
           }}
-        >
-          {actor?.username}
-        </Typography>
+          data-testid="profile-location"
+        />
         {/* {location && (
           <Typography
             variant="body2"
@@ -156,12 +146,20 @@ const ProfileCard = () => {
         ) : (
           reverseGeocodeLocation && (
             <Typography
-              variant="body2"
-              color="text.secondary"
               align="center"
-              sx={{ mt: 1 }}
-              data-testid="profile-location"
+              sx={{
+                textOverflow: 'ellipsis',
+                overflow: 'hidden',
+                whiteSpace: 'nowrap',
+                pl: 3,
+                pr: 3,
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                gap: 0.5
+              }}
             >
+              <LocationOnIcon fontSize="small" color="primary" />
               {reverseGeocodeLocation.city}
             </Typography>
           )
