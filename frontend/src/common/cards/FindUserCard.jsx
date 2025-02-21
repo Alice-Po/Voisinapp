@@ -1,19 +1,8 @@
 import { Form, SearchInput, useRedirect, useTranslate } from 'react-admin';
-import { Box, Card, Typography } from '@mui/material';
-import makeStyles from '@mui/styles/makeStyles';
-
-const useStyles = makeStyles(theme => ({
-  title: {
-    backgroundRepeat: 'no-repeat',
-    backgroundSize: 'cover',
-    backgroundImage: `radial-gradient(circle at 50% 8em, ${theme.palette.primary.light} 0%, ${theme.palette.primary.main} 100%)`,
-    color: theme.palette.primary.contrastText,
-    padding: '5px 10px'
-  }
-}));
+import { Box, Card, Typography, InputAdornment } from '@mui/material';
+import SearchIcon from '@mui/icons-material/Search';
 
 const FindUserCard = ({ stripCard }) => {
-  const classes = useStyles();
   const redirect = useRedirect();
   const translate = useTranslate();
 
@@ -23,22 +12,116 @@ const FindUserCard = ({ stripCard }) => {
 
   return stripCard ? (
     <Form onSubmit={onSubmit}>
-      <SearchInput placeholder="@user@instance.com" source="username" margin="dense" fullWidth sx={{ mt: 0, mb: -3 }} />
+      <Typography 
+        variant="body2" 
+        sx={{ 
+          color: '#65676B',
+          fontSize: '0.8125rem',
+          mb: 1,
+          fontWeight: 500
+        }}
+      >
+        Rechercher un utilisateur
+      </Typography>
+      <SearchInput 
+        placeholder="Rechercher un utilisateur (@user@instance.com)"
+        source="username" 
+        fullWidth
+        sx={{
+          '& .MuiInputBase-root': {
+            backgroundColor: '#f0f2f5',
+            borderRadius: '20px',
+            height: '40px',
+            '&:hover': {
+              backgroundColor: '#e4e6eb'
+            }
+          },
+          '& .MuiOutlinedInput-notchedOutline': {
+            border: 'none'
+          },
+          '& .MuiInputBase-input': {
+            padding: '8px 16px',
+            fontSize: '0.9375rem',
+            '&::placeholder': {
+              color: '#050505',
+              opacity: 0.6
+            }
+          }
+        }}
+        InputProps={{
+          startAdornment: (
+            <InputAdornment position="start" sx={{ ml: 1 }}>
+              <SearchIcon sx={{ color: '#65676B', fontSize: '1.2rem' }} />
+            </InputAdornment>
+          )
+        }}
+      />
     </Form>
   ) : (
-    <Card>
-      <Box className={classes.title} p={1}>
-        <Typography variant="h6">{translate('app.card.find_user')}</Typography>
-      </Box>
-      <Box p={2}>
-        <Typography variant="body2">{translate('app.helper.find_user')}</Typography>
+    <Card sx={{ 
+      backgroundColor: '#fff',
+      boxShadow: 'none',
+      border: '1px solid rgba(0, 0, 0, 0.08)',
+      borderRadius: '8px',
+      overflow: 'hidden',
+      mt: 2
+    }}>
+      <Box sx={{ p: 2 }}>
+        <Typography 
+          variant="subtitle1" 
+          sx={{ 
+            color: '#050505',
+            fontWeight: 600,
+            fontSize: '1rem',
+            mb: 1
+          }}
+        >
+          {translate('app.card.find_user')}
+        </Typography>
+        <Typography 
+          variant="body2" 
+          sx={{ 
+            color: '#65676B',
+            fontSize: '0.8125rem',
+            mb: 2
+          }}
+        >
+          {translate('app.helper.find_user')}
+        </Typography>
         <Form onSubmit={onSubmit}>
+
           <SearchInput
-            placeholder="@user@instance.com"
+            placeholder="Rechercher un utilisateur (@user@instance.com)"
             source="username"
-            margin="dense"
             fullWidth
-            sx={{ mt: 1, mb: -2 }}
+            sx={{
+              '& .MuiInputBase-root': {
+                backgroundColor: '#f0f2f5',
+                borderRadius: '20px',
+                height: '40px',
+                '&:hover': {
+                  backgroundColor: '#e4e6eb'
+                }
+              },
+              '& .MuiOutlinedInput-notchedOutline': {
+                border: 'none'
+              },
+              '& .MuiInputBase-input': {
+                padding: '8px 16px',
+                fontSize: '0.9375rem',
+                '&::placeholder': {
+                  color: '#050505',
+                  opacity: 0.6
+                }
+              }
+            }}
+            InputProps={{
+              startAdornment: (
+                <InputAdornment position="start" sx={{ ml: 1 }}>
+                  <SearchIcon sx={{ color: '#65676B', fontSize: '1.2rem' }} />
+                </InputAdornment>
+              )
+            }}
           />
         </Form>
       </Box>

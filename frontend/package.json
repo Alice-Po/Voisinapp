@@ -7,6 +7,7 @@
     "dev": "vite",
     "build": "vite build",
     "serve": "vite preview",
+    "test-features": "cucumber-js -f @cucumber/pretty-formatter",
     "type-check": "tsc --noEmit",
     "lint": "eslint --fix --ext .js,.jsx,.ts,.tsx ./src",
     "format": "prettier --write ./src",
@@ -18,8 +19,8 @@
     "unlink-packages": "yalc remove --all && rm -rf node_modules/@semapps && rm -rf node_modules/@activitypods && yarn install --force"
   },
   "dependencies": {
+    "@activitypods/react": "2.0.5",
     "@mui/styles": "^5.14.13",
-    "@activitypods/react": "2.0.4",
     "@semapps/activitypub-components": "1.0.3",
     "@semapps/auth-provider": "1.0.3",
     "@semapps/semantic-data-provider": "1.0.3",
@@ -33,6 +34,8 @@
     "url-join": "^4.0.1"
   },
   "devDependencies": {
+    "@cucumber/cucumber": "^11.1.0",
+    "@cucumber/pretty-formatter": "^1.0.1",
     "@types/node": "^18.16.1",
     "@types/react": "^18.0.22",
     "@types/react-dom": "^18.0.7",
@@ -43,7 +46,9 @@
     "eslint-config-prettier": "^8.8.0",
     "eslint-plugin-react": "^7.32.2",
     "eslint-plugin-react-hooks": "^4.6.0",
+    "mockdate": "^3.0.5",
     "prettier": "^2.8.8",
+    "puppeteer": "^23.9.0",
     "typescript": "^5.1.6",
     "vite": "^5.1.5",
     "yalc": "1.0.0-pre.53"

@@ -1,20 +1,34 @@
 import { useLocaleState } from 'react-admin';
 import dayjs from 'dayjs';
-import { Typography } from '@mui/material';
-import relativeTime from 'dayjs/plugin/relativeTime';
 import localizedFormat from 'dayjs/plugin/localizedFormat';
+import isYesterday from 'dayjs/plugin/isYesterday';
+import isToday from 'dayjs/plugin/isToday';
 import 'dayjs/locale/fr';
 
-dayjs.extend(relativeTime);
 dayjs.extend(localizedFormat);
+dayjs.extend(isYesterday);
+dayjs.extend(isToday);
 
-const RelativeDate = ({ date, ...rest }) => {
+const RelativeDate = ({ date }) => {
   const [locale] = useLocaleState();
-  return (
-    <Typography title={dayjs(date).locale(locale).format('LLL')} {...rest}>
-      {dayjs().locale(locale).from(dayjs(date), true)}
-    </Typography>
-  );
+  
+  if (!date) {
+    console.warn('No date provided to RelativeDate component');
+    return null;
+  }
+
+  const formattedDate = dayjs(date).locale(locale);
+
+  let dateStr = '';
+  if (formattedDate.isToday()) {
+    dateStr = formattedDate.format('HH:mm');
+  } else if (formattedDate.isYesterday()) {
+    dateStr = `Hier ${formattedDate.format('HH:mm')}`;
+  } else {
+    dateStr = formattedDate.format('DD/MM/YYYY HH:mm');
+  }
+
+  return dateStr;
 };
 
 export default RelativeDate;

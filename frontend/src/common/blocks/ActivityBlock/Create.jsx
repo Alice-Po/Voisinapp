@@ -38,8 +38,20 @@ const Create = ({ activity, showReplies, clickOnContent }) => {
     return null;
   }
 
+  // Skip rendering if the note is expired
+  const isExpired = createdObject.endTime 
+    ? new Date(createdObject.endTime) < new Date() 
+    : false;
+
   return (
-    <Card sx={{ p: 2 }}>
+    <Card sx={{
+       p: 1,
+       opacity: isExpired ? 0.5 : 1,
+       backgroundColor: isExpired ? '#f0f0f0' : 'white',
+       '&:not(:last-child)': {
+         mb: 1
+       }
+    }}>
       <Note
         object={createdObject}
         activity={activity}

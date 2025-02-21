@@ -14,6 +14,9 @@ const dataServers = {
       }
     },
     uploadsContainer: '/semapps/file'
+  },
+  app: {
+    baseUrl: 'http://localhost:3004'
   }
 };
 

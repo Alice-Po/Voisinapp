@@ -25,7 +25,12 @@ const Announce = ({ activity }) => {
     );
   } else {
     return (
-      <Card sx={{ p: 2 }}>
+      <Card sx={{ 
+        p: 1,
+        '&:not(:last-child)': {
+          mb: 1
+        }
+      }}>
         <BoostBanner activity={activity} />
         {boostedObject.type === ACTIVITY_TYPES.CREATE ? (
           <Note object={boostedObject.object} activity={boostedObject} />

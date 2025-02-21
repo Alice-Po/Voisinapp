@@ -1,0 +1,25 @@
+{
+  "newUser": {
+    "username": "newuser",
+    "email": "newuser@test.com",
+    "password": "testpassword123",
+    "vcard:given-name": "New User",
+    "vcard:note": "I am a new user testing the application",
+    "vcard:photo": "avatar.jpg"
+  },
+  "registredUser": {
+    "username": "test",
+    "password": "testtesttest",
+    "weeklyNote": "This is a test weekly note"
+  },
+  "nearbyUser": {
+    "username": "nearby",
+    "password": "testtesttest",
+    "vcard:given-name": "Nearby User"
+  },
+  "farUser": {
+    "username": "far",
+    "password": "testtesttest",
+    "vcard:given-name": "Far User"
+  }
+} 

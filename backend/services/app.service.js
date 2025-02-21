@@ -49,7 +49,7 @@ module.exports = {
           fr: 'Messages'
         },
         openEndpoint: urlJoin(CONFIG.FRONT_URL, '/r')
-      }
+      },
     },
     queueServiceUrl: CONFIG.QUEUE_SERVICE_URL
   }

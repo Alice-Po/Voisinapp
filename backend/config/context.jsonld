@@ -1,0 +1,10 @@
+{
+  "@context": {
+    "@vocab": "http://www.w3.org/ns/activitystreams#",
+    "skos": "http://www.w3.org/2004/02/skos/core#",
+    "color": {
+      "@id": "http://schema.org/color",
+      "@type": "http://www.w3.org/2001/XMLSchema#string"
+    }
+  }
+} 

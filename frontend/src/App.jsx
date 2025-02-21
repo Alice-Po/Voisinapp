@@ -1,7 +1,7 @@
 import { Admin, Resource, CustomRoutes } from 'react-admin';
 import { BrowserRouter, Route } from 'react-router-dom';
 import { QueryClient } from 'react-query';
-import { PodLoginPage } from '@activitypods/react';
+import { LoginPage } from '@activitypods/react';
 
 import dataProvider from './config/dataProvider';
 import authProvider from './config/authProvider';
@@ -15,11 +15,11 @@ import { default as ActorPostsAndReplies } from './pages/ActorPage/PostsAndRepli
 import { default as ActorFollowers } from './pages/ActorPage/Followers';
 import { default as ActorFollowing } from './pages/ActorPage/Following';
 import MainPage from './pages/MainPage/MainPage';
-import Inbox from './pages/MainPage/Inbox';
-import Outbox from './pages/MainPage/Outbox';
+import Home from './pages/MainPage/Home';
 import Followers from './pages/MainPage/Followers';
 import ActivityPage from './pages/ActivityPage/ActivityPage';
 import Following from './pages/MainPage/Following';
+import About from './pages/MainPage/About';
 
 import theme from './config/theme';
 import i18nProvider from './config/i18nProvider';
@@ -49,7 +49,18 @@ const customPodProviders = import.meta.env.VITE_POD_PROVIDER_BASE_URL && [
   }
 ];
 
-const LoginPage = props => <PodLoginPage customPodProviders={customPodProviders} {...props} />;
+// If a custom Pod provider is defined, use it instead of loading all available Pod providers
+const MyLoginPage = props => (
+  <LoginPage
+    customPodProviders={
+      import.meta.env.VITE_POD_PROVIDER_BASE_URL && [
+        { 'apods:baseUrl': import.meta.env.VITE_POD_PROVIDER_BASE_URL, 'apods:area': 'Local' }
+      ]
+    }
+    clientId={import.meta.env.VITE_BACKEND_CLIENT_ID}
+    {...props}
+  />
+);
 
 export const App = () => (
   <BrowserRouter>
@@ -59,7 +70,7 @@ export const App = () => (
       i18nProvider={i18nProvider}
       queryClient={queryClient}
       layout={Layout}
-      loginPage={LoginPage}
+      loginPage={MyLoginPage}
       theme={theme}
       disableTelemetry
     >
@@ -69,10 +80,10 @@ export const App = () => (
       </CustomRoutes>
       <CustomRoutes>
         <Route element={<MainPage />}>
-          <Route path="inbox" element={<Inbox />} />
-          <Route path="outbox" element={<Outbox />} />
+          <Route path="home" element={<Home />} />
           <Route path="followers" element={<Followers />} />
           <Route path="following" element={<Following />} />
+          <Route path="about" element={<About />} />
         </Route>
         <Route path="/activity/:activityUri" element={<ActivityPage />} />
         <Route path="/actor/:username" element={<ActorPage />}>
