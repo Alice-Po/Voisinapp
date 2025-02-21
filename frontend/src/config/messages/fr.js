@@ -85,7 +85,9 @@ export default {
     },
     message: {
       early_dev_warning:
-        'Cette application est en cours de développement. Utilisez-la pour des tests uniquement, et veuillez remonter les bugs que vous trouvez sur'
+        'Cette application est en cours de développement. Utilisez-la pour des tests uniquement, et veuillez remonter les bugs que vous trouvez sur',
+      geographic_info:
+        '📍 Les messages affichés proviennent de votre zone géographique, pour favoriser les échanges de proximité'
     },
     notification: {
       message_sent: 'Votre message a été envoyé',
@@ -111,8 +113,7 @@ export default {
     loading: {
       title: 'Refaire le web prends du temps..',
       feed_loading: "Votre fil d'actualité est en cours de chargement.",
-      explanation:
-        "Si le chargement prend un peu de temps, c'est parce que nous avons fait des choix technologique qui respectent réellement les humains et leur autonomie. Les temps de chargement sont en cours d'amélioration.",
+      explanation: "Si le chargement prend un peu de temps, c'est parce que nous utilisons des technologie génial.",
       activitypods_intro: "VoisinApp s'appuie sur",
       activitypods_description:
         ', une technologie aux ambitions révolutionnaires qui vous redonne le contrôle de vos données et de vos interactions numériques.'

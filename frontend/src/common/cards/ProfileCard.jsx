@@ -12,13 +12,13 @@ import RippleLoader from '../components/RippleLoader';
 import LocationOnIcon from '@mui/icons-material/LocationOn';
 import UserAvatar from '../components/UserAvatar';
 import UserName from '../components/UserName';
+import { useTheme } from '@mui/material/styles';
 
 const useStyles = makeStyles(theme => ({
   title: {
     backgroundRepeat: 'no-repeat',
     backgroundSize: 'cover',
-    backgroundImage: `radial-gradient(circle at 50% 14em, ${theme.palette.primary.light} 0%, ${theme.palette.primary.main} 100%)`,
-    color: theme.palette.primary.contrastText,
+    color: theme.palette.secondary.contrastText,
     height: 85,
     position: 'relative'
   },
@@ -63,7 +63,7 @@ const ProfileCard = () => {
   const [favoriteAddressFromPods, setFavoriteAddressFromPods] = useState(null);
   const [isLoadingLocation, setIsLoadingLocation] = useState(false);
   const loadingTimerRef = useRef(null);
-
+  const theme = useTheme();
   const { totalItems: numFollowers } = useCollection(actor?.followers, { liveUpdates: true });
 
   const fetchLocation = useCallback(async () => {
@@ -116,7 +116,7 @@ const ProfileCard = () => {
   const isLoading = actor.isLoading;
 
   return (
-    <Card data-testid="profile-card">
+    <Card data-testid="profile-card" style={{ borderRadius: theme.radius.card }}>
       <Box className={classes.title}>
         <Box display="flex" justifyContent="center" className={classes.avatarWrapper}>
           <UserAvatar src={actor?.image} name={actor?.name} />

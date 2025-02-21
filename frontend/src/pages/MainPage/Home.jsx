@@ -12,6 +12,7 @@ import { reverseGeocode } from '../../utils/geocoding';
 import { filterNotesByLocation } from '../../utils/geocoding';
 import { Box, Typography, Card, Avatar } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
+import { useTranslate } from 'react-admin';
 
 const Home = () => {
   useCheckAuthenticated();
@@ -20,6 +21,7 @@ const Home = () => {
   const [showLocationDialog, setShowLocationDialog] = useState(false);
   const [hasCheckedLocation, setHasCheckedLocation] = useState(false);
   const theme = useTheme();
+  const translate = useTranslate();
 
   // Fetch inbox activities
   const {
@@ -159,7 +161,7 @@ const Home = () => {
               opacity: 0.9
             }}
           >
-            📍 Les messages affichés proviennent de votre zone géographique, pour favoriser les échanges de proximité
+            {translate('app.message.geographic_info')}
           </Typography>
         </Box>
         {allActivities &&

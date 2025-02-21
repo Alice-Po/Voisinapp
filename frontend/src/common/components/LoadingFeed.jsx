@@ -1,9 +1,10 @@
 import { Box, Typography, Link } from '@mui/material';
 import { useTranslate } from 'react-admin';
+import { useTheme } from '@mui/material/styles';
 
 const LoadingFeed = () => {
   const translate = useTranslate();
-
+  const theme = useTheme();
   return (
     <Box
       sx={{
@@ -40,7 +41,7 @@ const LoadingFeed = () => {
           fontStyle: 'italic',
           marginBottom: 1,
           textAlign: 'center',
-          color: 'white'
+          color: theme.palette.text.primary
         }}
       >
         {translate('app.loading.title')}
@@ -52,7 +53,7 @@ const LoadingFeed = () => {
           fontStyle: 'italic',
           lineHeight: 1.6,
           fontSize: '1.1rem',
-          color: 'white'
+          color: theme.palette.text.primary
         }}
       >
         {translate('app.loading.feed_loading')}
@@ -71,7 +72,7 @@ const LoadingFeed = () => {
             fontStyle: 'italic',
             lineHeight: 1.6,
             fontSize: '1.1rem',
-            color: 'white'
+            color: theme.palette.text.primary
           }}
         >
           {translate('app.loading.explanation')}
@@ -83,7 +84,7 @@ const LoadingFeed = () => {
             fontStyle: 'italic',
             lineHeight: 1.6,
             fontSize: '1.1rem',
-            color: 'white'
+            color: theme.palette.text.primary
           }}
         >
           {translate('app.loading.activitypods_intro')}{' '}
