@@ -10,6 +10,8 @@ import { useMemo } from 'react';
 import { useState, useEffect } from 'react';
 import { reverseGeocode } from '../../utils/geocoding';
 import { filterNotesByLocation } from '../../utils/geocoding';
+import { Box, Typography, Card, Avatar } from '@mui/material';
+import { useTheme } from '@mui/material/styles';
 
 const Home = () => {
   useCheckAuthenticated();
@@ -17,6 +19,7 @@ const Home = () => {
   const [locationData, setLocationData] = useState(null);
   const [showLocationDialog, setShowLocationDialog] = useState(false);
   const [hasCheckedLocation, setHasCheckedLocation] = useState(false);
+  const theme = useTheme();
 
   // Fetch inbox activities
   const {
@@ -126,28 +129,36 @@ const Home = () => {
       <PostBlock />
 
       {error && <div style={{ color: 'red', padding: '1rem' }}>Error loading messages: {error.message}</div>}
+      <div
+        style={{
+          backgroundColor: theme.palette.background.white,
+          marginTop: '1rem',
+          borderRadius: theme.radius.card,
+          overflow: 'hidden'
+        }}
+      >
+        {allActivities &&
+          allActivities.map(activity => (
+            <ActivityBlock
+              activity={activity}
+              key={activity.id}
+              showReplies
+              onError={err => console.error('Activity render error:', err)}
+            />
+          ))}
 
-      {allActivities &&
-        allActivities.map(activity => (
-          <ActivityBlock
-            activity={activity}
-            key={activity.id}
-            showReplies
-            onError={err => console.error('Activity render error:', err)}
+        {(!allActivities || allActivities.length === 0) && isLoading && <LoadingFeed />}
+
+        {(hasNextInbox || hasNextOutbox) && (
+          <LoadMore
+            fetchNextPage={() => {
+              if (hasNextInbox) fetchNextInbox();
+              if (hasNextOutbox) fetchNextOutbox();
+            }}
+            isLoading={isFetchingNextInbox || isFetchingNextOutbox || isLoading}
           />
-        ))}
-
-      {(!allActivities || allActivities.length === 0) && isLoading && <LoadingFeed />}
-
-      {(hasNextInbox || hasNextOutbox) && (
-        <LoadMore
-          fetchNextPage={() => {
-            if (hasNextInbox) fetchNextInbox();
-            if (hasNextOutbox) fetchNextOutbox();
-          }}
-          isLoading={isFetchingNextInbox || isFetchingNextOutbox || isLoading}
-        />
-      )}
+        )}
+      </div>
 
       <LocationDialog open={showLocationDialog} onClose={handleCloseLocationDialog} />
     </div>

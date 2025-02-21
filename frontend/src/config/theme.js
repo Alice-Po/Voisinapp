@@ -36,7 +36,8 @@ const designTokens = {
   },
   radius: {
     none: 0,
-    button: 20
+    button: 20,
+    card: 12
   }
 };
 
@@ -52,7 +53,8 @@ const theme = createTheme({
       contrastText: designTokens.colors.white
     },
     background: {
-      default: designTokens.colors.grey[100]
+      default: designTokens.colors.grey[100],
+      paper: designTokens.colors.white
     },
     chat: {
       outgoing: designTokens.colors.blue.main,
@@ -62,6 +64,11 @@ const theme = createTheme({
         incoming: designTokens.colors.black
       }
     }
+  },
+  radius: {
+    none: designTokens.radius.none,
+    button: designTokens.radius.button,
+    card: designTokens.radius.card
   },
   components: {
     RaImageField: {

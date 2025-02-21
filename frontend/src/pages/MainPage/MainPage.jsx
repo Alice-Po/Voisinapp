@@ -29,7 +29,7 @@ const MainPage = () => {
               <Grid item sm={4} xs={12}>
                 <StickyBox offsetTop={24}>
                   <ProfileCard />
-                  {/* <FindUserCard /> */}
+                  <FindUserCard />
                 </StickyBox>
               </Grid>
             </Hidden>

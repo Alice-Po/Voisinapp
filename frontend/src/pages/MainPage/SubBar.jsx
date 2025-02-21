@@ -4,9 +4,9 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import { useCollection } from '@semapps/activitypub-components';
 import { useTranslate } from 'react-admin';
 import HomeIcon from '@mui/icons-material/Home';
-import PeopleIcon from '@mui/icons-material/People';
 import PersonAddIcon from '@mui/icons-material/PersonAdd';
 import InfoIcon from '@mui/icons-material/Info';
+import PublicIcon from '@mui/icons-material/Public';
 import useActorContext from '../../hooks/useActorContext';
 import { useTheme as useMuiTheme } from '@mui/material/styles';
 
@@ -20,7 +20,6 @@ const SubBar = () => {
   const actor = useActorContext();
   const muiTheme = useMuiTheme();
 
-  const { totalItems: numFollowers } = useCollection(actor?.followers, { liveUpdates: true });
   const { totalItems: numFollowing } = useCollection(actor?.following, { liveUpdates: true });
 
   const onChange = (_, v) => {
@@ -100,16 +99,16 @@ const SubBar = () => {
           }}
         >
           <Tab
-            label={<TabLabel icon={<HomeIcon />} label={translate('app.page.feed')} />}
+            label={<TabLabel icon={<HomeIcon />} label={translate('app.page.local_feed')} />}
             value="/home"
             sx={{
               fontWeight: 'normal',
               minWidth: 'auto'
             }}
           />
-          {/* <Tab
-            label={<TabLabel icon={<PeopleIcon />} label={translate('app.page.followers')} count={numFollowers} />}
-            value="/followers"
+          <Tab
+            label={<TabLabel icon={<PublicIcon />} label={translate('app.page.public_feed')} />}
+            value="/public"
             sx={{
               fontWeight: 'normal',
               minWidth: 'auto'
@@ -122,7 +121,7 @@ const SubBar = () => {
               fontWeight: 'normal',
               minWidth: 'auto'
             }}
-          /> */}
+          />
           <Tab
             label={<TabLabel icon={<InfoIcon />} label={translate('app.page.about')} />}
             value="/about"

@@ -1,6 +1,8 @@
 import { Box, Card, Typography, Button, Skeleton } from '@mui/material';
 import makeStyles from '@mui/styles/makeStyles';
 import { useGetIdentity, useTranslate } from 'react-admin';
+import { useCollection } from '@semapps/activitypub-components';
+import { Link } from 'react-router-dom';
 import useActorContext from '../../hooks/useActorContext';
 import FollowButton from '../buttons/FollowButton';
 import useOpenExternalApp from '../../hooks/useOpenExternalApp';
@@ -61,6 +63,8 @@ const ProfileCard = () => {
   const [favoriteAddressFromPods, setFavoriteAddressFromPods] = useState(null);
   const [isLoadingLocation, setIsLoadingLocation] = useState(false);
   const loadingTimerRef = useRef(null);
+
+  const { totalItems: numFollowers } = useCollection(actor?.followers, { liveUpdates: true });
 
   const fetchLocation = useCallback(async () => {
     if (!actor?.profile?.['vcard:hasGeo']) return;
@@ -129,16 +133,31 @@ const ProfileCard = () => {
           }}
           data-testid="profile-location"
         />
-        {/* {location && (
-          <Typography
-            variant="body2"
-            color="text.secondary"
-            align="center"
-            sx={{ mt: 1 }}
-          >
-            Favorite address from the pods : {favoriteAddressFromPods?.city} ({favoriteAddressFromPods?.postcode})
+
+        {/* Followers count */}
+        <Box
+          component={Link}
+          to={actor?.isLoggedUser ? '/followers' : `/actor/${actor?.username}/followers`}
+          sx={{
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            mt: 1,
+            textDecoration: 'none',
+            color: 'text.primary',
+            '&:hover': {
+              textDecoration: 'underline'
+            }
+          }}
+        >
+          <Typography variant="body2" component="span" sx={{ fontWeight: 'bold' }}>
+            {numFollowers || 0}
           </Typography>
-        )} */}
+          <Typography variant="body2" component="span" sx={{ ml: 0.5, color: 'text.secondary' }}>
+            {translate('app.page.followers')}
+          </Typography>
+        </Box>
+
         {isLoadingLocation ? (
           <Box display="flex" justifyContent="center" py={1}>
             <RippleLoader />
@@ -156,7 +175,8 @@ const ProfileCard = () => {
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
-                gap: 0.5
+                gap: 0.5,
+                mt: 1
               }}
             >
               <LocationOnIcon fontSize="small" color="primary" />

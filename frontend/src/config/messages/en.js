@@ -9,14 +9,14 @@ export default {
       title: 'Today:',
       current: {
         0: 'Share geolocated messages with your neighbors',
-        1: 'Keep full control of your data with your personal Pod',
-        2: 'Connect to the Fediverse (Mastodon)'
+        1: 'Tag your messages to organize them and optionally set an expiration date',
+        2: "Boost, like, or reply to your neighbors' messages"
       },
       coming_soon_title: 'Coming soon:',
       coming_soon: {
         0: 'Create privacy circles for private sharing',
         1: 'Communicate with local interest groups',
-        2: 'Control the reach of your messages'
+        2: 'Control the reach of your messages: restricted or viral'
       }
     },
     welcome_dialog: {
@@ -65,12 +65,15 @@ export default {
       like: 'Like'
     },
     page: {
-      feed: 'Feed',
+      my_inbox: 'Inbox',
+      my_outbox: 'Outbox',
+      local_feed: 'Local Feed',
+      public_feed: 'Public Feed',
       followers: 'Followers',
       following: 'Following',
+      about: 'About',
       posts: 'Posts',
-      posts_and_replies: 'Posts & Replies',
-      about: 'About'
+      posts_and_replies: 'Posts & Replies'
     },
     card: {
       find_user: 'Find user'
@@ -81,7 +84,10 @@ export default {
     block: {},
     input: {
       message: 'Your message',
-      reply: 'Your reply'
+      reply: 'Your reply',
+      radius: 'Visibility radius (km)',
+      radius_help: 'Maximum distance at which your message will be visible',
+      expiration_date: 'Expiration date'
     },
     helper: {
       find_user: 'To find another fediverse member, enter their handle and hit enter.'
@@ -91,16 +97,19 @@ export default {
         'This application is in early development. Use it for tests only, and please report issues you find on'
     },
     notification: {
-      activity_send_error: 'Error while posting the activity: %{error}',
       message_sent: 'Your message has been sent',
+      message_send_error: 'Error while sending the message: %{error}',
+      activity_send_error: 'Error while posting the activity: %{error}',
       post_boosted: 'The post has been boosted',
-      post_liked: 'The post has been starred',
-      post_like_removed: 'The post has been unstarred',
+      post_liked: 'The post has been liked',
+      post_like_removed: 'The post like has been removed',
       actor_followed: 'You are now following this actor',
       actor_unfollowed: 'You are not following this actor anymore',
-      image_upload_error: 'Uploading picture failed'
+      image_upload_error: 'Failed to upload image'
     },
-    validation: {},
+    validation: {
+      radius_range: 'Radius must be between 0 and 50 kilometers'
+    },
     tag: {
       create: 'Create a new tag',
       label: 'Tag name',
