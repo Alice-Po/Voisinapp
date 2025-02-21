@@ -131,12 +131,37 @@ const Home = () => {
       {error && <div style={{ color: 'red', padding: '1rem' }}>Error loading messages: {error.message}</div>}
       <div
         style={{
-          backgroundColor: theme.palette.background.white,
+          backgroundColor: 'white',
           marginTop: '1rem',
           borderRadius: theme.radius.card,
           overflow: 'hidden'
         }}
       >
+        <Box
+          sx={{
+            backgroundColor: theme.palette.background.default,
+            px: 2,
+            py: 1.5,
+            mx: 2,
+            my: 1,
+            borderLeft: 3,
+            borderColor: 'primary.light',
+            borderRadius: 0
+          }}
+        >
+          <Typography
+            variant="body2"
+            color="text.secondary"
+            sx={{
+              fontSize: '0.875rem',
+              lineHeight: 1.5,
+              fontWeight: 400,
+              opacity: 0.9
+            }}
+          >
+            📍 Les messages affichés proviennent de votre zone géographique, pour favoriser les échanges de proximité
+          </Typography>
+        </Box>
         {allActivities &&
           allActivities.map(activity => (
             <ActivityBlock
