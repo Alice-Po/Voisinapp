@@ -1,6 +1,9 @@
 import { Dialog, DialogTitle, DialogContent, DialogActions, Typography, Button, Box } from '@mui/material';
+import { useTheme } from '@mui/material/styles';
 
 const AdvancedSharingDialog = ({ open, onClose }) => {
+  const theme = useTheme();
+
   return (
     <Dialog
       open={open}
@@ -49,10 +52,10 @@ const AdvancedSharingDialog = ({ open, onClose }) => {
         <Button
           onClick={onClose}
           sx={{
-            backgroundColor: '#0084ff',
-            color: 'white',
+            backgroundColor: theme.palette.primary.main,
+            color: theme.palette.common.white,
             '&:hover': {
-              backgroundColor: '#0073e6'
+              backgroundColor: theme.palette.primary.dark
             },
             textTransform: 'none',
             borderRadius: '8px',

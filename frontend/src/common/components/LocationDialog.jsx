@@ -3,10 +3,12 @@ import { useTranslate } from 'react-admin';
 import LocationOnIcon from '@mui/icons-material/LocationOn';
 import urlJoin from 'url-join';
 import { useState } from 'react';
+import { useTheme } from '@mui/material/styles';
 
 const LocationDialog = ({ open, onClose }) => {
   const translate = useTranslate();
   const [error, setError] = useState(null);
+  const theme = useTheme();
 
   const handleOpenPodSettings = () => {
     try {
@@ -45,15 +47,15 @@ const LocationDialog = ({ open, onClose }) => {
           borderBottom: '1px solid rgba(0, 0, 0, 0.08)',
           fontSize: '1.5rem',
           fontWeight: 600,
-          color: '#543F2E'
+          color: theme.palette.primary.main
         }}
       >
         {translate('app.location_dialog.title')}
       </DialogTitle>
       <DialogContent sx={{ py: 3 }}>
         <Box display="flex" alignItems="center" mb={2}>
-          <LocationOnIcon sx={{ fontSize: 40, color: '#543F2E', mr: 2 }} />
-          <Typography variant="h6" sx={{ color: '#543F2E', fontWeight: 600 }}>
+          <LocationOnIcon sx={{ fontSize: 40, color: theme.palette.primary.main, mr: 2 }} />
+          <Typography variant="h6" sx={{ color: theme.palette.primary.main, fontWeight: 600 }}>
             {translate('app.location_dialog.subtitle')}
           </Typography>
         </Box>
@@ -85,9 +87,9 @@ const LocationDialog = ({ open, onClose }) => {
           onClick={handleOpenPodSettings}
           sx={{
             mt: 2,
-            backgroundColor: '#543F2E',
+            backgroundColor: theme.palette.primary.main,
             '&:hover': {
-              backgroundColor: '#A78464'
+              backgroundColor: theme.palette.primary.light
             }
           }}
         >

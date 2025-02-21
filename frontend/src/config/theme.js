@@ -1,25 +1,65 @@
 import { createTheme } from '@mui/material/styles';
 
+// Design tokens definition
+const designTokens = {
+  colors: {
+    brown: {
+      main: '#543F2E',
+      light: '#A78464'
+    },
+    navy: {
+      main: '#203142'
+    },
+    blue: {
+      main: '#2E61D9'
+    },
+    grey: {
+      100: '#F0F2F5',
+      200: '#E4E6EB',
+      500: '#65676B'
+    },
+    white: '#FFFFFF',
+    black: '#050505',
+    opacity: {
+      light: 'rgba(0, 0, 0, 0.04)',
+      hover: 'rgba(255, 255, 255, 0.1)'
+    }
+  },
+  spacing: {
+    small: 8,
+    medium: 16,
+    large: 20
+  },
+  sizes: {
+    minButtonWidth: 100,
+    maxImageHeight: 200
+  },
+  radius: {
+    none: 0,
+    button: 20
+  }
+};
+
 const theme = createTheme({
   palette: {
     primary: {
-      main: '#543F2E',
-      light: '#A78464',
-      contrastText: '#FFFFFF'
+      main: designTokens.colors.brown.main,
+      light: designTokens.colors.brown.light,
+      contrastText: designTokens.colors.white
     },
     secondary: {
-      main: '#203142',
-      contrastText: '#FFFFFF'
+      main: designTokens.colors.navy.main,
+      contrastText: designTokens.colors.white
     },
     background: {
-      default: '#F0F2F5'
+      default: designTokens.colors.grey[100]
     },
     chat: {
-      outgoing: '#2E61D9',
-      incoming: '#E4E6EB',
+      outgoing: designTokens.colors.blue.main,
+      incoming: designTokens.colors.grey[200],
       text: {
-        outgoing: '#FFFFFF',
-        incoming: '#050505'
+        outgoing: designTokens.colors.white,
+        incoming: designTokens.colors.black
       }
     }
   },
@@ -28,8 +68,8 @@ const theme = createTheme({
       styleOverrides: {
         image: {
           width: '100%',
-          margin: 0,
-          maxHeight: 200,
+          margin: designTokens.radius.none,
+          maxHeight: designTokens.sizes.maxImageHeight,
           objectFit: 'cover'
         }
       }
@@ -37,9 +77,9 @@ const theme = createTheme({
     MuiButton: {
       styleOverrides: {
         contained: {
-          borderRadius: 20,
-          padding: '8px 16px',
-          minWidth: 100
+          borderRadius: designTokens.radius.button,
+          padding: `${designTokens.spacing.small}px ${designTokens.spacing.medium}px`,
+          minWidth: designTokens.sizes.minButtonWidth
         }
       }
     },
@@ -49,24 +89,24 @@ const theme = createTheme({
       },
       styleOverrides: {
         root: {
-          marginBottom: 0,
-          borderRadius: 0
+          marginBottom: designTokens.radius.none,
+          borderRadius: designTokens.radius.none
         }
       }
     },
     MuiAvatar: {
       styleOverrides: {
         root: {
-          backgroundColor: '#65676B'
+          backgroundColor: designTokens.colors.grey[500]
         }
       }
     },
     MuiIconButton: {
       styleOverrides: {
         root: {
-          color: '#65676B',
+          color: designTokens.colors.grey[500],
           '&:hover': {
-            backgroundColor: 'rgba(0, 0, 0, 0.04)'
+            backgroundColor: designTokens.colors.opacity.light
           }
         }
       }
@@ -75,27 +115,27 @@ const theme = createTheme({
       styleOverrides: {
         root: {
           '& .MuiButton-root': {
-            color: 'white',
-            borderColor: 'white',
+            color: designTokens.colors.white,
+            borderColor: designTokens.colors.white,
             '&:hover': {
-              borderColor: 'white',
-              backgroundColor: 'rgba(255, 255, 255, 0.1)'
+              borderColor: designTokens.colors.white,
+              backgroundColor: designTokens.colors.opacity.hover
             }
           },
           '& .MuiSvgIcon-root': {
-            color: 'white'
+            color: designTokens.colors.white
           },
           '& .MuiSelect-select': {
-            color: 'white'
+            color: designTokens.colors.white
           },
           '& .MuiMenu-paper': {
-            backgroundColor: '#543F2E',
-            color: 'white'
+            backgroundColor: designTokens.colors.brown.main,
+            color: designTokens.colors.white
           },
           '& .MuiMenuItem-root': {
-            color: 'white',
+            color: designTokens.colors.white,
             '&:hover': {
-              backgroundColor: 'rgba(255, 255, 255, 0.1)'
+              backgroundColor: designTokens.colors.opacity.hover
             }
           }
         }

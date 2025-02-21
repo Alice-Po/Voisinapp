@@ -2,10 +2,11 @@ import { Link } from 'react-router-dom';
 import { AppBar as MuiAppBar, Toolbar, Container, Typography } from '@mui/material';
 import makeStyles from '@mui/styles/makeStyles';
 import { UserMenu } from '@activitypods/react';
+import { useTheme } from '@mui/material/styles';
 
 const useStyles = makeStyles(theme => ({
   appBar: {
-    backgroundColor: '#FFFFFF',
+    backgroundColor: theme.palette.background.paper,
     borderBottom: '1px solid rgba(0, 0, 0, 0.1)',
     boxShadow: 'none'
   },
@@ -19,12 +20,14 @@ const useStyles = makeStyles(theme => ({
 
 const AppBar = () => {
   const classes = useStyles();
+  const theme = useTheme();
+
   return (
     <MuiAppBar position="sticky" sx={{ flexGrow: 1 }} elevation={0} className={classes.appBar}>
       <Container maxWidth="md">
         <Toolbar disableGutters sx={{ minHeight: '60px' }}>
           <Link to="/inbox">
-            <img src="/logo-transparent.png" className={classes.logo} />
+            <img src="/logo-transparent.png" alt="VoisinApp Logo" className={classes.logo} />
           </Link>
           <Typography
             variant="h6"
@@ -33,7 +36,7 @@ const AppBar = () => {
               marginLeft: 1,
               fontWeight: 600,
               '& a': {
-                color: '#1c1e21',
+                color: theme.palette.text.primary,
                 textDecoration: 'none'
               }
             }}
@@ -43,9 +46,9 @@ const AppBar = () => {
           <UserMenu
             sx={{
               '& .MuiIconButton-root': {
-                color: '#65676B',
+                color: theme.palette.text.secondary,
                 '&:hover': {
-                  backgroundColor: 'rgba(0, 0, 0, 0.04)'
+                  backgroundColor: theme.palette.action.hover
                 }
               }
             }}

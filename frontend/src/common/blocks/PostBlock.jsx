@@ -30,6 +30,7 @@ import TagSelector from '../components/TagSelector';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import ExpandLessIcon from '@mui/icons-material/ExpandLess';
 import AdvancedSharingDialog from '../components/AdvancedSharingDialog';
+import { useTheme } from '@mui/material/styles';
 
 const validateExpirationDate = value => {
   if (!value) return undefined;
@@ -54,6 +55,7 @@ const PostBlock = ({ inReplyTo, mention }) => {
   const [selectedTags, setSelectedTags] = useState([]);
   const [showOptions, setShowOptions] = useState(false);
   const [openDialog, setOpenDialog] = useState(false);
+  const theme = useTheme();
 
   useEffect(() => {
     if (hash === '#reply' && inputRef.current) {
@@ -251,7 +253,7 @@ const PostBlock = ({ inReplyTo, mention }) => {
         sx={{
           borderRadius: { xs: '24px 24px 0 0', sm: '12px' },
           boxShadow: 'none',
-          backgroundColor: '#fff',
+          backgroundColor: theme.palette.background.paper,
           border: '1px solid rgba(0, 0, 0, 0.08)',
           borderBottom: { xs: 'none', sm: '1px solid rgba(0, 0, 0, 0.08)' }
         }}
@@ -277,13 +279,13 @@ const PostBlock = ({ inReplyTo, mention }) => {
                   maxRows={4}
                   sx={{
                     flex: 1,
-                    backgroundColor: '#f0f2f5',
-                    borderRadius: '20px',
+                    backgroundColor: theme.palette.grey[100],
+                    borderRadius: theme.shape.borderRadius,
                     padding: '10px 16px',
                     fontSize: '0.9375rem',
-                    color: '#050505',
+                    color: theme.palette.text.primary,
                     '&::placeholder': {
-                      color: '#65676B',
+                      color: theme.palette.text.secondary,
                       opacity: 1
                     }
                   }}
@@ -293,10 +295,10 @@ const PostBlock = ({ inReplyTo, mention }) => {
                     component="label"
                     size="medium"
                     sx={{
-                      color: '#65676B',
+                      color: theme.palette.text.secondary,
                       padding: '8px',
                       '&:hover': {
-                        backgroundColor: '#f2f2f2'
+                        backgroundColor: theme.palette.action.hover
                       }
                     }}
                     disabled={isSubmitting}
@@ -308,11 +310,11 @@ const PostBlock = ({ inReplyTo, mention }) => {
                     type="submit"
                     disabled={isSubmitting || !content.trim()}
                     sx={{
-                      backgroundColor: content.trim() ? '#0084ff' : '#e4e6eb',
-                      color: content.trim() ? 'white' : '#bcc0c4',
+                      backgroundColor: content.trim() ? theme.palette.secondary.main : theme.palette.grey[200],
+                      color: content.trim() ? theme.palette.common.white : theme.palette.text.disabled,
                       padding: '8px',
                       '&:hover': {
-                        backgroundColor: content.trim() ? '#0073e6' : '#e4e6eb'
+                        backgroundColor: content.trim() ? theme.palette.primary.dark : theme.palette.grey[200]
                       },
                       minWidth: '36px',
                       height: '36px'
@@ -334,7 +336,7 @@ const PostBlock = ({ inReplyTo, mention }) => {
                         borderRadius: '12px',
                         overflow: 'hidden',
                         position: 'relative',
-                        backgroundColor: '#f8f9fa'
+                        backgroundColor: theme.palette.grey[50]
                       }}
                     >
                       <img
@@ -353,7 +355,7 @@ const PostBlock = ({ inReplyTo, mention }) => {
                           top: 4,
                           right: 4,
                           backgroundColor: 'rgba(0, 0, 0, 0.5)',
-                          color: 'white',
+                          color: theme.palette.common.white,
                           padding: '4px',
                           '&:hover': {
                             backgroundColor: 'rgba(0, 0, 0, 0.7)'
@@ -373,13 +375,13 @@ const PostBlock = ({ inReplyTo, mention }) => {
               <Button
                 onClick={() => setShowOptions(!showOptions)}
                 sx={{
-                  color: '#65676B',
+                  color: theme.palette.text.secondary,
                   textTransform: 'none',
                   fontSize: '0.8125rem',
                   padding: '4px 8px',
                   minWidth: 0,
                   '&:hover': {
-                    backgroundColor: 'rgba(0, 0, 0, 0.04)'
+                    backgroundColor: theme.palette.action.hover
                   }
                 }}
                 startIcon={showOptions ? <ExpandLessIcon /> : <ExpandMoreIcon />}
@@ -393,7 +395,7 @@ const PostBlock = ({ inReplyTo, mention }) => {
                     mt: 1,
                     display: 'flex',
                     flexDirection: 'column',
-                    backgroundColor: '#f8f9fa',
+                    backgroundColor: theme.palette.grey[50],
                     borderRadius: '12px',
                     p: 1
                   }}
@@ -411,7 +413,10 @@ const PostBlock = ({ inReplyTo, mention }) => {
                         width: { xs: '100%', sm: '33%' }
                       }}
                     >
-                      <Typography variant="caption" sx={{ color: '#65676B', mb: 0.5, display: 'block' }}>
+                      <Typography
+                        variant="caption"
+                        sx={{ color: theme.palette.text.secondary, mb: 0.5, display: 'block' }}
+                      >
                         Expire le
                       </Typography>
                       <Box
@@ -448,7 +453,10 @@ const PostBlock = ({ inReplyTo, mention }) => {
                         minWidth: { sm: '80px' }
                       }}
                     >
-                      <Typography variant="caption" sx={{ color: '#65676B', mb: 0.5, display: 'block' }}>
+                      <Typography
+                        variant="caption"
+                        sx={{ color: theme.palette.text.secondary, mb: 0.5, display: 'block' }}
+                      >
                         Rayon
                       </Typography>
                       <Box
@@ -472,7 +480,7 @@ const PostBlock = ({ inReplyTo, mention }) => {
                             '& input': {
                               padding: '6px 0',
                               fontSize: '0.875rem',
-                              color: '#050505',
+                              color: theme.palette.text.primary,
                               textAlign: { xs: 'left', sm: 'right' },
                               width: { xs: '100%', sm: '32px' }
                             }
@@ -480,7 +488,7 @@ const PostBlock = ({ inReplyTo, mention }) => {
                         />
                         <Typography
                           sx={{
-                            color: '#65676B',
+                            color: theme.palette.text.secondary,
                             fontSize: '0.875rem',
                             ml: 1,
                             whiteSpace: 'nowrap'
@@ -495,7 +503,10 @@ const PostBlock = ({ inReplyTo, mention }) => {
                         width: { xs: '100%', sm: '33%' }
                       }}
                     >
-                      <Typography variant="caption" sx={{ color: '#65676B', mb: 0.5, display: 'block' }}>
+                      <Typography
+                        variant="caption"
+                        sx={{ color: theme.palette.text.secondary, mb: 0.5, display: 'block' }}
+                      >
                         Tags
                       </Typography>
                       <TagSelector selectedTags={selectedTags} onChange={handleTagChange} />
@@ -503,8 +514,7 @@ const PostBlock = ({ inReplyTo, mention }) => {
                   </Box>
                   <Button
                     sx={{
-                      color: '#65676B',
-
+                      color: theme.palette.text.secondary,
                       textTransform: 'none',
                       fontSize: '0.75rem',
                       padding: '4px 8px',
@@ -513,7 +523,7 @@ const PostBlock = ({ inReplyTo, mention }) => {
                       mt: 1,
                       textDecoration: 'underline',
                       '&:hover': {
-                        backgroundColor: 'rgba(0, 0, 0, 0.04)'
+                        backgroundColor: theme.palette.action.hover
                       }
                     }}
                     onClick={handleOpenDialog}

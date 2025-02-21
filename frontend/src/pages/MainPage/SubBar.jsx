@@ -8,6 +8,7 @@ import PeopleIcon from '@mui/icons-material/People';
 import PersonAddIcon from '@mui/icons-material/PersonAdd';
 import InfoIcon from '@mui/icons-material/Info';
 import useActorContext from '../../hooks/useActorContext';
+import { useTheme as useMuiTheme } from '@mui/material/styles';
 
 const SubBar = () => {
   const location = useLocation();
@@ -17,6 +18,7 @@ const SubBar = () => {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
   const actor = useActorContext();
+  const muiTheme = useMuiTheme();
 
   const { totalItems: numFollowers } = useCollection(actor?.followers, { liveUpdates: true });
   const { totalItems: numFollowing } = useCollection(actor?.following, { liveUpdates: true });
@@ -43,12 +45,12 @@ const SubBar = () => {
           component="span"
           sx={{
             fontSize: { xs: '0.75rem', sm: '0.85rem' },
-            color: '#65676B',
+            color: muiTheme.palette.grey[500],
             ml: { xs: 0, sm: 0.5 },
             position: { xs: 'absolute', sm: 'static' },
             top: { xs: -8, sm: 'auto' },
             right: { xs: -8, sm: 'auto' },
-            backgroundColor: { xs: '#E4E6EB', sm: 'transparent' },
+            backgroundColor: { xs: muiTheme.palette.grey[200], sm: 'transparent' },
             padding: { xs: '0 6px', sm: 0 },
             borderRadius: { xs: '10px', sm: 0 },
             minWidth: { xs: '16px', sm: 'auto' },
@@ -65,7 +67,7 @@ const SubBar = () => {
     <AppBar
       position="relative"
       sx={{
-        backgroundColor: '#FFFFFF',
+        backgroundColor: theme.palette.background.paper,
         boxShadow: 'none',
         zIndex: 900,
         borderBottom: '1px solid rgba(0, 0, 0, 0.1)'
@@ -86,9 +88,9 @@ const SubBar = () => {
               textTransform: 'none',
               minHeight: '48px',
               padding: { xs: '0 24px', sm: '0 16px' },
-              color: '#65676B',
+              color: theme.palette.grey[500],
               '&.Mui-selected': {
-                color: '#2E61D9',
+                color: theme.palette.primary.main,
                 fontWeight: 600
               },
               '& .MuiSvgIcon-root': {
