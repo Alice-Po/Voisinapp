@@ -111,6 +111,11 @@ export default {
     validation: {
       radius_range: 'Radius must be between 0 and 50 kilometers'
     },
+    visibility: {
+      public: 'Public',
+      followersOnly: 'Followers only',
+      mentionsOnly: 'Mentions only'
+    },
     tag: {
       create: 'Create a new tag',
       label: 'Tag name',

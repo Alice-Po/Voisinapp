@@ -16,6 +16,7 @@ import { default as ActorFollowers } from './pages/ActorPage/Followers';
 import { default as ActorFollowing } from './pages/ActorPage/Following';
 import MainPage from './pages/MainPage/MainPage';
 import Home from './pages/MainPage/Home';
+import Public from './pages/MainPage/Public';
 import Followers from './pages/MainPage/Followers';
 import ActivityPage from './pages/ActivityPage/ActivityPage';
 import Following from './pages/MainPage/Following';
@@ -81,6 +82,7 @@ export const App = () => (
       <CustomRoutes>
         <Route element={<MainPage />}>
           <Route path="home" element={<Home />} />
+          <Route path="public" element={<Public />} />
           <Route path="followers" element={<Followers />} />
           <Route path="following" element={<Following />} />
           <Route path="about" element={<About />} />
