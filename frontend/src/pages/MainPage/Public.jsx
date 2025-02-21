@@ -66,6 +66,31 @@ const Public = () => {
           overflow: 'hidden'
         }}
       >
+        <Box
+          sx={{
+            backgroundColor: theme.palette.background.default,
+            px: 2,
+            py: 1.5,
+            mx: 2,
+            my: 1,
+            borderLeft: 3,
+            borderColor: 'primary.light',
+            borderRadius: 0
+          }}
+        >
+          <Typography
+            variant="body2"
+            color="text.secondary"
+            sx={{
+              fontSize: '0.875rem',
+              lineHeight: 1.5,
+              fontWeight: 400,
+              opacity: 0.9
+            }}
+          >
+            {translate('app.message.public_info')}
+          </Typography>
+        </Box>
         {allActivities &&
           allActivities.map(activity => (
             <ActivityBlock

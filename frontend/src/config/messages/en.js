@@ -96,7 +96,8 @@ export default {
     message: {
       early_dev_warning:
         'This application is in early development. Use it for tests only, and please report issues you find on',
-      geographic_info: '📍 Messages shown are from your geographic area to promote local exchanges'
+      geographic_info: '📍 Messages shown are from your geographic area',
+      public_info: '🌍 Messages shown are from the entire whole'
     },
     notification: {
       message_sent: 'Your message has been sent',

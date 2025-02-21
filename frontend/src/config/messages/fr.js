@@ -87,7 +87,8 @@ export default {
     message: {
       early_dev_warning:
         'Cette application est en cours de développement. Utilisez-la pour des tests uniquement, et veuillez remonter les bugs que vous trouvez sur',
-      geographic_info: '📍 Les messages affichés proviennent de votre zone géographique'
+      geographic_info: '📍 Les messages affichés proviennent de votre zone géographique',
+      public_info: '🌍 Les messages affichés proviennent de tous le fédiverse'
     },
     notification: {
       message_sent: 'Votre message a été envoyé',
