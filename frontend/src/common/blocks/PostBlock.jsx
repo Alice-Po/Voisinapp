@@ -19,11 +19,13 @@ import {
   Typography,
   InputBase,
   TextField,
-  InputAdornment
+  InputAdornment,
+  Tooltip
 } from '@mui/material';
 import SendIcon from '@mui/icons-material/Send';
 import InsertPhotoIcon from '@mui/icons-material/InsertPhoto';
 import DeleteIcon from '@mui/icons-material/Delete';
+import LocationOnIcon from '@mui/icons-material/LocationOn';
 import { useOutbox, OBJECT_TYPES, PUBLIC_URI } from '@semapps/activitypub-components';
 import { reverseGeocode } from '../../utils/geocoding';
 import TagSelector from '../components/TagSelector';
@@ -271,37 +273,55 @@ const PostBlock = ({ inReplyTo, mention }) => {
             >
               <Box sx={{ display: 'flex', alignItems: 'flex-start', gap: 1 }}>
                 <Box sx={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
-                  <InputBase
-                    data-testid="message-input"
-                    value={content}
-                    onChange={e => setContent(e.target.value)}
-                    placeholder={translate('app.placeholder.message')}
-                    multiline
-                    maxRows={4}
-                    sx={{
-                      width: '100%',
-                      backgroundColor: theme.palette.grey[100],
-                      borderRadius: theme.shape.borderRadius,
-                      padding: '10px 16px',
-                      fontSize: '0.9375rem',
-                      color: theme.palette.text.primary,
-                      '&::placeholder': {
+                  <Box sx={{ position: 'relative', width: '100%' }}>
+                    <InputBase
+                      data-testid="message-input"
+                      value={content}
+                      onChange={e => setContent(e.target.value)}
+                      placeholder={translate('app.placeholder.message')}
+                      multiline
+                      maxRows={4}
+                      sx={{
+                        width: '100%',
+                        backgroundColor: theme.palette.grey[100],
+                        borderRadius: theme.shape.borderRadius,
+                        padding: '10px 16px',
+                        paddingLeft: '40px',
+                        fontSize: '0.9375rem',
+                        color: theme.palette.text.primary,
+                        '&::placeholder': {
+                          color: theme.palette.text.secondary,
+                          opacity: 1
+                        }
+                      }}
+                    />
+                    <LocationOnIcon
+                      sx={{
+                        position: 'absolute',
+                        left: '12px',
+                        top: '8px',
+                        color: theme.palette.primary.main,
+                        opacity: 0.7
+                      }}
+                    />
+                  </Box>
+                  <Tooltip title={translate('app.input.radius_help')} arrow placement="bottom-start">
+                    <Typography
+                      variant="caption"
+                      sx={{
                         color: theme.palette.text.secondary,
-                        opacity: 1
-                      }
-                    }}
-                  />
-                  <Typography
-                    variant="caption"
-                    sx={{
-                      color: theme.palette.text.secondary,
-                      mt: 0.5,
-                      ml: 1,
-                      fontSize: '0.75rem'
-                    }}
-                  >
-                    {translate('app.input.radius_scope', { radius })}
-                  </Typography>
+                        mt: 0.5,
+                        ml: 1,
+                        fontSize: '0.75rem',
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: 0.5,
+                        cursor: 'help'
+                      }}
+                    >
+                      {translate('app.input.radius_scope', { radius })}
+                    </Typography>
+                  </Tooltip>
                 </Box>
                 <Box sx={{ display: 'flex', gap: 1, alignSelf: 'flex-end' }}>
                   <IconButton

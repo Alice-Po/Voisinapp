@@ -70,7 +70,7 @@ export default {
       find_user: 'Trouver un acteur'
     },
     placeholder: {
-      message: 'Saisir un message'
+      message: 'Partagez quelque chose avec vos voisins...'
     },
     block: {},
     input: {
@@ -79,7 +79,7 @@ export default {
       radius: 'Rayon de visibilité (km)',
       radius_help: 'Distance maximale à laquelle votre message sera visible',
       expiration_date: "Date d'expiration",
-      radius_scope: 'Portée du message : %{radius} km'
+      radius_scope: 'Visible dans un rayon de %{radius} km autour de vous'
     },
     helper: {
       find_user: 'Pour trouver un acteur dans le fediverse, entrez son identifiant et tapez Enter.'
@@ -87,8 +87,7 @@ export default {
     message: {
       early_dev_warning:
         'Cette application est en cours de développement. Utilisez-la pour des tests uniquement, et veuillez remonter les bugs que vous trouvez sur',
-      geographic_info:
-        '📍 Les messages affichés proviennent de votre zone géographique, pour favoriser les échanges de proximité'
+      geographic_info: '📍 Les messages affichés proviennent de votre zone géographique'
     },
     notification: {
       message_sent: 'Votre message a été envoyé',

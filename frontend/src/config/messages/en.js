@@ -79,7 +79,7 @@ export default {
       find_user: 'Find user'
     },
     placeholder: {
-      message: 'Type a message'
+      message: 'Share something with your neighbors...'
     },
     block: {},
     input: {
@@ -88,7 +88,7 @@ export default {
       radius: 'Visibility radius (km)',
       radius_help: 'Maximum distance at which your message will be visible',
       expiration_date: 'Expiration date',
-      radius_scope: 'Message range: %{radius} km'
+      radius_scope: '📍 Visible within %{radius} km around you'
     },
     helper: {
       find_user: 'To find another fediverse member, enter their handle and hit enter.'
