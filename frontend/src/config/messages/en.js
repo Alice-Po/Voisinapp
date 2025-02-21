@@ -87,7 +87,8 @@ export default {
       reply: 'Your reply',
       radius: 'Visibility radius (km)',
       radius_help: 'Maximum distance at which your message will be visible',
-      expiration_date: 'Expiration date'
+      expiration_date: 'Expiration date',
+      radius_scope: 'Message range: %{radius} km'
     },
     helper: {
       find_user: 'To find another fediverse member, enter their handle and hit enter.'

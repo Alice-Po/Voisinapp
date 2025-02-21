@@ -269,28 +269,41 @@ const PostBlock = ({ inReplyTo, mention }) => {
                 borderBottom: '1px solid rgba(0, 0, 0, 0.08)'
               }}
             >
-              <Box sx={{ display: 'flex', alignItems: 'flex-end', gap: 1 }}>
-                <InputBase
-                  data-testid="message-input"
-                  value={content}
-                  onChange={e => setContent(e.target.value)}
-                  placeholder={translate('app.placeholder.message')}
-                  multiline
-                  maxRows={4}
-                  sx={{
-                    flex: 1,
-                    backgroundColor: theme.palette.grey[100],
-                    borderRadius: theme.shape.borderRadius,
-                    padding: '10px 16px',
-                    fontSize: '0.9375rem',
-                    color: theme.palette.text.primary,
-                    '&::placeholder': {
+              <Box sx={{ display: 'flex', alignItems: 'flex-start', gap: 1 }}>
+                <Box sx={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
+                  <InputBase
+                    data-testid="message-input"
+                    value={content}
+                    onChange={e => setContent(e.target.value)}
+                    placeholder={translate('app.placeholder.message')}
+                    multiline
+                    maxRows={4}
+                    sx={{
+                      width: '100%',
+                      backgroundColor: theme.palette.grey[100],
+                      borderRadius: theme.shape.borderRadius,
+                      padding: '10px 16px',
+                      fontSize: '0.9375rem',
+                      color: theme.palette.text.primary,
+                      '&::placeholder': {
+                        color: theme.palette.text.secondary,
+                        opacity: 1
+                      }
+                    }}
+                  />
+                  <Typography
+                    variant="caption"
+                    sx={{
                       color: theme.palette.text.secondary,
-                      opacity: 1
-                    }
-                  }}
-                />
-                <Box sx={{ display: 'flex', gap: 1 }}>
+                      mt: 0.5,
+                      ml: 1,
+                      fontSize: '0.75rem'
+                    }}
+                  >
+                    {translate('app.input.radius_scope', { radius })}
+                  </Typography>
+                </Box>
+                <Box sx={{ display: 'flex', gap: 1, alignSelf: 'flex-end' }}>
                   <IconButton
                     component="label"
                     size="medium"

@@ -10,7 +10,7 @@ import { useMemo } from 'react';
 import { useState, useEffect } from 'react';
 import { reverseGeocode } from '../../utils/geocoding';
 import { filterNotesByLocation } from '../../utils/geocoding';
-import { Box, Typography, Card, Avatar } from '@mui/material';
+import { Box, Typography, Card, Avatar, InputBase } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
 import { useTranslate } from 'react-admin';
 

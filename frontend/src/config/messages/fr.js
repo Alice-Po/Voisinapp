@@ -78,7 +78,8 @@ export default {
       reply: 'Votre réponse',
       radius: 'Rayon de visibilité (km)',
       radius_help: 'Distance maximale à laquelle votre message sera visible',
-      expiration_date: "Date d'expiration"
+      expiration_date: "Date d'expiration",
+      radius_scope: 'Portée du message : %{radius} km'
     },
     helper: {
       find_user: 'Pour trouver un acteur dans le fediverse, entrez son identifiant et tapez Enter.'
