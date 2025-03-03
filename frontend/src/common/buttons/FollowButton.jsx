@@ -239,23 +239,41 @@ const FollowButton = ({ actorUri, children, ...rest }) => {
     }
   }, [actorUri, outbox, notify]);
 
-  if (isLoadingHistory) {
-    return (
-      <Box display="flex" flexDirection="column" alignItems="center" p={2}>
-        <RippleLoader />
-        {injectionProgress > 0 && (
-          <Typography variant="body2" color="textSecondary" sx={{ mt: 2 }}>
-            {translate('app.message.importing_posts', { progress: injectionProgress })}
-          </Typography>
-        )}
-      </Box>
-    );
-  }
-
   return (
-    <Button variant="contained" onClick={isFollowing ? unfollow : follow} {...rest}>
-      {translate(isFollowing ? 'app.action.unfollow' : 'app.action.follow')}
-    </Button>
+    <Box sx={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'center', height: 36, position: 'relative' }}>
+      {isLoadingHistory ? (
+        <Box
+          sx={{
+            display: 'flex',
+            alignItems: 'center',
+            gap: 1,
+            minWidth: 100,
+            height: '100%',
+            position: 'absolute',
+            right: 0,
+            top: -2
+          }}
+        >
+          <RippleLoader size={24} />
+          {injectionProgress > 0 && (
+            <Typography
+              variant="caption"
+              color="textSecondary"
+              sx={{
+                whiteSpace: 'nowrap',
+                fontSize: '0.75rem'
+              }}
+            >
+              {translate('app.message.importing_posts', { progress: injectionProgress })}
+            </Typography>
+          )}
+        </Box>
+      ) : (
+        <Button variant="contained" onClick={isFollowing ? unfollow : follow} {...rest}>
+          {translate(isFollowing ? 'app.action.unfollow' : 'app.action.follow')}
+        </Button>
+      )}
+    </Box>
   );
 };
 
