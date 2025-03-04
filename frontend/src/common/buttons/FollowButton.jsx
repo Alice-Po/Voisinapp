@@ -3,6 +3,8 @@ import { Button, Box, Typography } from '@mui/material';
 import { useNotify, useTranslate } from 'react-admin';
 import { useOutbox, useCollection, ACTIVITY_TYPES } from '@semapps/activitypub-components';
 import RippleLoader from '../components/RippleLoader';
+import CheckIcon from '@mui/icons-material/Check';
+import PersonAddIcon from '@mui/icons-material/PersonAdd';
 
 /**
  * FollowButton Component
@@ -39,20 +41,15 @@ const FollowButton = ({ actorUri, children, ...rest }) => {
 
   const { items: following, error: followingError } = useCollection('following', {
     liveUpdates: true,
-    onError: error => console.error('Following collection error:', error)
+    onError: error => {}
   });
 
   const isFollowing = useMemo(() => following?.includes(actorUri), [following, actorUri]);
 
   const preparePostForInjection = (post, originalActor) => {
-    // Log original post structure with current time
-    console.log('Original post structure at ' + new Date().toISOString(), {
-      content: post.object?.content || 'No content',
-      published: post.published,
-      objectPublished: post?.object?.published,
-      currentTime: new Date().toISOString(),
-      fullPost: post
-    });
+    // Get the original dates - use post.published as the source of truth
+    const originalPublished = post.published;
+    const originalDcCreated = originalPublished; // Set dc:created to be the same as original published
 
     // Ensure we have the basic structure
     const preparedPost = {
@@ -60,34 +57,26 @@ const FollowButton = ({ actorUri, children, ...rest }) => {
       actor: originalActor,
       object: {
         ...post.object,
+        type: 'Note',
         attributedTo: originalActor,
-        published: post.object?.published || post.published // Ensure date is preserved in object
+        published: originalPublished,
+        'dc:created': originalDcCreated
       },
-      published: post.published || post.object?.published, // Ensure date is preserved at activity level
+      published: originalPublished,
+      'dc:created': originalDcCreated,
       context: {
         isHistorical: true,
         originalActorUri: originalActor,
-        importedAt: new Date().toISOString(),
-        originalPublished: post.published || post.object?.published
+        importedAt: new Date().toISOString()
       },
       to: [outbox.owner]
     };
-
-    // Log prepared post structure
-    console.log('Prepared post structure at ' + new Date().toISOString(), {
-      content: preparedPost.object?.content || 'No content',
-      published: preparedPost.published,
-      objectPublished: preparedPost.object?.published,
-      currentTime: new Date().toISOString(),
-      fullPost: preparedPost
-    });
 
     return preparedPost;
   };
 
   const injectHistoricalPosts = async preparedPosts => {
     try {
-      console.log('Starting injection of historical posts at ' + new Date().toISOString());
       setInjectionProgress(0);
 
       // Sort posts by date to maintain chronological order
@@ -97,67 +86,43 @@ const FollowButton = ({ actorUri, children, ...rest }) => {
         return dateA - dateB;
       });
 
-      // Inject posts one by one to maintain order
-      for (let i = 0; i < sortedPosts.length; i++) {
-        const post = sortedPosts[i];
-        try {
-          // Log post before injection
-          console.log('Post before injection at ' + new Date().toISOString(), {
-            content: post.object?.content || 'No content',
-            published: post.published,
-            objectPublished: post.object?.published,
-            currentTime: new Date().toISOString(),
-            fullPost: post
-          });
+      // Create a batch of activities to be posted
+      const activities = sortedPosts.map(post => {
+        const originalPublished = post.published || post.object?.published;
+        const originalDcCreated = post['dc:created'] || post.object?.['dc:created'] || originalPublished;
 
-          // Create a historical activity that preserves the original date
-          const activity = {
-            type: ACTIVITY_TYPES.CREATE,
-            actor: outbox.owner,
-            object: {
-              ...post.object,
-              type: 'Note',
-              attributedTo: post.actor,
-              published: post.published || post.object?.published,
-              'dc:created': post.published || post.object?.published
-            },
-            published: post.published || post.object?.published,
-            'dc:created': post.published || post.object?.published,
-            context: {
-              ...post.context,
-              isHistorical: true,
-              originalActorUri: post.actor,
-              originalPublished: post.published || post.object?.published,
-              importedAt: new Date().toISOString()
-            },
-            to: [outbox.owner]
-          };
+        return {
+          type: ACTIVITY_TYPES.CREATE,
+          actor: outbox.owner,
+          object: {
+            ...post.object,
+            type: 'Note',
+            attributedTo: post.actor,
+            published: originalPublished,
+            'dc:created': originalDcCreated
+          },
+          published: originalPublished,
+          'dc:created': originalDcCreated,
+          context: {
+            isHistorical: true,
+            originalActorUri: post.actor,
+            importedAt: new Date().toISOString()
+          },
+          to: [outbox.owner]
+        };
+      });
 
-          // Log activity to be posted
-          console.log('Activity to be posted at ' + new Date().toISOString(), {
-            content: activity.object?.content || 'No content',
-            published: activity.published,
-            objectPublished: activity.object?.published,
-            dcCreated: activity['dc:created'],
-            objectDcCreated: activity.object['dc:created'],
-            currentTime: new Date().toISOString(),
-            fullActivity: activity
-          });
-
-          await outbox.post(activity);
-
-          setInjectionProgress(Math.round(((i + 1) / sortedPosts.length) * 100));
-          console.log(`Injected post ${i + 1}/${sortedPosts.length} at ${new Date().toISOString()}`);
-        } catch (error) {
-          console.error('Error injecting post:', error);
-          // Continue with next post even if one fails
-        }
+      // Process activities in smaller batches
+      const batchSize = 5;
+      for (let i = 0; i < activities.length; i += batchSize) {
+        const batch = activities.slice(i, i + batchSize);
+        await Promise.all(batch.map(activity => outbox.post(activity)));
+        setInjectionProgress(Math.round(((i + batch.length) / activities.length) * 100));
       }
 
       notify('app.notification.historical_posts_imported', { type: 'success' });
-      console.log('Historical posts injection completed at ' + new Date().toISOString());
     } catch (e) {
-      console.error('Error during posts injection:', e);
+      console.error('Error injecting historical posts:', e);
       notify('app.notification.historical_posts_import_error', { type: 'error' });
     } finally {
       setInjectionProgress(0);
@@ -167,26 +132,32 @@ const FollowButton = ({ actorUri, children, ...rest }) => {
   const fetchHistoricalPosts = async actorUri => {
     try {
       setIsLoadingHistory(true);
-      console.log('Fetching historical posts from:', actorUri);
+
+      // Construct the outbox URL
+      const outboxUrl = `${actorUri}/outbox`;
 
       // Fetch the actor's outbox collection
-      const response = await fetch(actorUri + '/outbox');
+      const response = await fetch(outboxUrl);
+
       if (!response.ok) {
-        throw new Error(`Failed to fetch outbox: ${response.statusText}`);
+        const errorText = await response.text();
+        throw new Error(`Failed to fetch outbox: ${response.statusText} - ${errorText}`);
       }
+
       const outboxData = await response.json();
 
       // Get the first page of activities
       const firstPageResponse = await fetch(outboxData.first);
+
       if (!firstPageResponse.ok) {
-        throw new Error(`Failed to fetch first page: ${firstPageResponse.statusText}`);
+        const errorText = await firstPageResponse.text();
+        throw new Error(`Failed to fetch first page: ${firstPageResponse.statusText} - ${errorText}`);
       }
+
       const firstPageData = await firstPageResponse.json();
 
       // Get up to 50 most recent items and prepare them
       const recentItems = firstPageData.orderedItems.slice(0, 50).map(post => preparePostForInjection(post, actorUri));
-
-      console.log('Prepared historical posts:', recentItems.length);
 
       // Store the prepared posts and inject them
       setHistoricalPosts(recentItems);
@@ -195,7 +166,6 @@ const FollowButton = ({ actorUri, children, ...rest }) => {
       notify('app.notification.historical_posts_fetched', { type: 'success' });
       return recentItems;
     } catch (e) {
-      console.error('Error fetching historical posts:', e);
       notify('app.notification.historical_posts_error', { type: 'error' });
       throw e;
     } finally {
@@ -205,14 +175,15 @@ const FollowButton = ({ actorUri, children, ...rest }) => {
 
   const follow = useCallback(async () => {
     try {
-      console.log('Sending follow request for:', actorUri);
-      const response = await outbox.post({
+      const followRequest = {
         type: ACTIVITY_TYPES.FOLLOW,
         actor: outbox.owner,
         object: actorUri,
         to: actorUri
-      });
-      console.log('Follow response:', response);
+      };
+
+      const response = await outbox.post(followRequest);
+
       notify('app.notification.actor_followed', { type: 'success' });
 
       // After successful follow, fetch and inject historical posts
@@ -269,7 +240,29 @@ const FollowButton = ({ actorUri, children, ...rest }) => {
           )}
         </Box>
       ) : (
-        <Button variant="contained" onClick={isFollowing ? unfollow : follow} {...rest}>
+        <Button
+          variant={isFollowing ? 'outlined' : 'contained'}
+          color={isFollowing ? 'secondary' : 'primary'}
+          onClick={isFollowing ? unfollow : follow}
+          startIcon={isFollowing ? <CheckIcon /> : <PersonAddIcon />}
+          sx={{
+            ...rest.sx,
+            textTransform: 'none',
+            fontWeight: isFollowing ? 500 : 600,
+            fontSize: '0.875rem',
+            px: 2,
+            minHeight: 36,
+            minWidth: 110,
+            boxShadow: isFollowing ? 'none' : undefined,
+            borderColor: isFollowing ? 'rgba(0, 0, 0, 0.23)' : undefined,
+            color: isFollowing ? 'text.primary' : undefined,
+            '&:hover': {
+              backgroundColor: isFollowing ? 'rgba(0, 0, 0, 0.04)' : undefined,
+              borderColor: isFollowing ? 'rgba(0, 0, 0, 0.23)' : undefined
+            }
+          }}
+          {...rest}
+        >
           {translate(isFollowing ? 'app.action.unfollow' : 'app.action.follow')}
         </Button>
       )}

@@ -20,7 +20,11 @@ const SubBar = () => {
   const actor = useActorContext();
   const muiTheme = useMuiTheme();
 
-  const { totalItems: numFollowing } = useCollection(actor?.following, { liveUpdates: true });
+  const { items: following } = useCollection('following', {
+    liveUpdates: true,
+    onError: error => {} // Silently handle errors
+  });
+  const numFollowing = following?.length || 0;
 
   const onChange = (_, v) => {
     navigate(v);

@@ -43,7 +43,8 @@ export default {
         'To get the most out of VoisinApp, please set your location in your pod provider settings. This will help you connect with neighbors and see relevant local content.',
       privacy_note: 'Only your city/town will be visible to other users. Your exact address will remain private.',
       set_location_button: 'Set Location in Pod Settings',
-      skip_button: 'Skip for Now'
+      skip: 'Skip for now',
+      location_set: 'I just did it!'
     },
     description:
       'VoisinApp reinvents neighborhood communication by combining the best of social networks with privacy respect.\n\n' +
@@ -62,7 +63,8 @@ export default {
       send: 'Send',
       reply: 'Reply',
       boost: 'Boost',
-      like: 'Like'
+      like: 'Like',
+      learn_more: 'Learn more'
     },
     page: {
       my_inbox: 'Inbox',
@@ -76,7 +78,17 @@ export default {
       posts_and_replies: 'Posts & Replies'
     },
     card: {
-      find_user: 'Find user'
+      find_user: 'Find user',
+      suggested_follow: {
+        loading: 'Loading your subscriptions...',
+        welcome_title: 'Welcome!',
+        welcome_text:
+          'To start discovering interesting content, follow a few accounts. This will allow you to see their posts in your feed.',
+        expand_network_title: 'Expand your network',
+        following_text:
+          'You are currently following %{count} account%{plural}. Here are other suggestions that might interest you to enrich your feed. More broadly, you can find any Fediverse user who uses Mastodon with their identifier @user@instance.com',
+        suggestions_title: 'Suggestions for you:'
+      }
     },
     placeholder: {
       message: 'Share something with your neighbors...'
@@ -98,7 +110,15 @@ export default {
         'This application is in early development. Use it for tests only, and please report issues you find on',
       geographic_info: '📍 Messages shown are from your geographic area',
       public_info: '🌍 Messages shown are from the entire whole',
-      importing_posts: 'Importing historical posts... %{progress}%'
+      no_location_set: '📍 Set your location to see messages from your area',
+      no_messages_in_radius: 'No messages in your geographic area at the moment',
+      importing_posts: 'Importing historical posts... %{progress}%',
+      location_activation:
+        'To activate local messages, please set a favorite location in your data provider. If you have already done so, simply reload the page.',
+      set_location: 'Set location',
+      no_following: 'You are not following anyone yet',
+      following_may_take_time:
+        'Start by following accounts that interest you. Following may take a few minutes to become active.'
     },
     notification: {
       message_sent: 'Your message has been sent',
@@ -133,7 +153,9 @@ export default {
     loading: {
       title: 'Rebuilding the web takes time..',
       feed_loading: 'Your news feed is loading.',
-      explanation: "If loading takes a while, it's because we use great technologies."
+      explanation: "If loading takes a while, it's because we use great technologies.",
+      activitypods_description:
+        "ActivityPods is an innovative technology that gives you complete control over your social data. Think of it as a personal digital vault (your 'Pod') where all your social interactions are securely stored. You can access it from different apps, receive notifications, and precisely choose who sees what. It's like having your own portable social network that you can connect to others whenever you want!"
     }
   },
   auth: {

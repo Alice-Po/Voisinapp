@@ -28,18 +28,23 @@ const userColors = [
   '#FF69B4', // Hot Pink
   '#4169E1', // Royal Blue
   '#008B8B', // Dark Cyan
-  '#9932CC', // Dark Orchid
+  '#9932CC' // Dark Orchid
 ];
 
 // Fonction pour générer une couleur cohérente basée sur l'ID de l'utilisateur
-const getUserColor = (actorUri) => {
+const getUserColor = actorUri => {
   if (!actorUri) return userColors[0];
-  
+
   // Utiliser les derniers caractères de l'URI comme seed
-  const seed = actorUri.split('/').pop()?.split('').reduce((acc, char) => {
-    return acc + char.charCodeAt(0);
-  }, 0) || 0;
-  
+  const seed =
+    actorUri
+      .split('/')
+      .pop()
+      ?.split('')
+      .reduce((acc, char) => {
+        return acc + char.charCodeAt(0);
+      }, 0) || 0;
+
   return userColors[seed % userColors.length];
 };
 
@@ -53,7 +58,7 @@ const Note = ({ object, activity, clickOnContent }) => {
 
   // Determine if the message is from the current user
   const isOutgoing = actorUri === identity?.id;
-  
+
   // Générer une couleur pour l'utilisateur
   const userColor = useMemo(() => getUserColor(actorUri), [actorUri]);
 
@@ -112,13 +117,11 @@ const Note = ({ object, activity, clickOnContent }) => {
     }
   };
 
-  const isExpired = object.endTime 
-    ? new Date(object.endTime) < new Date() 
-    : false;
+  const isExpired = object.endTime ? new Date(object.endTime) < new Date() : false;
 
   return (
-    <Box 
-      sx={{ 
+    <Box
+      sx={{
         display: 'flex',
         flexDirection: 'column',
         alignItems: isOutgoing ? 'flex-end' : 'flex-start',
@@ -128,8 +131,8 @@ const Note = ({ object, activity, clickOnContent }) => {
         alignSelf: isOutgoing ? 'flex-end' : 'flex-start'
       }}
     >
-      <Box 
-        sx={{ 
+      <Box
+        sx={{
           display: 'flex',
           alignItems: 'flex-end',
           flexDirection: isOutgoing ? 'row-reverse' : 'row',
@@ -166,7 +169,7 @@ const Note = ({ object, activity, clickOnContent }) => {
         >
           {!isOutgoing && (
             <Typography
-              variant="subtitle2" 
+              variant="subtitle2"
               sx={{
                 color: userColor,
                 fontWeight: 600,
@@ -178,7 +181,7 @@ const Note = ({ object, activity, clickOnContent }) => {
               }}
             >
               <Link to={`/actor/${actor?.username}`} style={{ color: 'inherit', textDecoration: 'none' }}>
-              {actor?.name}
+                {actor?.name}
               </Link>
             </Typography>
           )}
@@ -212,7 +215,7 @@ const Note = ({ object, activity, clickOnContent }) => {
             <Box
               dangerouslySetInnerHTML={{ __html: content }}
               onClick={clickOnContent ? onContentClick : undefined}
-                sx={{ 
+              sx={{
                 '& a': {
                   color: isOutgoing ? 'inherit' : theme.palette.primary.main,
                   textDecoration: 'none',
@@ -228,48 +231,50 @@ const Note = ({ object, activity, clickOnContent }) => {
               }}
             />
 
-          {object.location && (
-            <Box
-              sx={{
-                display: 'flex',
-                alignItems: 'center',
-                gap: 0.5,
-                mt: 0.5,
+            {object.location && (
+              <Box
+                sx={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: 0.5,
+                  mt: 0.5,
                   color: isOutgoing ? 'rgba(255,255,255,0.7)' : 'rgba(0,0,0,0.5)',
                   fontSize: '0.75rem'
                 }}
               >
                 <LocationOnOutlined sx={{ fontSize: '0.875rem' }} />
                 {object.location.name} • {object.location.radius}km
-            </Box>
-          )}
+              </Box>
+            )}
 
             {object.tag && (Array.isArray(object.tag) ? object.tag.length > 0 : true) && (
-              <TagDisplay 
-                tags={Array.isArray(object.tag) ? object.tag : [object.tag]} 
+              <TagDisplay
+                tags={Array.isArray(object.tag) ? object.tag : [object.tag]}
                 maxDisplay={3}
                 isOutgoing={isOutgoing}
               />
             )}
 
-            <Typography 
-              variant="caption" 
-            sx={{ 
+            <Typography
+              variant="caption"
+              sx={{
                 display: 'block',
-              mt: 0.5,
+                mt: 0.5,
                 color: isOutgoing ? 'rgba(255,255,255,0.7)' : 'rgba(0,0,0,0.5)',
                 fontSize: '0.6875rem',
                 textAlign: isOutgoing ? 'right' : 'left'
               }}
             >
-              <RelativeDate date={activity?.published || object?.published} />
-              </Typography>
+              <RelativeDate
+                date={object?.['dc:created'] || activity?.['dc:created'] || activity?.published || object?.published}
+              />
+            </Typography>
           </Box>
         </Box>
       </Box>
 
-      <Box 
-        sx={{ 
+      <Box
+        sx={{
           display: 'flex',
           gap: 1,
           mt: 1,

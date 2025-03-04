@@ -2,7 +2,7 @@
  * Converts GPS coordinates to an address using OpenStreetMap's Nominatim API.
  * This function performs a reverse geocoding request to obtain address information
  * corresponding to a geographic point.
- * 
+ *
  * @param {number} lat - Latitude of the geographic point (between -90 and 90 degrees)
  * @param {number} lon - Longitude of the geographic point (between -180 and 180 degrees)
  * @returns {Promise<{
@@ -10,7 +10,7 @@
  *   postcode: string - Postal code of the locality
  * }>} An object containing address information, or null in case of error
  * @throws {Error} If the Nominatim API request fails
- * 
+ *
  * @example
  * // Usage example
  * try {
@@ -22,11 +22,9 @@
  */
 export const reverseGeocode = async (lat, lon) => {
   try {
-    const response = await fetch(
-      `https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lon}`
-    );
+    const response = await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lon}`);
     const data = await response.json();
-    
+
     return {
       city: data.address.city || data.address.village || data.address.town,
       postcode: data.address.postcode
@@ -38,7 +36,7 @@ export const reverseGeocode = async (lat, lon) => {
       postcode: 'Unknown'
     };
   }
-}; 
+};
 
 /**
  * Calculates the distance in kilometers between two geographic points
@@ -60,15 +58,14 @@ const calculateDistance = (lat1, lon1, lat2, lon2) => {
   }
 
   const R = 6371; // Radius of the Earth in km
-  const dLat = (numLat2 - numLat1) * Math.PI / 180;
-  const dLon = (numLon2 - numLon1) * Math.PI / 180;
-  
-  const a = 
-    Math.sin(dLat/2) * Math.sin(dLat/2) +
-    Math.cos(numLat1 * Math.PI / 180) * Math.cos(numLat2 * Math.PI / 180) * 
-    Math.sin(dLon/2) * Math.sin(dLon/2);
-  
-  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+  const dLat = ((numLat2 - numLat1) * Math.PI) / 180;
+  const dLon = ((numLon2 - numLon1) * Math.PI) / 180;
+
+  const a =
+    Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+    Math.cos((numLat1 * Math.PI) / 180) * Math.cos((numLat2 * Math.PI) / 180) * Math.sin(dLon / 2) * Math.sin(dLon / 2);
+
+  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
   const distance = R * c;
 
   return distance;
@@ -82,15 +79,25 @@ const calculateDistance = (lat1, lon1, lat2, lon2) => {
  */
 export const filterNotesByLocation = (notes, userLocation) => {
   if (!userLocation || !notes) {
-    return notes || [];
+    return [];
   }
 
-  return notes.filter(note => {
-    const noteLocation = note?.object?.location;
-    const radius = parseFloat(noteLocation?.radius);
+  const filteredNotes = notes.filter(note => {
+    if (!note?.object?.location) {
+      return false;
+    }
 
-    if (!noteLocation?.latitude || !noteLocation?.longitude || !radius) {
-      return true;
+    const noteLocation = note.object.location;
+
+    if (
+      !noteLocation.latitude ||
+      !noteLocation.longitude ||
+      !noteLocation.radius ||
+      isNaN(parseFloat(noteLocation.latitude)) ||
+      isNaN(parseFloat(noteLocation.longitude)) ||
+      isNaN(parseFloat(noteLocation.radius))
+    ) {
+      return false;
     }
 
     const distance = calculateDistance(
@@ -100,6 +107,8 @@ export const filterNotesByLocation = (notes, userLocation) => {
       noteLocation.longitude
     );
 
-    return distance <= radius;
+    return distance <= parseFloat(noteLocation.radius);
   });
+
+  return filteredNotes;
 };

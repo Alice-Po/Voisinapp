@@ -44,16 +44,18 @@ export default {
       privacy_note:
         "Seule votre ville/commune sera visible pour les autres utilisateurs. Votre adresse exacte restera privée et vous n'êtes d'ailleurs pas obligé de la donner..",
       set_location_button: 'Définir la localisation dans les paramètres de votre hebergeur de données',
-      skip_button: 'Passer pour le moment'
+      skip: 'Passer pour le moment',
+      location_set: "C'est bon je viens de le faire !"
     },
     action: {
       edit_profile: 'Editer le profile',
       follow: 'Suivre',
-      unfollow: 'Ne plus suivre',
+      unfollow: 'Abonné',
       send: 'Envoyer',
       reply: 'Répondre',
       boost: 'Booster',
-      like: 'Soutenir'
+      like: 'Soutenir',
+      learn_more: 'En savoir plus'
     },
     page: {
       my_inbox: 'Boîte de réception',
@@ -67,7 +69,17 @@ export default {
       posts_and_replies: 'Messages & Réponses'
     },
     card: {
-      find_user: 'Trouver un acteur'
+      find_user: 'Trouver un acteur',
+      suggested_follow: {
+        loading: 'Chargement de vos abonnements...',
+        welcome_title: 'Bienvenue !',
+        welcome_text:
+          "Pour commencer à découvrir du contenu intéressant, suivez quelques comptes. Cela vous permettra de voir leurs publications dans votre fil d'actualité.",
+        expand_network_title: 'Élargissez votre réseau',
+        following_text:
+          "Vous suivez actuellement %{count} compte%{plural}. Voici d'autres suggestions qui pourraient vous intéresser pour enrichir votre fil d'actualité. Plus largement, vous pouvez récupérer n'importe quel utilisateur du fediverse qui utilise mastodon avec son identifiant @user@instance.com",
+        suggestions_title: 'Suggestions pour vous :'
+      }
     },
     placeholder: {
       message: 'Partagez quelque chose avec vos voisins...'
@@ -89,10 +101,15 @@ export default {
         'Cette application est en cours de développement. Utilisez-la pour des tests uniquement, et veuillez remonter les bugs que vous trouvez sur',
       geographic_info: '📍 Les messages affichés proviennent de votre zone géographique',
       public_info: '🌍 Les messages affichés proviennent de tout le fédiverse',
-      no_following: "Vous ne suivez personne pour l'instant",
+      no_location_set: '📍 Définissez votre localisation pour voir les messages de votre zone',
+      no_messages_in_radius: 'Aucun message dans votre zone géographique pour le moment',
+      no_following: 'Vous ne suivez encore personne',
       following_may_take_time:
-        "L'ajout d'un abonnement peut prendre quelques minutes pour apparaître dans la liste. Cela est dû à la nature décentralisée du réseau.",
-      importing_posts: 'Importation des messages historiques... %{progress}%'
+        "Commencez par suivre des comptes qui vous intéressent. L'abonnement peut prendre quelques minutes pour être actif.",
+      importing_posts: 'Importation des messages historiques... %{progress}%',
+      location_activation:
+        "Pour pouvoir activer les messages locaux, veuillez choisir une localisation favorite dans votre hébergeur de données. Si vous l'avez déjà fait, rechargez simplement la page.",
+      set_location: 'Choisir une adresse'
     },
     notification: {
       message_sent: 'Votre message a été envoyé',
@@ -128,7 +145,9 @@ export default {
     loading: {
       title: 'Refaire le web prends du temps..',
       feed_loading: "Votre fil d'actualité est en cours de chargement.",
-      explanation: "Si le chargement prend un peu de temps, c'est parce que nous utilisons des technologie génial."
+      explanation: "Si le chargement prend un peu de temps, c'est parce que nous utilisons des technologie génial.",
+      activitypods_description:
+        "ActivityPods est une technologie innovante qui vous donne le contrôle total de vos données sociales. Imaginez un coffre-fort numérique personnel (votre 'Pod') où toutes vos interactions sociales sont stockées en toute sécurité. Vous pouvez y accéder depuis différentes applications, recevoir des notifications, et choisir précisément qui peut voir quoi. C'est comme avoir votre propre petit réseau social portable, que vous pouvez connecter aux autres quand vous le souhaitez !"
     }
   },
   auth: {

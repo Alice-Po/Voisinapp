@@ -8,6 +8,8 @@ import { Box, Typography } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
 import { useTranslate } from 'react-admin';
 import ActivityBlock from '../../common/blocks/ActivityBlock/ActivityBlock';
+import SuggestedFollowCard from '../../common/cards/SuggestedFollowCard';
+import { sortActivitiesByDate } from '../../utils/sorting';
 
 const Public = () => {
   useCheckAuthenticated();
@@ -41,12 +43,16 @@ const Public = () => {
   });
 
   const allActivities = useMemo(() => {
-    const combined = [...inboxActivities, ...outboxActivities].sort((a1, a2) => {
-      const date1 = new Date(a1.object?.published || a1.published);
-      const date2 = new Date(a2.object?.published || a2.published);
-      return date2 - date1;
+    // Create a Map to store unique activities by ID
+    const uniqueActivities = new Map();
+
+    // Combine and sort all activities
+    [...inboxActivities, ...outboxActivities].forEach(activity => {
+      uniqueActivities.set(activity.id, activity);
     });
-    return combined;
+
+    // Convert Map values to array and sort
+    return Array.from(uniqueActivities.values()).sort(sortActivitiesByDate);
   }, [inboxActivities, outboxActivities]);
 
   const isLoading = isLoadingInbox || isLoadingOutbox;
@@ -55,6 +61,8 @@ const Public = () => {
   return (
     <div data-testid="public-feed">
       <PublicPostBlock />
+
+      <SuggestedFollowCard />
 
       {error && <div style={{ color: 'red', padding: '1rem' }}>Error loading messages: {error.message}</div>}
 

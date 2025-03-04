@@ -10,9 +10,10 @@ import { useMemo } from 'react';
 import { useState, useEffect } from 'react';
 import { reverseGeocode } from '../../utils/geocoding';
 import { filterNotesByLocation } from '../../utils/geocoding';
-import { Box, Typography, Card, Avatar, InputBase } from '@mui/material';
+import { Box, Typography, Card, Avatar, InputBase, Button } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
 import { useTranslate } from 'react-admin';
+import { sortActivitiesByDate } from '../../utils/sorting';
 
 const Home = () => {
   useCheckAuthenticated();
@@ -20,6 +21,7 @@ const Home = () => {
   const [locationData, setLocationData] = useState(null);
   const [showLocationDialog, setShowLocationDialog] = useState(false);
   const [hasCheckedLocation, setHasCheckedLocation] = useState(false);
+  const [hasSetLocation, setHasSetLocation] = useState(localStorage.getItem('hasSetLocation') === 'true');
   const theme = useTheme();
   const translate = useTranslate();
 
@@ -64,27 +66,20 @@ const Home = () => {
   });
 
   const allActivities = useMemo(() => {
+    if (!locationData) {
+      return [];
+    }
     const filteredInboxActivities = filterNotesByLocation(inboxActivities, locationData);
-    const combined = [...filteredInboxActivities, ...outboxActivities].sort((a1, a2) => {
-      const date1 = new Date(a1.object?.published || a1.published);
-      const date2 = new Date(a2.object?.published || a2.published);
-      return date2 - date1;
-    });
+    const filteredOutboxActivities = filterNotesByLocation(outboxActivities, locationData);
+    const combined = [...filteredInboxActivities, ...filteredOutboxActivities].sort(sortActivitiesByDate);
+
     return combined;
   }, [inboxActivities, outboxActivities, locationData]);
 
   useEffect(() => {
-    console.log('Location check effect running', {
-      actor,
-      isLoading: actor?.isLoading,
-      hasGeo: actor?.profile?.['vcard:hasGeo'],
-      hasCheckedLocation
-    });
-
     const checkLocation = async () => {
       if (actor && !actor.isLoading && !hasCheckedLocation) {
         if (actor.profile?.['vcard:hasGeo']) {
-          console.log('User has location, fetching geocode data...');
           const geo = actor.profile['vcard:hasGeo'];
           const geoData = await reverseGeocode(geo['vcard:latitude'], geo['vcard:longitude']);
 
@@ -93,13 +88,15 @@ const Home = () => {
             latitude: geo['vcard:latitude'],
             longitude: geo['vcard:longitude']
           });
-        } else {
-          console.log('No location found, checking if dialog should be shown...');
-          const hasSeenLocationDialog = localStorage.getItem('hasSeenLocationDialog');
-          console.log('Has seen dialog:', hasSeenLocationDialog);
 
-          if (!hasSeenLocationDialog) {
-            console.log('Showing location dialog...');
+          // Store that the user has set their location
+          localStorage.setItem('hasSetLocation', 'true');
+        } else {
+          const hasSeenLocationDialog = localStorage.getItem('hasSeenLocationDialog');
+          const hasSetLocation = localStorage.getItem('hasSetLocation');
+
+          // Only show the dialog if the user hasn't set location and hasn't seen the dialog
+          if (!hasSeenLocationDialog && !hasSetLocation) {
             setShowLocationDialog(true);
           }
         }
@@ -118,17 +115,29 @@ const Home = () => {
   }, [actor?.isLoading]);
 
   const handleCloseLocationDialog = () => {
-    console.log('Closing location dialog...');
     setShowLocationDialog(false);
     localStorage.setItem('hasSeenLocationDialog', 'true');
   };
+
+  // Reset hasSetLocation when location is removed
+  useEffect(() => {
+    if (actor && !actor.isLoading && !actor.profile?.['vcard:hasGeo']) {
+      localStorage.removeItem('hasSetLocation');
+      setLocationData(null); // Explicitly set locationData to null when location is removed
+    }
+  }, [actor]);
+
+  // Update hasSetLocation when locationData changes
+  useEffect(() => {
+    setHasSetLocation(localStorage.getItem('hasSetLocation') === 'true');
+  }, [locationData]);
 
   const isLoading = isLoadingInbox || isLoadingOutbox;
   const error = inboxError || outboxError;
 
   return (
     <div data-testid="unified-feed">
-      <PostBlock />
+      <PostBlock locationData={locationData} />
 
       {error && <div style={{ color: 'red', padding: '1rem' }}>Error loading messages: {error.message}</div>}
       <div
@@ -161,10 +170,12 @@ const Home = () => {
               opacity: 0.9
             }}
           >
-            {translate('app.message.geographic_info')}
+            {!locationData && !hasSetLocation
+              ? translate('app.message.no_location_set')
+              : translate('app.message.geographic_info')}
           </Typography>
         </Box>
-        {allActivities &&
+        {locationData && allActivities && allActivities.length > 0 ? (
           allActivities.map(activity => (
             <ActivityBlock
               activity={activity}
@@ -172,11 +183,18 @@ const Home = () => {
               showReplies
               onError={err => console.error('Activity render error:', err)}
             />
-          ))}
+          ))
+        ) : locationData && !isLoading ? (
+          <Box sx={{ p: 4, textAlign: 'center' }}>
+            <Typography variant="body1" color="text.secondary">
+              {translate('app.message.no_messages_in_radius')}
+            </Typography>
+          </Box>
+        ) : null}
 
         {(!allActivities || allActivities.length === 0) && isLoading && <LoadingFeed />}
 
-        {(hasNextInbox || hasNextOutbox) && (
+        {locationData && (hasNextInbox || hasNextOutbox) && (
           <LoadMore
             fetchNextPage={() => {
               if (hasNextInbox) fetchNextInbox();

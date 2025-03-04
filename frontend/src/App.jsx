@@ -81,8 +81,8 @@ export const App = () => (
       </CustomRoutes>
       <CustomRoutes>
         <Route element={<MainPage />}>
-          <Route path="home" element={<Home />} />
           <Route path="public" element={<Public />} />
+          <Route path="home" element={<Home />} />
           <Route path="followers" element={<Followers />} />
           <Route path="following" element={<Following />} />
           <Route path="about" element={<About />} />
