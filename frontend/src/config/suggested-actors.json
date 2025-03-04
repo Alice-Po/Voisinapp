@@ -6,25 +6,32 @@
     },
     "actors": [
         {
-            "name": "testz",
-            "handle": "@testz@localhost:3000",
-            "description": "Compte de démonstration de VoisinApp",
-            "avatar": "/logo-transparent.png",
-            "uri": "http://localhost:3000/testz"
+            "name": "Alice Poggioli",
+            "handle": "@alpog@armoise.co",
+            "description": "Je suis une femme qui aime les chats, les poules et les rats",
+            "avatar": "https://armoise.co/alpog/data/886aeb13-9d6d-4b22-b12c-090ad9ed1180.jpeg",
+            "uri": "https://armoise.co/@alpog"
         },
         {
-            "name": "testv",
-            "handle": "@testv@localhost:3000",
-            "description": "Compte de démonstration de VoisinApp",
-            "avatar": "/logo-transparent.png",
-            "uri": "http://localhost:3000/testv"
+            "name": "Framasoft",
+            "handle": "@Framasoft@framapiaf.org",
+            "description": "La route est longue mais la voie est libre…",
+            "avatar": "https://stockage.framapiaf.org/framapiaf/accounts/avatars/000/000/399/original/52b08a3e80b43d40.jpg",
+            "uri": "https://framapiaf.org/@Framasoft"
         },
         {
-            "name": "testq",
-            "handle": "@testq@localhost:3000",
-            "description": "Compte de démonstration de VoisinApp",
-            "avatar": "/logo-transparent.png",
-            "uri": "http://localhost:3000/testq"
+            "name": "La Quadrature du Net",
+            "handle": "@LaQuadrature@mamot.fr",
+            "description": "ONG luttant pour les libertés et droits fondamentaux numériques.",
+            "avatar": "https://cdn.fosstodon.org/cache/accounts/avatars/000/004/473/original/4ff7c7eaffa1702a.png",
+            "uri": "https://mamot.fr/@LaQuadrature"
+        },
+        {
+            "name": "Association April",
+            "handle": "@aprilorg@pouet.april.org",
+            "description": "Depuis 1996, l'April est un acteur majeur de la promotion et de la défense du Logiciel Libre",
+            "avatar": "https://cdn.fosstodon.org/cache/accounts/avatars/000/011/630/original/ccb919a6e8270a6d.png",
+            "uri": "https://pouet.april.org/@aprilorg"
         }
     ]
 }
