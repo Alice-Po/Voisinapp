@@ -13,6 +13,7 @@ import { filterNotesByLocation } from '../../utils/geocoding';
 import { Box, Typography, Card, Avatar, InputBase, Button } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
 import { useTranslate } from 'react-admin';
+import { sortActivitiesByDate } from '../../utils/sorting';
 
 const Home = () => {
   useCheckAuthenticated();
@@ -70,11 +71,7 @@ const Home = () => {
     }
     const filteredInboxActivities = filterNotesByLocation(inboxActivities, locationData);
     const filteredOutboxActivities = filterNotesByLocation(outboxActivities, locationData);
-    const combined = [...filteredInboxActivities, ...filteredOutboxActivities].sort((a1, a2) => {
-      const date1 = new Date(a1.object?.published || a1.published);
-      const date2 = new Date(a2.object?.published || a2.published);
-      return date2 - date1;
-    });
+    const combined = [...filteredInboxActivities, ...filteredOutboxActivities].sort(sortActivitiesByDate);
 
     return combined;
   }, [inboxActivities, outboxActivities, locationData]);

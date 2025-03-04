@@ -6,6 +6,7 @@ import PeopleAltIcon from '@mui/icons-material/PeopleAlt';
 import EmojiPeopleIcon from '@mui/icons-material/EmojiPeople';
 import suggestedActorsConfig from '../../config/suggested-actors.json';
 import FollowButton from '../buttons/FollowButton';
+import { useMemo } from 'react';
 
 const SuggestedFollowCard = () => {
   const translate = useTranslate();
@@ -21,43 +22,33 @@ const SuggestedFollowCard = () => {
   // Count of subscriptions
   const followingCount = following?.length || 0;
 
-  // Helper function to derive URI from handle
-  const getActorUriFromHandle = (handle, directUri) => {
-    // If a direct URI is provided and useDirectUri is enabled, use it
-    if (directUri && suggestedActorsConfig.config?.useDirectUri) {
-      console.log('SuggestedFollowCard - Using direct URI:', directUri);
-      return directUri;
-    }
+  // Process all actor URIs once using useMemo
+  const processedActors = useMemo(() => {
+    return suggestedActorsConfig.actors.map(actor => {
+      let actorUri = null;
 
-    if (!handle) return null;
+      // If a direct URI is provided and useDirectUri is enabled, use it
+      if (actor.uri && suggestedActorsConfig.config?.useDirectUri) {
+        actorUri = actor.uri;
+      } else if (actor.handle) {
+        // Extract username from handle (format: @username@domain)
+        const username = actor.handle.replace(/^@/, '').split('@')[0];
 
-    // Extract username from handle (format: @username@domain)
-    // For the local environment, we just need the username part
-    const username = handle.replace(/^@/, '').split('@')[0];
+        // Get the base URL and path format from config
+        const baseUrl = suggestedActorsConfig.config?.baseUrl || import.meta.env.VITE_POD_PROVIDER_BASE_URL;
+        const actorPathFormat = suggestedActorsConfig.config?.actorPathFormat || '/{username}';
 
-    // Get the base URL from config, or use default
-    const baseUrl = suggestedActorsConfig.config?.baseUrl || 'http://localhost:3000';
+        // Construct the URI
+        const actorPath = actorPathFormat.replace('{username}', username);
+        actorUri = `${baseUrl}${actorPath}`;
+      }
 
-    // Get the actor path format from config, or use default
-    const actorPathFormat = suggestedActorsConfig.config?.actorPathFormat || '/{username}';
-
-    // Replace {username} placeholder with actual username
-    const actorPath = actorPathFormat.replace('{username}', username);
-
-    const uri = `${baseUrl}${actorPath}`;
-
-    // Debug logging
-    console.log('SuggestedFollowCard - Constructed actor URI:', {
-      handle,
-      username,
-      baseUrl,
-      actorPathFormat,
-      actorPath,
-      uri
+      return {
+        ...actor,
+        processedUri: actorUri
+      };
     });
-
-    return uri;
-  };
+  }, []); // Empty dependency array since suggestedActorsConfig is imported
 
   // If loading, show a loading state
   if (followingLoading) {
@@ -139,15 +130,6 @@ const SuggestedFollowCard = () => {
           >
             {translate('app.card.suggested_follow.welcome_text')}
           </Typography>
-          <Box
-            sx={{
-              backgroundColor: theme.palette.primary.light + '20',
-              p: isMobile ? 1.5 : 2,
-              borderRadius: '8px',
-              mb: 3,
-              border: `1px solid ${theme.palette.primary.light}30`
-            }}
-          ></Box>
         </>
       ) : (
         // More neutral message for 1-10 subscriptions
@@ -204,90 +186,87 @@ const SuggestedFollowCard = () => {
         {translate('app.card.suggested_follow.suggestions_title')}
       </Typography>
 
-      {suggestedActorsConfig.actors.map(actor => {
-        const actorUri = getActorUriFromHandle(actor.handle, actor.uri);
-        return (
+      {processedActors.map(actor => (
+        <Box
+          key={actor.processedUri || actor.handle}
+          sx={{
+            display: 'flex',
+            alignItems: 'flex-start',
+            p: isMobile ? 1.5 : 2,
+            backgroundColor: theme.palette.background.default,
+            borderRadius: '12px',
+            mb: 1.5,
+            transition: 'all 0.2s ease',
+            flexDirection: isMobile ? 'column' : 'row',
+            '&:hover': {
+              backgroundColor: theme.palette.background.paper,
+              boxShadow: '0 4px 8px rgba(0, 0, 0, 0.05)'
+            }
+          }}
+        >
           <Box
-            key={actorUri || actor.handle}
             sx={{
               display: 'flex',
-              alignItems: 'flex-start',
-              p: isMobile ? 1.5 : 2,
-              backgroundColor: theme.palette.background.default,
-              borderRadius: '12px',
-              mb: 1.5,
-              transition: 'all 0.2s ease',
-              flexDirection: isMobile ? 'column' : 'row',
-              '&:hover': {
-                backgroundColor: theme.palette.background.paper,
-                boxShadow: '0 4px 8px rgba(0, 0, 0, 0.05)'
-              }
+              alignItems: isMobile ? 'center' : 'flex-start',
+              width: '100%',
+              mb: isMobile ? 1 : 0
             }}
           >
-            <Box
+            <Avatar
+              src={actor.avatar}
+              alt={actor.name}
               sx={{
-                display: 'flex',
-                alignItems: isMobile ? 'center' : 'flex-start',
-                width: '100%',
-                mb: isMobile ? 1 : 0
+                width: isMobile ? 40 : 50,
+                height: isMobile ? 40 : 50,
+                mr: 2,
+                border: '1px solid rgba(0, 0, 0, 0.08)'
               }}
-            >
-              <Avatar
-                src={actor.avatar}
-                alt={actor.name}
+            />
+            <Box sx={{ flex: 1 }}>
+              <Box
                 sx={{
-                  width: isMobile ? 40 : 50,
-                  height: isMobile ? 40 : 50,
-                  mr: 2,
-                  border: '1px solid rgba(0, 0, 0, 0.08)'
+                  display: 'flex',
+                  justifyContent: 'space-between',
+                  alignItems: 'flex-start',
+                  flexDirection: isMobile ? 'column' : 'row'
                 }}
-              />
-              <Box sx={{ flex: 1 }}>
-                <Box
-                  sx={{
-                    display: 'flex',
-                    justifyContent: 'space-between',
-                    alignItems: 'flex-start',
-                    flexDirection: isMobile ? 'column' : 'row'
-                  }}
-                >
-                  <Box>
-                    <Typography variant="subtitle2" sx={{ fontWeight: 600, fontSize: isMobile ? '0.9rem' : '0.95rem' }}>
-                      {actor.name}
-                    </Typography>
-                    <Typography
-                      variant="body2"
-                      color="text.secondary"
-                      sx={{ mb: 1, fontSize: isMobile ? '0.8rem' : '0.85rem' }}
-                    >
-                      {actor.handle}
-                    </Typography>
-                    <Typography
-                      variant="body2"
-                      color="text.secondary"
-                      sx={{
-                        mt: 1,
-                        fontSize: isMobile ? '0.8rem' : '0.9rem'
-                      }}
-                    >
-                      {actor.description}
-                    </Typography>
-                  </Box>
-                  {actorUri && (
-                    <FollowButton
-                      actorUri={actorUri}
-                      sx={{
-                        borderRadius: theme.radius?.button || '20px',
-                        fontSize: isMobile ? '0.8rem' : 'inherit'
-                      }}
-                    />
-                  )}
+              >
+                <Box>
+                  <Typography variant="subtitle2" sx={{ fontWeight: 600, fontSize: isMobile ? '0.9rem' : '0.95rem' }}>
+                    {actor.name}
+                  </Typography>
+                  <Typography
+                    variant="body2"
+                    color="text.secondary"
+                    sx={{ mb: 1, fontSize: isMobile ? '0.8rem' : '0.85rem' }}
+                  >
+                    {actor.handle}
+                  </Typography>
+                  <Typography
+                    variant="body2"
+                    color="text.secondary"
+                    sx={{
+                      mt: 1,
+                      fontSize: isMobile ? '0.8rem' : '0.9rem'
+                    }}
+                  >
+                    {actor.description}
+                  </Typography>
                 </Box>
+                {actor.processedUri && (
+                  <FollowButton
+                    actorUri={actor.processedUri}
+                    sx={{
+                      borderRadius: theme.radius?.button || '20px',
+                      fontSize: isMobile ? '0.8rem' : 'inherit'
+                    }}
+                  />
+                )}
               </Box>
             </Box>
           </Box>
-        );
-      })}
+        </Box>
+      ))}
     </Box>
   );
 };

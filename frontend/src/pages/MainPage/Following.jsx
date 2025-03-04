@@ -10,19 +10,26 @@ const Following = () => {
     fetchNextPage,
     isFetchingNextPage,
     isLoading
-  } = useCollection('following', { liveUpdates: true });
+  } = useCollection('following', {
+    liveUpdates: true,
+    onError: error => {} // Silently handle errors
+  });
+
+  // Deduplicate the following list to avoid key conflicts
+  const uniqueFollowing = [...new Set(following || [])];
+
   return (
     <>
       <SuggestedFollowCard />
 
       <Card>
         <List sx={{ p: 0 }}>
-          {following?.map(actorUri => (
-            <ActorItem actorUri={actorUri} key={actorUri} unfollowButton />
+          {uniqueFollowing.map((actorUri, index) => (
+            <ActorItem actorUri={actorUri} key={`${actorUri}-${index}`} unfollowButton />
           ))}
         </List>
       </Card>
-      {following.length === 0 && isLoading && (
+      {uniqueFollowing.length === 0 && isLoading && (
         <Box height={50} mt={4} mb={4} display="flex" justifyContent="center">
           <CircularProgress />
         </Box>

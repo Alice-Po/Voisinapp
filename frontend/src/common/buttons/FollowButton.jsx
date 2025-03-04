@@ -47,21 +47,27 @@ const FollowButton = ({ actorUri, children, ...rest }) => {
   const isFollowing = useMemo(() => following?.includes(actorUri), [following, actorUri]);
 
   const preparePostForInjection = (post, originalActor) => {
+    // Get the original dates - use post.published as the source of truth
+    const originalPublished = post.published;
+    const originalDcCreated = originalPublished; // Set dc:created to be the same as original published
+
     // Ensure we have the basic structure
     const preparedPost = {
       type: ACTIVITY_TYPES.CREATE,
       actor: originalActor,
       object: {
         ...post.object,
+        type: 'Note',
         attributedTo: originalActor,
-        published: post.object?.published || post.published // Ensure date is preserved in object
+        published: originalPublished,
+        'dc:created': originalDcCreated
       },
-      published: post.published || post.object?.published, // Ensure date is preserved at activity level
+      published: originalPublished,
+      'dc:created': originalDcCreated,
       context: {
         isHistorical: true,
         originalActorUri: originalActor,
-        importedAt: new Date().toISOString(),
-        originalPublished: post.published || post.object?.published
+        importedAt: new Date().toISOString()
       },
       to: [outbox.owner]
     };
@@ -80,43 +86,43 @@ const FollowButton = ({ actorUri, children, ...rest }) => {
         return dateA - dateB;
       });
 
-      // Inject posts one by one to maintain order
-      for (let i = 0; i < sortedPosts.length; i++) {
-        const post = sortedPosts[i];
-        try {
-          // Create a historical activity that preserves the original date
-          const activity = {
-            type: ACTIVITY_TYPES.CREATE,
-            actor: outbox.owner,
-            object: {
-              ...post.object,
-              type: 'Note',
-              attributedTo: post.actor,
-              published: post.published || post.object?.published,
-              'dc:created': post.published || post.object?.published
-            },
-            published: post.published || post.object?.published,
-            'dc:created': post.published || post.object?.published,
-            context: {
-              ...post.context,
-              isHistorical: true,
-              originalActorUri: post.actor,
-              originalPublished: post.published || post.object?.published,
-              importedAt: new Date().toISOString()
-            },
-            to: [outbox.owner]
-          };
+      // Create a batch of activities to be posted
+      const activities = sortedPosts.map(post => {
+        const originalPublished = post.published || post.object?.published;
+        const originalDcCreated = post['dc:created'] || post.object?.['dc:created'] || originalPublished;
 
-          await outbox.post(activity);
+        return {
+          type: ACTIVITY_TYPES.CREATE,
+          actor: outbox.owner,
+          object: {
+            ...post.object,
+            type: 'Note',
+            attributedTo: post.actor,
+            published: originalPublished,
+            'dc:created': originalDcCreated
+          },
+          published: originalPublished,
+          'dc:created': originalDcCreated,
+          context: {
+            isHistorical: true,
+            originalActorUri: post.actor,
+            importedAt: new Date().toISOString()
+          },
+          to: [outbox.owner]
+        };
+      });
 
-          setInjectionProgress(Math.round(((i + 1) / sortedPosts.length) * 100));
-        } catch (error) {
-          // Continue with next post even if one fails
-        }
+      // Process activities in smaller batches
+      const batchSize = 5;
+      for (let i = 0; i < activities.length; i += batchSize) {
+        const batch = activities.slice(i, i + batchSize);
+        await Promise.all(batch.map(activity => outbox.post(activity)));
+        setInjectionProgress(Math.round(((i + batch.length) / activities.length) * 100));
       }
 
       notify('app.notification.historical_posts_imported', { type: 'success' });
     } catch (e) {
+      console.error('Error injecting historical posts:', e);
       notify('app.notification.historical_posts_import_error', { type: 'error' });
     } finally {
       setInjectionProgress(0);
