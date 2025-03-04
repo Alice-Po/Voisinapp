@@ -44,7 +44,8 @@ export default {
       privacy_note:
         "Seule votre ville/commune sera visible pour les autres utilisateurs. Votre adresse exacte restera privée et vous n'êtes d'ailleurs pas obligé de la donner..",
       set_location_button: 'Définir la localisation dans les paramètres de votre hebergeur de données',
-      skip_button: 'Passer pour le moment'
+      skip_button: 'Passer pour le moment',
+      location_set: "C'est bon je viens de le faire !"
     },
     action: {
       edit_profile: 'Editer le profile',
@@ -89,6 +90,8 @@ export default {
         'Cette application est en cours de développement. Utilisez-la pour des tests uniquement, et veuillez remonter les bugs que vous trouvez sur',
       geographic_info: '📍 Les messages affichés proviennent de votre zone géographique',
       public_info: '🌍 Les messages affichés proviennent de tout le fédiverse',
+      no_location_set: '📍 Définissez votre localisation pour voir les messages de votre zone',
+      no_messages_in_radius: 'Aucun message dans votre zone géographique pour le moment',
       no_following: "Vous ne suivez personne pour l'instant",
       following_may_take_time:
         "L'ajout d'un abonnement peut prendre quelques minutes pour apparaître dans la liste. Cela est dû à la nature décentralisée du réseau.",

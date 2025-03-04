@@ -43,7 +43,8 @@ export default {
         'To get the most out of VoisinApp, please set your location in your pod provider settings. This will help you connect with neighbors and see relevant local content.',
       privacy_note: 'Only your city/town will be visible to other users. Your exact address will remain private.',
       set_location_button: 'Set Location in Pod Settings',
-      skip_button: 'Skip for Now'
+      skip_button: 'Skip for Now',
+      location_set: 'I just did it!'
     },
     description:
       'VoisinApp reinvents neighborhood communication by combining the best of social networks with privacy respect.\n\n' +
@@ -98,6 +99,8 @@ export default {
         'This application is in early development. Use it for tests only, and please report issues you find on',
       geographic_info: '📍 Messages shown are from your geographic area',
       public_info: '🌍 Messages shown are from the entire whole',
+      no_location_set: '📍 Set your location to see messages from your area',
+      no_messages_in_radius: 'No messages in your geographic area at the moment',
       importing_posts: 'Importing historical posts... %{progress}%'
     },
     notification: {
