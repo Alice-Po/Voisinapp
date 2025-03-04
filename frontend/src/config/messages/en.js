@@ -78,7 +78,17 @@ export default {
       posts_and_replies: 'Posts & Replies'
     },
     card: {
-      find_user: 'Find user'
+      find_user: 'Find user',
+      suggested_follow: {
+        loading: 'Loading your subscriptions...',
+        welcome_title: 'Welcome!',
+        welcome_text:
+          'To start discovering interesting content, follow a few accounts. This will allow you to see their posts in your feed.',
+        expand_network_title: 'Expand your network',
+        following_text:
+          'You are currently following %{count} account%{plural}. Here are other suggestions that might interest you to enrich your feed. More broadly, you can find any Fediverse user who uses Mastodon with their identifier @user@instance.com',
+        suggestions_title: 'Suggestions for you:'
+      }
     },
     placeholder: {
       message: 'Share something with your neighbors...'
@@ -105,7 +115,10 @@ export default {
       importing_posts: 'Importing historical posts... %{progress}%',
       location_activation:
         'To activate local messages, please set a favorite location in your data provider. If you have already done so, simply reload the page.',
-      set_location: 'Set location'
+      set_location: 'Set location',
+      no_following: 'You are not following anyone yet',
+      following_may_take_time:
+        'Start by following accounts that interest you. Following may take a few minutes to become active.'
     },
     notification: {
       message_sent: 'Your message has been sent',

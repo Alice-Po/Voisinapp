@@ -121,7 +121,7 @@ const HomePage = () => {
 
   useEffect(() => {
     if (!isLoading && identity?.id) {
-      redirect('/home');
+      redirect('/public');
     }
   }, [identity, isLoading, redirect]);
 

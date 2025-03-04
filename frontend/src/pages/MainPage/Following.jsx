@@ -2,6 +2,7 @@ import { Card, List, CircularProgress, Box } from '@mui/material';
 import { useCollection } from '@semapps/activitypub-components';
 import ActorItem from './ActorItem';
 import LoadMore from '../../common/LoadMore';
+import SuggestedFollowCard from '../../common/cards/SuggestedFollowCard';
 
 const Following = () => {
   const {
@@ -12,6 +13,8 @@ const Following = () => {
   } = useCollection('following', { liveUpdates: true });
   return (
     <>
+      <SuggestedFollowCard />
+
       <Card>
         <List sx={{ p: 0 }}>
           {following?.map(actorUri => (

@@ -8,6 +8,7 @@ import { Box, Typography } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
 import { useTranslate } from 'react-admin';
 import ActivityBlock from '../../common/blocks/ActivityBlock/ActivityBlock';
+import SuggestedFollowCard from '../../common/cards/SuggestedFollowCard';
 
 const Public = () => {
   useCheckAuthenticated();
@@ -55,6 +56,8 @@ const Public = () => {
   return (
     <div data-testid="public-feed">
       <PublicPostBlock />
+
+      <SuggestedFollowCard />
 
       {error && <div style={{ color: 'red', padding: '1rem' }}>Error loading messages: {error.message}</div>}
 

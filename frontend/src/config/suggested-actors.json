@@ -1,0 +1,30 @@
+{
+    "config": {
+        "actorPathFormat": "/{username}",
+        "baseUrl": "http://localhost:3000",
+        "useDirectUri": true
+    },
+    "actors": [
+        {
+            "name": "testz",
+            "handle": "@testz@localhost:3000",
+            "description": "Compte de démonstration de VoisinApp",
+            "avatar": "/logo-transparent.png",
+            "uri": "http://localhost:3000/testz"
+        },
+        {
+            "name": "testv",
+            "handle": "@testv@localhost:3000",
+            "description": "Compte de démonstration de VoisinApp",
+            "avatar": "/logo-transparent.png",
+            "uri": "http://localhost:3000/testv"
+        },
+        {
+            "name": "testq",
+            "handle": "@testq@localhost:3000",
+            "description": "Compte de démonstration de VoisinApp",
+            "avatar": "/logo-transparent.png",
+            "uri": "http://localhost:3000/testq"
+        }
+    ]
+}
