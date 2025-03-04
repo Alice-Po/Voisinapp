@@ -44,7 +44,7 @@ export default {
       privacy_note:
         "Seule votre ville/commune sera visible pour les autres utilisateurs. Votre adresse exacte restera privée et vous n'êtes d'ailleurs pas obligé de la donner..",
       set_location_button: 'Définir la localisation dans les paramètres de votre hebergeur de données',
-      skip_button: 'Passer pour le moment',
+      skip: 'Passer pour le moment',
       location_set: "C'est bon je viens de le faire !"
     },
     action: {
@@ -54,7 +54,8 @@ export default {
       send: 'Envoyer',
       reply: 'Répondre',
       boost: 'Booster',
-      like: 'Soutenir'
+      like: 'Soutenir',
+      learn_more: 'En savoir plus'
     },
     page: {
       my_inbox: 'Boîte de réception',
@@ -95,7 +96,10 @@ export default {
       no_following: "Vous ne suivez personne pour l'instant",
       following_may_take_time:
         "L'ajout d'un abonnement peut prendre quelques minutes pour apparaître dans la liste. Cela est dû à la nature décentralisée du réseau.",
-      importing_posts: 'Importation des messages historiques... %{progress}%'
+      importing_posts: 'Importation des messages historiques... %{progress}%',
+      location_activation:
+        "Pour pouvoir activer les messages locaux, veuillez choisir une localisation favorite dans votre hébergeur de données. Si vous l'avez déjà fait, rechargez simplement la page.",
+      set_location: 'Choisir une adresse'
     },
     notification: {
       message_sent: 'Votre message a été envoyé',
@@ -131,7 +135,9 @@ export default {
     loading: {
       title: 'Refaire le web prends du temps..',
       feed_loading: "Votre fil d'actualité est en cours de chargement.",
-      explanation: "Si le chargement prend un peu de temps, c'est parce que nous utilisons des technologie génial."
+      explanation: "Si le chargement prend un peu de temps, c'est parce que nous utilisons des technologie génial.",
+      activitypods_description:
+        "ActivityPods est une technologie innovante qui vous donne le contrôle total de vos données sociales. Imaginez un coffre-fort numérique personnel (votre 'Pod') où toutes vos interactions sociales sont stockées en toute sécurité. Vous pouvez y accéder depuis différentes applications, recevoir des notifications, et choisir précisément qui peut voir quoi. C'est comme avoir votre propre petit réseau social portable, que vous pouvez connecter aux autres quand vous le souhaitez !"
     }
   },
   auth: {

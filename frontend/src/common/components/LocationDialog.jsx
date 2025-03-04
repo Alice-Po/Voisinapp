@@ -96,7 +96,19 @@ const LocationDialog = ({ open, onClose }) => {
           {translate('app.location_dialog.set_location_button')}
         </Button>
       </DialogContent>
-      <DialogActions sx={{ borderTop: '1px solid rgba(0, 0, 0, 0.08)', px: 3, py: 2 }}>
+      <DialogActions sx={{ borderTop: '1px solid rgba(0, 0, 0, 0.08)', px: 3, py: 2, justifyContent: 'space-between' }}>
+        <Button
+          onClick={onClose}
+          sx={{
+            color: '#543F2E',
+            border: '1px solid #543F2E',
+            '&:hover': {
+              backgroundColor: 'rgba(84, 63, 46, 0.04)'
+            }
+          }}
+        >
+          {translate('app.location_dialog.skip')}
+        </Button>
         <Button
           onClick={() => {
             onClose();
@@ -104,6 +116,7 @@ const LocationDialog = ({ open, onClose }) => {
           }}
           sx={{
             color: '#543F2E',
+            border: '1px solid #543F2E',
             '&:hover': {
               backgroundColor: 'rgba(84, 63, 46, 0.04)'
             }

@@ -43,7 +43,7 @@ export default {
         'To get the most out of VoisinApp, please set your location in your pod provider settings. This will help you connect with neighbors and see relevant local content.',
       privacy_note: 'Only your city/town will be visible to other users. Your exact address will remain private.',
       set_location_button: 'Set Location in Pod Settings',
-      skip_button: 'Skip for Now',
+      skip: 'Skip for now',
       location_set: 'I just did it!'
     },
     description:
@@ -63,7 +63,8 @@ export default {
       send: 'Send',
       reply: 'Reply',
       boost: 'Boost',
-      like: 'Like'
+      like: 'Like',
+      learn_more: 'Learn more'
     },
     page: {
       my_inbox: 'Inbox',
@@ -101,7 +102,10 @@ export default {
       public_info: '🌍 Messages shown are from the entire whole',
       no_location_set: '📍 Set your location to see messages from your area',
       no_messages_in_radius: 'No messages in your geographic area at the moment',
-      importing_posts: 'Importing historical posts... %{progress}%'
+      importing_posts: 'Importing historical posts... %{progress}%',
+      location_activation:
+        'To activate local messages, please set a favorite location in your data provider. If you have already done so, simply reload the page.',
+      set_location: 'Set location'
     },
     notification: {
       message_sent: 'Your message has been sent',
@@ -136,7 +140,9 @@ export default {
     loading: {
       title: 'Rebuilding the web takes time..',
       feed_loading: 'Your news feed is loading.',
-      explanation: "If loading takes a while, it's because we use great technologies."
+      explanation: "If loading takes a while, it's because we use great technologies.",
+      activitypods_description:
+        "ActivityPods is an innovative technology that gives you complete control over your social data. Think of it as a personal digital vault (your 'Pod') where all your social interactions are securely stored. You can access it from different apps, receive notifications, and precisely choose who sees what. It's like having your own portable social network that you can connect to others whenever you want!"
     }
   },
   auth: {

@@ -33,6 +33,7 @@ import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import ExpandLessIcon from '@mui/icons-material/ExpandLess';
 import AdvancedSharingDialog from '../components/AdvancedSharingDialog';
 import { useTheme } from '@mui/material/styles';
+import urlJoin from 'url-join';
 
 const validateExpirationDate = value => {
   if (!value) return undefined;
@@ -41,7 +42,7 @@ const validateExpirationDate = value => {
   return expirationDate <= today ? 'Expiration date must be in the future' : undefined;
 };
 
-const PostBlock = ({ inReplyTo, mention }) => {
+const PostBlock = ({ inReplyTo, mention, locationData }) => {
   const dataProvider = useDataProvider();
   const notify = useNotify();
   const redirect = useRedirect();
@@ -58,12 +59,26 @@ const PostBlock = ({ inReplyTo, mention }) => {
   const [showOptions, setShowOptions] = useState(false);
   const [openDialog, setOpenDialog] = useState(false);
   const theme = useTheme();
+  const [hasSetLocation, setHasSetLocation] = useState(localStorage.getItem('hasSetLocation') === 'true');
 
   useEffect(() => {
     if (hash === '#reply' && inputRef.current) {
       inputRef.current.focus();
     }
   }, [hash, inputRef.current]);
+
+  useEffect(() => {
+    const checkLocationStatus = () => {
+      setHasSetLocation(localStorage.getItem('hasSetLocation') === 'true');
+    };
+
+    // Check location status when locationData changes
+    checkLocationStatus();
+
+    // Listen for storage events from other tabs/windows
+    window.addEventListener('storage', checkLocationStatus);
+    return () => window.removeEventListener('storage', checkLocationStatus);
+  }, [locationData]); // Add locationData as dependency
 
   const uploadImage = useCallback(
     async file => {
@@ -250,325 +265,380 @@ const PostBlock = ({ inReplyTo, mention }) => {
         width: '100%'
       }}
     >
-      <Card
-        data-testid="post-block"
-        sx={{
-          borderRadius: { xs: '24px 24px 0 0', sm: '12px' },
-          boxShadow: 'none',
-          backgroundColor: theme.palette.background.paper,
-          border: '1px solid rgba(0, 0, 0, 0.08)',
-          borderBottom: { xs: 'none', sm: '1px solid rgba(0, 0, 0, 0.08)' }
-        }}
-      >
-        <Box p={2} position="relative">
-          <Form onSubmit={onSubmit}>
-            <Box
+      <Box sx={{ position: 'relative' }}>
+        {!locationData && !hasSetLocation && (
+          <Box
+            sx={{
+              position: 'absolute',
+              top: 0,
+              left: 0,
+              right: 0,
+              bottom: 0,
+              backgroundColor: 'rgba(0, 0, 0, 0.1)',
+              backdropFilter: 'blur(1px)',
+              zIndex: 1,
+              display: 'flex',
+              flexDirection: 'column',
+              alignItems: 'center',
+              justifyContent: 'center',
+              gap: 2,
+              cursor: 'not-allowed',
+              borderRadius: { xs: '24px 24px 0 0', sm: '12px' }
+            }}
+          >
+            <Typography
+              variant="body2"
               sx={{
-                display: 'flex',
-                flexDirection: 'column',
-                gap: 2,
-                pb: 2,
-                borderBottom: '1px solid rgba(0, 0, 0, 0.08)'
+                color: 'text.secondary',
+                backgroundColor: 'rgba(255, 255, 255, 0.9)',
+                padding: '8px 16px',
+                margin: '2px 32px',
+                borderRadius: '8px',
+                boxShadow: '0 2px 4px rgba(0,0,0,0.1)'
               }}
             >
-              <Box sx={{ display: 'flex', alignItems: 'flex-start', gap: 1 }}>
-                <Box sx={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
-                  <Box sx={{ position: 'relative', width: '100%' }}>
-                    <InputBase
-                      data-testid="message-input"
-                      value={content}
-                      onChange={e => setContent(e.target.value)}
-                      placeholder={translate('app.placeholder.message')}
-                      multiline
-                      maxRows={4}
-                      sx={{
-                        width: '100%',
-                        backgroundColor: theme.palette.grey[100],
-                        borderRadius: theme.shape.borderRadius,
-                        padding: '10px 16px',
-                        paddingLeft: '40px',
-                        fontSize: '0.9375rem',
-                        color: theme.palette.text.primary,
-                        '&::placeholder': {
-                          color: theme.palette.text.secondary,
-                          opacity: 1
-                        }
-                      }}
-                    />
-                    <LocationOnIcon
-                      sx={{
-                        position: 'absolute',
-                        left: '12px',
-                        top: '8px',
-                        color: theme.palette.primary.main,
-                        opacity: 0.7
-                      }}
-                    />
-                  </Box>
-                  <Tooltip title={translate('app.input.radius_help')} arrow placement="bottom-start">
-                    <Typography
-                      variant="caption"
-                      sx={{
-                        color: theme.palette.text.secondary,
-                        mt: 0.5,
-                        ml: 1,
-                        fontSize: '0.75rem',
-                        display: 'flex',
-                        alignItems: 'center',
-                        gap: 0.5,
-                        cursor: 'help'
-                      }}
-                    >
-                      {translate('app.input.radius_scope', { radius })}
-                    </Typography>
-                  </Tooltip>
-                </Box>
-                <Box sx={{ display: 'flex', gap: 1, alignSelf: 'flex-end' }}>
-                  <IconButton
-                    component="label"
-                    size="medium"
-                    sx={{
-                      color: theme.palette.text.secondary,
-                      padding: '8px',
-                      '&:hover': {
-                        backgroundColor: theme.palette.action.hover
-                      }
-                    }}
-                    disabled={isSubmitting}
-                  >
-                    <input type="file" accept="image/*" multiple hidden onChange={handleFileChange} />
-                    <InsertPhotoIcon sx={{ fontSize: '1.4rem' }} />
-                  </IconButton>
-                  <IconButton
-                    type="submit"
-                    disabled={isSubmitting || !content.trim()}
-                    sx={{
-                      backgroundColor: content.trim() ? theme.palette.secondary.main : theme.palette.grey[200],
-                      color: content.trim() ? theme.palette.common.white : theme.palette.text.disabled,
-                      padding: '8px',
-                      '&:hover': {
-                        backgroundColor: content.trim() ? theme.palette.primary.dark : theme.palette.grey[200]
-                      },
-                      minWidth: '36px',
-                      height: '36px'
-                    }}
-                  >
-                    <SendIcon sx={{ fontSize: '1.3rem' }} />
-                  </IconButton>
-                </Box>
-              </Box>
-
-              {imageFiles.length > 0 && (
-                <Box sx={{ display: 'flex', gap: 1, flexWrap: 'wrap' }}>
-                  {imageFiles.map((image, index) => (
-                    <Box
-                      key={image.preview}
-                      sx={{
-                        height: 90,
-                        width: 90,
-                        borderRadius: '12px',
-                        overflow: 'hidden',
-                        position: 'relative',
-                        backgroundColor: theme.palette.grey[50]
-                      }}
-                    >
-                      <img
-                        src={image.preview}
-                        alt="Preview"
-                        style={{
-                          width: '100%',
-                          height: '100%',
-                          objectFit: 'cover'
-                        }}
-                      />
-                      <IconButton
-                        onClick={() => handleRemoveImage(index)}
+              {translate('app.message.location_activation')}
+            </Typography>
+            <Button
+              variant="contained"
+              onClick={() => {
+                const podProviderUrl = import.meta.env.VITE_POD_PROVIDER_BASE_URL_FRONT;
+                if (podProviderUrl) {
+                  window.open(urlJoin(podProviderUrl, 'settings', 'profiles', 'private'), '_blank');
+                }
+              }}
+              sx={{
+                backgroundColor: theme.palette.secondary.main,
+                color: 'white',
+                '&:hover': {
+                  backgroundColor: theme.palette.secondary.light
+                }
+              }}
+            >
+              {translate('app.message.set_location')}
+            </Button>
+          </Box>
+        )}
+        <Card
+          data-testid="post-block"
+          sx={{
+            borderRadius: { xs: '24px 24px 0 0', sm: '12px' },
+            boxShadow: 'none',
+            backgroundColor: theme.palette.background.paper,
+            border: '1px solid rgba(0, 0, 0, 0.08)',
+            borderBottom: { xs: 'none', sm: '1px solid rgba(0, 0, 0, 0.08)' }
+          }}
+        >
+          <Box p={2} position="relative">
+            <Form onSubmit={onSubmit}>
+              <Box
+                sx={{
+                  display: 'flex',
+                  flexDirection: 'column',
+                  gap: 2,
+                  pb: 2,
+                  borderBottom: '1px solid rgba(0, 0, 0, 0.08)'
+                }}
+              >
+                <Box sx={{ display: 'flex', alignItems: 'flex-start', gap: 1 }}>
+                  <Box sx={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
+                    <Box sx={{ position: 'relative', width: '100%' }}>
+                      <InputBase
+                        data-testid="message-input"
+                        value={content}
+                        onChange={e => setContent(e.target.value)}
+                        placeholder={translate('app.placeholder.message')}
+                        multiline
+                        maxRows={4}
                         sx={{
-                          position: 'absolute',
-                          top: 4,
-                          right: 4,
-                          backgroundColor: 'rgba(0, 0, 0, 0.5)',
-                          color: theme.palette.common.white,
-                          padding: '4px',
-                          '&:hover': {
-                            backgroundColor: 'rgba(0, 0, 0, 0.7)'
+                          width: '100%',
+                          backgroundColor: theme.palette.grey[100],
+                          borderRadius: theme.shape.borderRadius,
+                          padding: '10px 16px',
+                          paddingLeft: '40px',
+                          fontSize: '0.9375rem',
+                          color: theme.palette.text.primary,
+                          '&::placeholder': {
+                            color: theme.palette.text.secondary,
+                            opacity: 1
                           }
                         }}
-                        size="small"
-                      >
-                        <DeleteIcon fontSize="small" />
-                      </IconButton>
+                      />
+                      <LocationOnIcon
+                        sx={{
+                          position: 'absolute',
+                          left: '12px',
+                          top: '8px',
+                          color: theme.palette.primary.main,
+                          opacity: 0.7
+                        }}
+                      />
                     </Box>
-                  ))}
+                    <Tooltip title={translate('app.input.radius_help')} arrow placement="bottom-start">
+                      <Typography
+                        variant="caption"
+                        sx={{
+                          color: theme.palette.text.secondary,
+                          mt: 0.5,
+                          ml: 1,
+                          fontSize: '0.75rem',
+                          display: 'flex',
+                          alignItems: 'center',
+                          gap: 0.5,
+                          cursor: 'help'
+                        }}
+                      >
+                        {translate('app.input.radius_scope', { radius })}
+                      </Typography>
+                    </Tooltip>
+                  </Box>
+                  <Box sx={{ display: 'flex', gap: 1, alignSelf: 'flex-end' }}>
+                    <IconButton
+                      component="label"
+                      size="medium"
+                      sx={{
+                        color: theme.palette.text.secondary,
+                        padding: '8px',
+                        '&:hover': {
+                          backgroundColor: theme.palette.action.hover
+                        }
+                      }}
+                      disabled={isSubmitting}
+                    >
+                      <input type="file" accept="image/*" multiple hidden onChange={handleFileChange} />
+                      <InsertPhotoIcon sx={{ fontSize: '1.4rem' }} />
+                    </IconButton>
+                    <IconButton
+                      type="submit"
+                      disabled={isSubmitting || !content.trim()}
+                      sx={{
+                        backgroundColor: content.trim() ? theme.palette.secondary.main : theme.palette.grey[200],
+                        color: content.trim() ? theme.palette.common.white : theme.palette.text.disabled,
+                        padding: '8px',
+                        '&:hover': {
+                          backgroundColor: content.trim() ? theme.palette.primary.dark : theme.palette.grey[200]
+                        },
+                        minWidth: '36px',
+                        height: '36px'
+                      }}
+                    >
+                      <SendIcon sx={{ fontSize: '1.3rem' }} />
+                    </IconButton>
+                  </Box>
                 </Box>
-              )}
-            </Box>
 
-            <Box sx={{ mt: 1 }}>
-              <Button
-                onClick={() => setShowOptions(!showOptions)}
-                sx={{
-                  color: theme.palette.text.secondary,
-                  textTransform: 'none',
-                  fontSize: '0.8125rem',
-                  padding: '4px 8px',
-                  minWidth: 0,
-                  '&:hover': {
-                    backgroundColor: theme.palette.action.hover
-                  }
-                }}
-                startIcon={showOptions ? <ExpandLessIcon /> : <ExpandMoreIcon />}
-              >
-                {showOptions ? "Moins d'options" : "Plus d'options"}
-              </Button>
+                {imageFiles.length > 0 && (
+                  <Box sx={{ display: 'flex', gap: 1, flexWrap: 'wrap' }}>
+                    {imageFiles.map((image, index) => (
+                      <Box
+                        key={image.preview}
+                        sx={{
+                          height: 90,
+                          width: 90,
+                          borderRadius: '12px',
+                          overflow: 'hidden',
+                          position: 'relative',
+                          backgroundColor: theme.palette.grey[50]
+                        }}
+                      >
+                        <img
+                          src={image.preview}
+                          alt="Preview"
+                          style={{
+                            width: '100%',
+                            height: '100%',
+                            objectFit: 'cover'
+                          }}
+                        />
+                        <IconButton
+                          onClick={() => handleRemoveImage(index)}
+                          sx={{
+                            position: 'absolute',
+                            top: 4,
+                            right: 4,
+                            backgroundColor: 'rgba(0, 0, 0, 0.5)',
+                            color: theme.palette.common.white,
+                            padding: '4px',
+                            '&:hover': {
+                              backgroundColor: 'rgba(0, 0, 0, 0.7)'
+                            }
+                          }}
+                          size="small"
+                        >
+                          <DeleteIcon fontSize="small" />
+                        </IconButton>
+                      </Box>
+                    ))}
+                  </Box>
+                )}
+              </Box>
 
-              {showOptions && (
-                <Box
+              <Box sx={{ mt: 1 }}>
+                <Button
+                  onClick={() => setShowOptions(!showOptions)}
                   sx={{
-                    mt: 1,
-                    display: 'flex',
-                    flexDirection: 'column',
-                    backgroundColor: theme.palette.grey[50],
-                    borderRadius: '12px',
-                    p: 1
+                    color: theme.palette.text.secondary,
+                    textTransform: 'none',
+                    fontSize: '0.8125rem',
+                    padding: '4px 8px',
+                    minWidth: 0,
+                    '&:hover': {
+                      backgroundColor: theme.palette.action.hover
+                    }
                   }}
+                  startIcon={showOptions ? <ExpandLessIcon /> : <ExpandMoreIcon />}
                 >
+                  {showOptions ? "Moins d'options" : "Plus d'options"}
+                </Button>
+
+                {showOptions && (
                   <Box
                     sx={{
+                      mt: 1,
                       display: 'flex',
-                      flexDirection: { xs: 'column', sm: 'row' },
-                      alignItems: { xs: 'stretch', sm: 'center' },
-                      gap: 1
+                      flexDirection: 'column',
+                      backgroundColor: theme.palette.grey[50],
+                      borderRadius: '12px',
+                      p: 1
                     }}
                   >
                     <Box
                       sx={{
-                        width: { xs: '100%', sm: '33%' }
+                        display: 'flex',
+                        flexDirection: { xs: 'column', sm: 'row' },
+                        alignItems: { xs: 'stretch', sm: 'center' },
+                        gap: 1
                       }}
                     >
-                      <Typography
-                        variant="caption"
-                        sx={{ color: theme.palette.text.secondary, mb: 0.5, display: 'block' }}
-                      >
-                        Expire le
-                      </Typography>
                       <Box
                         sx={{
-                          backgroundColor: '#fff',
-                          borderRadius: '8px',
-                          height: '32px',
-                          display: 'flex',
-                          alignItems: 'center',
-                          overflow: 'hidden'
+                          width: { xs: '100%', sm: '33%' }
                         }}
                       >
-                        <DateTimeInput
-                          source="endTime"
-                          validate={validateExpirationDate}
-                          margin="none"
-                          size="medium"
-                          label="Date d'expiration"
-                          sx={{
-                            width: '100%',
-                            '& .MuiOutlinedInput-notchedOutline': {
-                              border: 'none'
-                            },
-                            '& .MuiFormLabel-root': {
-                              display: 'none'
-                            }
-                          }}
-                        />
-                      </Box>
-                    </Box>
-                    <Box
-                      sx={{
-                        width: { xs: '100%', sm: 'auto' },
-                        minWidth: { sm: '80px' }
-                      }}
-                    >
-                      <Typography
-                        variant="caption"
-                        sx={{ color: theme.palette.text.secondary, mb: 0.5, display: 'block' }}
-                      >
-                        Rayon
-                      </Typography>
-                      <Box
-                        sx={{
-                          display: 'flex',
-                          backgroundColor: '#fff',
-                          borderRadius: '8px',
-                          height: '32px',
-                          padding: '0 10px',
-                          alignItems: 'center',
-                          width: { xs: '100%', sm: 'auto' }
-                        }}
-                      >
-                        <InputBase
-                          data-testid="radius-input"
-                          type="number"
-                          value={radius}
-                          onChange={e => setRadius(e.target.value)}
-                          sx={{
-                            flex: { xs: 1, sm: 'none' },
-                            '& input': {
-                              padding: '6px 0',
-                              fontSize: '0.875rem',
-                              color: theme.palette.text.primary,
-                              textAlign: { xs: 'left', sm: 'right' },
-                              width: { xs: '100%', sm: '32px' }
-                            }
-                          }}
-                        />
                         <Typography
+                          variant="caption"
+                          sx={{ color: theme.palette.text.secondary, mb: 0.5, display: 'block' }}
+                        >
+                          Expire le
+                        </Typography>
+                        <Box
                           sx={{
-                            color: theme.palette.text.secondary,
-                            fontSize: '0.875rem',
-                            ml: 1,
-                            whiteSpace: 'nowrap'
+                            backgroundColor: '#fff',
+                            borderRadius: '8px',
+                            height: '32px',
+                            display: 'flex',
+                            alignItems: 'center',
+                            overflow: 'hidden'
                           }}
                         >
-                          km
+                          <DateTimeInput
+                            source="endTime"
+                            validate={validateExpirationDate}
+                            margin="none"
+                            size="medium"
+                            label="Date d'expiration"
+                            sx={{
+                              width: '100%',
+                              '& .MuiOutlinedInput-notchedOutline': {
+                                border: 'none'
+                              },
+                              '& .MuiFormLabel-root': {
+                                display: 'none'
+                              }
+                            }}
+                          />
+                        </Box>
+                      </Box>
+                      <Box
+                        sx={{
+                          width: { xs: '100%', sm: 'auto' },
+                          minWidth: { sm: '80px' }
+                        }}
+                      >
+                        <Typography
+                          variant="caption"
+                          sx={{ color: theme.palette.text.secondary, mb: 0.5, display: 'block' }}
+                        >
+                          Rayon
                         </Typography>
+                        <Box
+                          sx={{
+                            display: 'flex',
+                            backgroundColor: '#fff',
+                            borderRadius: '8px',
+                            height: '32px',
+                            padding: '0 10px',
+                            alignItems: 'center',
+                            width: { xs: '100%', sm: 'auto' }
+                          }}
+                        >
+                          <InputBase
+                            data-testid="radius-input"
+                            type="number"
+                            value={radius}
+                            onChange={e => setRadius(e.target.value)}
+                            sx={{
+                              flex: { xs: 1, sm: 'none' },
+                              '& input': {
+                                padding: '6px 0',
+                                fontSize: '0.875rem',
+                                color: theme.palette.text.primary,
+                                textAlign: { xs: 'left', sm: 'right' },
+                                width: { xs: '100%', sm: '32px' }
+                              }
+                            }}
+                          />
+                          <Typography
+                            sx={{
+                              color: theme.palette.text.secondary,
+                              fontSize: '0.875rem',
+                              ml: 1,
+                              whiteSpace: 'nowrap'
+                            }}
+                          >
+                            km
+                          </Typography>
+                        </Box>
+                      </Box>
+                      <Box
+                        sx={{
+                          width: { xs: '100%', sm: '33%' }
+                        }}
+                      >
+                        <Typography
+                          variant="caption"
+                          sx={{ color: theme.palette.text.secondary, mb: 0.5, display: 'block' }}
+                        >
+                          Tags
+                        </Typography>
+                        <TagSelector selectedTags={selectedTags} onChange={handleTagChange} />
                       </Box>
                     </Box>
-                    <Box
+                    <Button
                       sx={{
-                        width: { xs: '100%', sm: '33%' }
+                        color: theme.palette.text.secondary,
+                        textTransform: 'none',
+                        fontSize: '0.75rem',
+                        padding: '4px 8px',
+                        minWidth: 0,
+                        alignSelf: 'flex-end',
+                        mt: 1,
+                        textDecoration: 'underline',
+                        '&:hover': {
+                          backgroundColor: theme.palette.action.hover
+                        }
                       }}
+                      onClick={handleOpenDialog}
                     >
-                      <Typography
-                        variant="caption"
-                        sx={{ color: theme.palette.text.secondary, mb: 0.5, display: 'block' }}
-                      >
-                        Tags
-                      </Typography>
-                      <TagSelector selectedTags={selectedTags} onChange={handleTagChange} />
-                    </Box>
+                      Options de partage avancées
+                    </Button>
                   </Box>
-                  <Button
-                    sx={{
-                      color: theme.palette.text.secondary,
-                      textTransform: 'none',
-                      fontSize: '0.75rem',
-                      padding: '4px 8px',
-                      minWidth: 0,
-                      alignSelf: 'flex-end',
-                      mt: 1,
-                      textDecoration: 'underline',
-                      '&:hover': {
-                        backgroundColor: theme.palette.action.hover
-                      }
-                    }}
-                    onClick={handleOpenDialog}
-                  >
-                    Options de partage avancées
-                  </Button>
-                </Box>
-              )}
-            </Box>
-          </Form>
-        </Box>
-      </Card>
+                )}
+              </Box>
+            </Form>
+          </Box>
+        </Card>
+      </Box>
       <AdvancedSharingDialog open={openDialog} onClose={handleCloseDialog} />
     </Box>
   );

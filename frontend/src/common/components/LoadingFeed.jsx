@@ -1,10 +1,13 @@
-import { Box, Typography, Link } from '@mui/material';
+import { Box, Typography, Link, Button } from '@mui/material';
 import { useTranslate } from 'react-admin';
 import { useTheme } from '@mui/material/styles';
 
 const LoadingFeed = () => {
   const translate = useTranslate();
   const theme = useTheme();
+  const handleActivityPodsClick = () => {
+    window.open('https://activitypods.org/', '_blank');
+  };
   return (
     <Box
       sx={{
@@ -89,6 +92,22 @@ const LoadingFeed = () => {
         >
           {translate('app.loading.activitypods_description')}
         </Typography>
+        <Button
+          variant="outlined"
+          onClick={handleActivityPodsClick}
+          size="small"
+          sx={{
+            whiteSpace: 'nowrap',
+            textTransform: 'none',
+            fontWeight: 500,
+            borderWidth: 2,
+            '&:hover': {
+              borderWidth: 2
+            }
+          }}
+        >
+          {translate('app.action.learn_more')}
+        </Button>
       </Box>
     </Box>
   );
