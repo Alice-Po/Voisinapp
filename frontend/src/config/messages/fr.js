@@ -70,7 +70,7 @@ export default {
       find_user: 'Trouver un acteur'
     },
     placeholder: {
-      message: 'Saisir un message'
+      message: 'Partagez quelque chose avec vos voisins...'
     },
     block: {},
     input: {
@@ -79,7 +79,7 @@ export default {
       radius: 'Rayon de visibilité (km)',
       radius_help: 'Distance maximale à laquelle votre message sera visible',
       expiration_date: "Date d'expiration",
-      radius_scope: 'Portée du message : %{radius} km'
+      radius_scope: 'Visible dans un rayon de %{radius} km autour de vous'
     },
     helper: {
       find_user: 'Pour trouver un acteur dans le fediverse, entrez son identifiant et tapez Enter.'
@@ -87,8 +87,12 @@ export default {
     message: {
       early_dev_warning:
         'Cette application est en cours de développement. Utilisez-la pour des tests uniquement, et veuillez remonter les bugs que vous trouvez sur',
-      geographic_info:
-        '📍 Les messages affichés proviennent de votre zone géographique, pour favoriser les échanges de proximité'
+      geographic_info: '📍 Les messages affichés proviennent de votre zone géographique',
+      public_info: '🌍 Les messages affichés proviennent de tous le fédiverse',
+      no_following: "Vous ne suivez personne pour l'instant",
+      following_may_take_time:
+        "L'ajout d'un abonnement peut prendre quelques minutes pour apparaître dans la liste. Cela est dû à la nature décentralisée du réseau.",
+      importing_posts: 'Importation des messages historiques... %{progress}%'
     },
     notification: {
       message_sent: 'Votre message a été envoyé',
@@ -99,7 +103,12 @@ export default {
       post_like_removed: 'Le like du message a été enlevé',
       actor_followed: 'Vous suivez maintenant cet acteur',
       actor_unfollowed: 'Vous ne suivez plus cet acteur',
-      image_upload_error: "Echec de l'upload de l'image"
+      image_upload_error: "Echec de l'upload de l'image",
+      error_fetching_data: 'Erreur lors de la récupération des données',
+      historical_posts_fetched: 'Les messages historiques ont été récupérés avec succès',
+      historical_posts_error: 'Erreur lors de la récupération des messages historiques',
+      historical_posts_imported: 'Les messages historiques ont été importés avec succès',
+      historical_posts_import_error: "Erreur lors de l'importation des messages historiques"
     },
     validation: {
       radius_range: 'Le rayon doit être compris entre 0 et 50 kilomètres'
@@ -119,10 +128,7 @@ export default {
     loading: {
       title: 'Refaire le web prends du temps..',
       feed_loading: "Votre fil d'actualité est en cours de chargement.",
-      explanation: "Si le chargement prend un peu de temps, c'est parce que nous utilisons des technologie génial.",
-      activitypods_intro: "VoisinApp s'appuie sur",
-      activitypods_description:
-        ', une technologie aux ambitions révolutionnaires qui vous redonne le contrôle de vos données et de vos interactions numériques.'
+      explanation: "Si le chargement prend un peu de temps, c'est parce que nous utilisons des technologie génial."
     }
   },
   auth: {
@@ -133,6 +139,9 @@ export default {
   ra: {
     auth: {
       sign_in: 'Se connecter'
+    },
+    action: {
+      search: 'Rechercher'
     }
   }
 };

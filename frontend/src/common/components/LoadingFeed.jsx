@@ -87,23 +87,6 @@ const LoadingFeed = () => {
             color: theme.palette.text.primary
           }}
         >
-          {translate('app.loading.activitypods_intro')}{' '}
-          <Link
-            href="https://activitypods.org"
-            target="_blank"
-            rel="noopener noreferrer"
-            sx={{
-              color: '#A78464',
-              textDecoration: 'none',
-              borderBottom: '1px solid #A78464',
-              '&:hover': {
-                color: 'white',
-                borderBottomColor: 'white'
-              }
-            }}
-          >
-            ActivityPods
-          </Link>
           {translate('app.loading.activitypods_description')}
         </Typography>
       </Box>

@@ -23,7 +23,7 @@ const AppBar = () => {
   const theme = useTheme();
 
   return (
-    <MuiAppBar position="sticky" sx={{ flexGrow: 1 }} elevation={0} className={classes.appBar}>
+    <MuiAppBar position="sticky" sx={{ flexGrow: 1 }} elevation={0} className={classes.appBar} color="transparent">
       <Container maxWidth="md">
         <Toolbar disableGutters sx={{ minHeight: '60px' }}>
           <Link to="/inbox">
@@ -44,12 +44,17 @@ const AppBar = () => {
             <Link to="/home">VoisinApp</Link>
           </Typography>
           <UserMenu
+            buttonProps={{
+              sx: {
+                color: theme.palette.text.primary
+              }
+            }}
             sx={{
-              '& .MuiIconButton-root': {
-                color: theme.palette.text.secondary,
-                '&:hover': {
-                  backgroundColor: theme.palette.action.hover
-                }
+              '& .MuiButton-root': {
+                color: theme.palette.text.primary
+              },
+              '& .MuiSvgIcon-root': {
+                color: theme.palette.text.primary
               }
             }}
           />

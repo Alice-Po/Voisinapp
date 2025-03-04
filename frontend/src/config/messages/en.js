@@ -79,7 +79,7 @@ export default {
       find_user: 'Find user'
     },
     placeholder: {
-      message: 'Type a message'
+      message: 'Share something with your neighbors...'
     },
     block: {},
     input: {
@@ -88,7 +88,7 @@ export default {
       radius: 'Visibility radius (km)',
       radius_help: 'Maximum distance at which your message will be visible',
       expiration_date: 'Expiration date',
-      radius_scope: 'Message range: %{radius} km'
+      radius_scope: '📍 Visible within %{radius} km around you'
     },
     helper: {
       find_user: 'To find another fediverse member, enter their handle and hit enter.'
@@ -96,7 +96,9 @@ export default {
     message: {
       early_dev_warning:
         'This application is in early development. Use it for tests only, and please report issues you find on',
-      geographic_info: '📍 Messages shown are from your geographic area to promote local exchanges'
+      geographic_info: '📍 Messages shown are from your geographic area',
+      public_info: '🌍 Messages shown are from the entire whole',
+      importing_posts: 'Importing historical posts... %{progress}%'
     },
     notification: {
       message_sent: 'Your message has been sent',
@@ -107,7 +109,11 @@ export default {
       post_like_removed: 'The post like has been removed',
       actor_followed: 'You are now following this actor',
       actor_unfollowed: 'You are not following this actor anymore',
-      image_upload_error: 'Failed to upload image'
+      image_upload_error: 'Failed to upload image',
+      historical_posts_fetched: 'Historical posts have been retrieved successfully',
+      historical_posts_error: 'Error while retrieving historical posts',
+      historical_posts_imported: 'Historical posts have been imported successfully',
+      historical_posts_import_error: 'Error while importing historical posts'
     },
     validation: {
       radius_range: 'Radius must be between 0 and 50 kilometers'
@@ -127,11 +133,7 @@ export default {
     loading: {
       title: 'Rebuilding the web takes time..',
       feed_loading: 'Your news feed is loading.',
-      explanation:
-        "If loading takes a while, it's because we made technological choices that truly respect humans and their autonomy. Loading times are being improved.",
-      activitypods_intro: 'VoisinApp relies on',
-      activitypods_description:
-        ', a technology with revolutionary ambitions that gives you back control of your data and your digital interactions.'
+      explanation: "If loading takes a while, it's because we use great technologies."
     }
   },
   auth: {
@@ -142,6 +144,9 @@ export default {
   ra: {
     auth: {
       sign_in: 'Sign in'
+    },
+    action: {
+      search: 'Search'
     }
   }
 };

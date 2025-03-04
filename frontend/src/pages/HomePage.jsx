@@ -133,7 +133,7 @@ const HomePage = () => {
   if (isLoading)
     return (
       <Box display="flex" justifyContent="center" alignItems="center" height="100vh">
-        <RippleLoader />
+        <RippleLoader color="white" />
       </Box>
     );
 

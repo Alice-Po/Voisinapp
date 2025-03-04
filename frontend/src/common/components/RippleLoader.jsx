@@ -34,7 +34,7 @@ const useStyles = makeStyles(() => ({
     }
   },
   ripple: {
-    color: '#1c4c5b',
+    color: props => props.color || '#1c4c5b',
     display: 'inline-block',
     position: 'relative',
     width: 80,
@@ -54,8 +54,8 @@ const useStyles = makeStyles(() => ({
   }
 }));
 
-const RippleLoader = () => {
-  const classes = useStyles();
+const RippleLoader = ({ color }) => {
+  const classes = useStyles({ color });
 
   return (
     <Box className={classes.ripple} data-testid="ripple-loader">

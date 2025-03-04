@@ -160,7 +160,7 @@ const ProfileCard = () => {
 
         {isLoadingLocation ? (
           <Box display="flex" justifyContent="center" py={1}>
-            <RippleLoader />
+            <RippleLoader color={theme.palette.primary.main} />
           </Box>
         ) : (
           reverseGeocodeLocation && (

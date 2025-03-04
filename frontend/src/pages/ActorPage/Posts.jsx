@@ -2,6 +2,8 @@ import { useCollection } from '@semapps/activitypub-components';
 import ActivityBlock from '../../common/blocks/ActivityBlock/ActivityBlock';
 import useActorContext from '../../hooks/useActorContext';
 import LoadMore from '../../common/LoadMore';
+import RippleLoader from '../../common/components/RippleLoader';
+import { Box } from '@mui/material';
 
 const Posts = () => {
   const actor = useActorContext();
@@ -11,6 +13,15 @@ const Posts = () => {
     isLoading,
     isFetchingNextPage
   } = useCollection(actor?.outbox, { liveUpdates: true });
+
+  if (isLoading) {
+    return (
+      <Box display="flex" justifyContent="center" alignItems="center" p={4}>
+        <RippleLoader />
+      </Box>
+    );
+  }
+
   return (
     <>
       {activities?.map(activity => (
