@@ -88,7 +88,7 @@ export default {
       early_dev_warning:
         'Cette application est en cours de développement. Utilisez-la pour des tests uniquement, et veuillez remonter les bugs que vous trouvez sur',
       geographic_info: '📍 Les messages affichés proviennent de votre zone géographique',
-      public_info: '🌍 Les messages affichés proviennent de tous le fédiverse',
+      public_info: '🌍 Les messages affichés proviennent de tout le fédiverse',
       no_following: "Vous ne suivez personne pour l'instant",
       following_may_take_time:
         "L'ajout d'un abonnement peut prendre quelques minutes pour apparaître dans la liste. Cela est dû à la nature décentralisée du réseau.",
