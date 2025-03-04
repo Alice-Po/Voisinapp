@@ -10,6 +10,8 @@ RUN apk add --update --no-cache autoconf bash libtool automake python3 py3-pip a
 RUN yarn global add serve
 
 ARG VITE_APP_NAME
+ARG VITE_APP_DESCRIPTION
+ARG VITE_APP_LANG
 ARG VITE_BACKEND_URL
 ARG VITE_BACKEND_CLIENT_ID
 ARG VITE_POD_PROVIDER_BASE_URL
